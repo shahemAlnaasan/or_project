@@ -1,0 +1,90 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:golder_octopus/common/extentions/colors_extension.dart';
+import 'package:golder_octopus/common/widgets/app_text.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_details_dialog.dart';
+import 'package:golder_octopus/generated/assets.gen.dart';
+import 'package:golder_octopus/generated/locale_keys.g.dart';
+
+class ReceivedTransferContainer extends StatelessWidget {
+  const ReceivedTransferContainer({super.key});
+
+  void _showDetailsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return TransferDetailsDialog();
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showDetailsDialog(context),
+      child: Container(
+        decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText.bodySmall(
+                    LocaleKeys.transfer_outgoing_transfers.tr(),
+                    textAlign: TextAlign.start,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  const SizedBox(height: 5),
+                  AppText.bodySmall("0965292417", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 5),
+                  AppText.bodySmall("ادلب - ابراهيم كللي", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AppText.bodySmall("7", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 5),
+                  AppText.bodySmall(
+                    LocaleKeys.home_dolar.tr(),
+                    textAlign: TextAlign.start,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  const SizedBox(height: 5),
+                  Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 5),
+                  AppText.bodySmall(LocaleKeys.home_dolar.tr(), fontWeight: FontWeight.bold),
+                  const SizedBox(height: 5),
+                  Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold)],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

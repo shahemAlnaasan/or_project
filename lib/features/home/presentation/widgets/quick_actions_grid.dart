@@ -1,0 +1,144 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:golder_octopus/common/extentions/colors_extension.dart';
+import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
+import 'package:golder_octopus/common/widgets/app_text.dart';
+import 'package:golder_octopus/features/account_statement/presentation/pages/account_statement_screen.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/incoming_credit_screen.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/outgoing_credit_screen.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/send_credit_screen.dart';
+import 'package:golder_octopus/features/home/presentation/pages/shear_bond_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/international_transfer_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/new_transfer_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/outgoing_transfer_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/received_transfer_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/syrian_transfer_screen.dart';
+import 'package:golder_octopus/generated/assets.gen.dart';
+import 'package:golder_octopus/generated/locale_keys.g.dart';
+
+class QuickActionsGrid extends StatefulWidget {
+  const QuickActionsGrid({super.key});
+
+  @override
+  State<QuickActionsGrid> createState() => _QuickActionsGridState();
+}
+
+class _QuickActionsGridState extends State<QuickActionsGrid> {
+  @override
+  Widget build(BuildContext context) {
+    final List<GridItem> gridItems = [
+      GridItem(
+        icon: Assets.images.quickActions.transfer.path,
+        label: LocaleKeys.home_send_transfer.tr(),
+        onTap: () => context.push(NewTransferScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.syria.path,
+        label: LocaleKeys.home_syrian_transfer.tr(),
+        onTap: () => context.push(SyrianTransferScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.international.path,
+        label: LocaleKeys.home_international_transfer.tr(),
+        onTap: () => context.push(InternationalTransferScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.accountStatement.path,
+        label: LocaleKeys.home_account_statement.tr(),
+        onTap: () => context.push(AccountStatementScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.outgoingTransfer.path,
+        label: LocaleKeys.home_outgoing_transfers.tr(),
+        onTap: () => context.push(OutgoingTransferScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.incomingTransfer.path,
+        label: LocaleKeys.home_incoming_transfer.tr(),
+        onTap: () => context.push(IncomingTransferScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.receiveMoney.path,
+        label: LocaleKeys.home_recived_transfer.tr(),
+        onTap: () => context.push(ReceivedTransferScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.sendCredit.path,
+        label: LocaleKeys.home_send_credit.tr(),
+        onTap: () => context.push(SendCreditScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.outgoingCredit.path,
+        label: LocaleKeys.home_outgoing_credits.tr(),
+        onTap: () => context.push(OutgoingCreditScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.incomingCredit.path,
+        label: LocaleKeys.home_incoming_credits.tr(),
+        onTap: () => context.push(IncomingTransferScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.shearBone.path,
+        label: LocaleKeys.home_shear_bond.tr(),
+        onTap: () => context.push(ShearBondScreen()),
+      ),
+      GridItem(
+        icon: Assets.images.quickActions.moneyWithdraw.path,
+        label: LocaleKeys.home_withdrawl_transfer.tr(),
+        onTap: () => print('Settings tapped'),
+      ),
+    ];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+      child: GridView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        padding: const EdgeInsets.only(top: 1),
+        itemCount: gridItems.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          crossAxisSpacing: 15,
+          mainAxisSpacing: 10,
+          childAspectRatio: 1 / 1.2,
+        ),
+        itemBuilder: (context, index) {
+          final item = gridItems[index];
+          return GestureDetector(
+            onTap: item.onTap,
+            child: Container(
+              decoration: BoxDecoration(
+                color: context.primaryColor,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [BoxShadow(color: const Color(0x20000000), blurRadius: 5, offset: const Offset(0, 4))],
+              ),
+              padding: const EdgeInsets.all(2),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(item.icon, scale: 2.5),
+                  const SizedBox(height: 4),
+                  AppText.labelMedium(
+                    item.label,
+                    textAlign: TextAlign.center,
+                    fontWeight: FontWeight.w600,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class GridItem {
+  final String icon;
+  final String label;
+  final VoidCallback onTap;
+
+  GridItem({required this.icon, required this.label, required this.onTap});
+}
