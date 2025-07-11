@@ -6,33 +6,17 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
+import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/transfer_receipt_screen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
-class TransferDetailsDialog extends StatelessWidget {
-  const TransferDetailsDialog({super.key});
+class IncomingCreditDetailsDialog extends StatelessWidget {
+  final IncomingCreditsResponse incomingCreditsResponse;
+  const IncomingCreditDetailsDialog({super.key, required this.incomingCreditsResponse});
 
   @override
   Widget build(BuildContext context) {
-    // Extracted values
-    final companyName = "شركة الأخطبـــــوط الذهــبــي";
-    final senderCenter = "شهم";
-    final destination = "ابراهيم كلي";
-    final amount = "1,000 دولار";
-    final fee = "7 دولار";
-    final transferDate = "2025-06-23 20:27:04";
-    final transferNumber = "BR23066215948";
-    final senderName = "شهم - 4665656";
-    final beneficiaryName = "بتنيتنيق";
-    final beneficiaryPhone = "626262626";
-    final notes = "";
-    final secretCode = "26465";
-    final status = "غير مستلمة";
-    final deliveryDate = "";
-    final destinationAddress = "كلي / جانب الدوار الشهداء";
-    final destinationPhone = "03625145120085120201230";
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
@@ -69,25 +53,43 @@ class TransferDetailsDialog extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Info rows using variables
-              _infoRow(label: LocaleKeys.transfer_transmitting_center.tr(), value: senderCenter, context: context),
-              _infoRow(label: LocaleKeys.transfer_destination.tr(), value: destination, context: context),
-              _infoRow(label: LocaleKeys.transfer_amount.tr(), value: amount, context: context),
-              _infoRow(label: LocaleKeys.transfer_fees.tr(), value: fee, context: context),
-              _infoRow(label: LocaleKeys.transfer_date_of_transfer.tr(), value: transferDate, context: context),
-              _infoRow(label: LocaleKeys.transfer_transfer_number.tr(), value: transferNumber, context: context),
-              _infoRow(label: LocaleKeys.transfer_sender_name.tr(), value: senderName, context: context),
-              _infoRow(label: LocaleKeys.transfer_beneficiary_name.tr(), value: beneficiaryName, context: context),
-              _infoRow(label: LocaleKeys.transfer_beneficiary_phone.tr(), value: beneficiaryPhone, context: context),
-              _infoRow(label: LocaleKeys.transfer_notes.tr(), value: notes, context: context),
-              _infoRow(label: LocaleKeys.transfer_secret_number.tr(), value: secretCode, context: context),
-              _infoRow(label: LocaleKeys.transfer_status.tr(), value: status, context: context),
-              _infoRow(label: LocaleKeys.transfer_delivery_date.tr(), value: deliveryDate, context: context),
               _infoRow(
-                label: LocaleKeys.transfer_destination_address.tr(),
-                value: destinationAddress,
+                label: LocaleKeys.transfer_transmitting_center.tr(),
+                value: incomingCreditsResponse.source,
                 context: context,
               ),
-              _infoRow(label: LocaleKeys.transfer_destination_phone.tr(), value: destinationPhone, context: context),
+              _infoRow(
+                label: LocaleKeys.transfer_destination.tr(),
+                value: incomingCreditsResponse.source,
+                context: context,
+              ),
+              _infoRow(label: LocaleKeys.transfer_amount.tr(), value: incomingCreditsResponse.source, context: context),
+              _infoRow(label: LocaleKeys.transfer_fees.tr(), value: incomingCreditsResponse.source, context: context),
+              _infoRow(
+                label: LocaleKeys.transfer_date_of_transfer.tr(),
+                value: incomingCreditsResponse.source,
+                context: context,
+              ),
+              _infoRow(
+                label: LocaleKeys.transfer_transfer_number.tr(),
+                value: incomingCreditsResponse.source,
+                context: context,
+              ),
+              _infoRow(
+                label: LocaleKeys.transfer_sender_name.tr(),
+                value: incomingCreditsResponse.source,
+                context: context,
+              ),
+              _infoRow(
+                label: LocaleKeys.transfer_beneficiary_name.tr(),
+                value: incomingCreditsResponse.source,
+                context: context,
+              ),
+              _infoRow(
+                label: LocaleKeys.transfer_beneficiary_phone.tr(),
+                value: incomingCreditsResponse.source,
+                context: context,
+              ),
               const SizedBox(height: 16),
 
               // Buttons
@@ -107,15 +109,15 @@ class TransferDetailsDialog extends StatelessWidget {
                       Color(0xffcc5a56),
                       onPressed: () {
                         final data = '''
-$companyName  
-المبلغ  :$amount
-العمولة  :$fee
-تاريخ التحويل   :$transferDate
-رقم الحوالة   :$transferNumber
-اسم المستفيد   :$beneficiaryName
-الملاحظات    :$notes
-الرقم السري    :$secretCode
-الحالة  :  $status  
+${incomingCreditsResponse.source}  
+المبلغ  :${incomingCreditsResponse.source}  
+العمولة  :${incomingCreditsResponse.source}  
+تاريخ التحويل   :${incomingCreditsResponse.source}  
+رقم الحوالة   :${incomingCreditsResponse.source}  
+اسم المستفيد   :${incomingCreditsResponse.source}  
+الملاحظات    :${incomingCreditsResponse.source}  
+الرقم السري    :${incomingCreditsResponse.source}  
+الحالة  :  ${incomingCreditsResponse.source}    
 ''';
                         Clipboard.setData(ClipboardData(text: data));
                         ToastificationDialog.showToast(

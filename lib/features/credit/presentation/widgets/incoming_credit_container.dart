@@ -1,19 +1,20 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_details_dialog.dart';
+import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
+import 'package:golder_octopus/features/credit/presentation/widgets/incoming_credit_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class IncomingCreditContainer extends StatelessWidget {
-  const IncomingCreditContainer({super.key});
+  final IncomingCreditsResponse incomingCredit;
+  final int index;
+  const IncomingCreditContainer({super.key, required this.incomingCredit, required this.index});
 
-  void _showDetailsDialog(BuildContext context) {
+  void _showDetailsDialog(BuildContext context, {required IncomingCreditsResponse incomingCreditsResponse}) {
     showDialog(
       context: context,
       builder: (context) {
-        return TransferDetailsDialog();
+        return IncomingCreditDetailsDialog(incomingCreditsResponse: incomingCreditsResponse);
       },
     );
   }
@@ -21,65 +22,52 @@ class IncomingCreditContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showDetailsDialog(context),
+      onTap: () => _showDetailsDialog(context, incomingCreditsResponse: incomingCredit),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 1,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 10,
                 children: [
-                  AppText.bodySmall(
-                    LocaleKeys.transfer_outgoing_transfers.tr(),
+                  AppText.bodyMedium("${index + 1}", textAlign: TextAlign.center, fontWeight: FontWeight.bold),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    decoration: BoxDecoration(color: context.primaryContainer, borderRadius: BorderRadius.circular(8)),
+                    child: Text("استلام"),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Center(
+                child: AppText.bodyMedium(
+                  incomingCredit.source,
+                  textAlign: TextAlign.start,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  AppText.bodyMedium(incomingCredit.amount, textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 5),
+                  AppText.bodyMedium(
+                    incomingCredit.currencyName,
                     textAlign: TextAlign.start,
                     fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall("0965292417", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall("ادلب - ابراهيم كللي", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AppText.bodySmall("7", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall(
-                    LocaleKeys.home_dolar.tr(),
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 10),
                   Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
                 ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall(LocaleKeys.home_dolar.tr(), fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold)],
               ),
             ),
           ],

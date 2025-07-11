@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/dotted_line.dart';
 
-class Reciept extends StatelessWidget {
+class TransferReciept extends StatelessWidget {
   final GlobalKey globalKey;
   final Map<String, String> data;
-  const Reciept({super.key, required this.globalKey, required this.data});
+  const TransferReciept({super.key, required this.globalKey, required this.data});
 
   @override
   Widget build(BuildContext context) {

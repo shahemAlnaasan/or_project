@@ -8,6 +8,7 @@ import 'package:golder_octopus/features/credit/presentation/pages/incoming_credi
 import 'package:golder_octopus/features/credit/presentation/pages/outgoing_credit_screen.dart';
 import 'package:golder_octopus/features/credit/presentation/pages/send_credit_screen.dart';
 import 'package:golder_octopus/features/home/presentation/pages/shear_bond_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/incoming_transfer_screen.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/international_transfer_screen.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/new_transfer_screen.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/outgoing_transfer_screen.dart';
@@ -75,7 +76,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
       GridItem(
         icon: Assets.images.quickActions.incomingCredit.path,
         label: LocaleKeys.home_incoming_credits.tr(),
-        onTap: () => context.push(IncomingTransferScreen()),
+        onTap: () => context.push(IncomingCreditScreen()),
       ),
       GridItem(
         icon: Assets.images.quickActions.shearBone.path,

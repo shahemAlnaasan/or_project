@@ -10,23 +10,23 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/reciept.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_reciept.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:toastification/toastification.dart';
 
-class ReceiptScreen extends StatefulWidget {
+class TransferReceiptScreen extends StatefulWidget {
   final Map<String, String> data;
 
-  const ReceiptScreen({super.key, required this.data});
+  const TransferReceiptScreen({super.key, required this.data});
 
   @override
-  State<ReceiptScreen> createState() => _ReceiptScreenState();
+  State<TransferReceiptScreen> createState() => _ReceiptScreenState();
 }
 
-class _ReceiptScreenState extends State<ReceiptScreen> {
+class _ReceiptScreenState extends State<TransferReceiptScreen> {
   final GlobalKey _globalKey = GlobalKey();
 
   Future<void> _downloadImage() async {
@@ -78,7 +78,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
         width: context.screenWidth,
         child: Column(
           children: [
-            Reciept(globalKey: _globalKey, data: widget.data),
+            TransferReciept(globalKey: _globalKey, data: widget.data),
             // const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -1,5 +1,5 @@
 import 'package:golder_octopus/common/consts/typedef.dart';
-import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
+import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
 import 'package:golder_octopus/features/credit/domain/repositories/credit_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -9,7 +9,7 @@ class OutgoingCreditUsecase {
 
   OutgoingCreditUsecase({required this.creditRepository});
 
-  DataResponse<AccountStatementResponse> call({required OutgoingCreditParams params}) {
+  DataResponse<List<OutgoingCreditResponse>> call({required OutgoingCreditParams params}) {
     return creditRepository.outgoingCredits(params: params);
   }
 }

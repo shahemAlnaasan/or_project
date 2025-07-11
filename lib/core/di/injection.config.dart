@@ -32,6 +32,17 @@ import '../../features/auth/domain/use_cases/login_usecase.dart' as _i1012;
 import '../../features/auth/domain/use_cases/verify_login_usecase.dart'
     as _i821;
 import '../../features/auth/presentation/bloc/auth_bloc.dart' as _i797;
+import '../../features/credit/data/data_sources/credit_remote_data_source.dart'
+    as _i785;
+import '../../features/credit/data/repositories/credit_repository_imp.dart'
+    as _i497;
+import '../../features/credit/domain/repositories/credit_repository.dart'
+    as _i473;
+import '../../features/credit/domain/use_cases/incoming_credit_usecase.dart'
+    as _i947;
+import '../../features/credit/domain/use_cases/outgoing_credit_usecase.dart'
+    as _i702;
+import '../../features/credit/presentation/bloc/credit_bloc.dart' as _i504;
 import '../../features/home/data/data_sources/home_remote_data_source.dart'
     as _i350;
 import '../../features/home/data/repositories/home_repository_imp.dart'
@@ -63,6 +74,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i25.AuthRemoteDataSource>(
       () => _i25.AuthRemoteDataSource(httpClient: gh<_i1069.HTTPClient>()),
     );
+    gh.factory<_i785.CreditRemoteDataSource>(
+      () => _i785.CreditRemoteDataSource(httpClient: gh<_i1069.HTTPClient>()),
+    );
     gh.factory<_i350.HomeRemoteDataSource>(
       () => _i350.HomeRemoteDataSource(httpClient: gh<_i1069.HTTPClient>()),
     );
@@ -70,6 +84,21 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i612.AccountStatementRepositoryImp(
         accountStatementRemoteDataSource:
             gh<_i662.AccountStatementRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i473.CreditRepository>(
+      () => _i497.CreditRepositoryImp(
+        creditRemoteDataSource: gh<_i785.CreditRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i702.OutgoingCreditUsecase>(
+      () => _i702.OutgoingCreditUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
+      ),
+    );
+    gh.factory<_i947.IncomingCreditUsecase>(
+      () => _i947.IncomingCreditUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
       ),
     );
     gh.factory<_i787.AuthRepository>(
@@ -107,6 +136,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i822.AccountInfoUsecase>(
       () => _i822.AccountInfoUsecase(homeRepository: gh<_i0.HomeRepository>()),
+    );
+    gh.factory<_i504.CreditBloc>(
+      () => _i504.CreditBloc(
+        outgoingCreditUsecase: gh<_i702.OutgoingCreditUsecase>(),
+        incomingCreditUsecase: gh<_i947.IncomingCreditUsecase>(),
+      ),
     );
     gh.factory<_i202.HomeBloc>(
       () => _i202.HomeBloc(accountInfoUsecase: gh<_i822.AccountInfoUsecase>()),

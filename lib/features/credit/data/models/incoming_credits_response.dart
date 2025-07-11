@@ -1,55 +1,54 @@
 // To parse this JSON data, do
 //
-//     final outgoingCreditsResponse = outgoingCreditsResponseFromJson(jsonString);
+//     final incomingCreditsResponse = incomingCreditsResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-List<OutgoingCreditResponse> outgoingCreditsResponseFromJson(String str) =>
-    List<OutgoingCreditResponse>.from(json.decode(str).map((x) => OutgoingCreditResponse.fromJson(x)));
+IncomingCreditsResponse incomingCreditsResponseFromJson(String str) =>
+    IncomingCreditsResponse.fromJson(json.decode(str));
 
-String outgoingCreditsResponseToJson(List<OutgoingCreditResponse> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String incomingCreditsResponseToJson(IncomingCreditsResponse data) => json.encode(data.toJson());
 
-class OutgoingCreditResponse {
+class IncomingCreditsResponse {
   String transnum;
-  String target;
+  String source;
   String amount;
   String currency;
   String currencyName;
   DateTime transdate;
-  String apiInfo;
+  String notes;
   String status;
 
-  OutgoingCreditResponse({
+  IncomingCreditsResponse({
     required this.transnum,
-    required this.target,
+    required this.source,
     required this.amount,
     required this.currency,
     required this.currencyName,
     required this.transdate,
-    required this.apiInfo,
+    required this.notes,
     required this.status,
   });
 
-  factory OutgoingCreditResponse.fromJson(Map<String, dynamic> json) => OutgoingCreditResponse(
+  factory IncomingCreditsResponse.fromJson(Map<String, dynamic> json) => IncomingCreditsResponse(
     transnum: json["transnum"],
-    target: json["target"],
+    source: json["source"],
     amount: json["amount"],
     currency: json["currency"],
     currencyName: json["currency_name"],
     transdate: DateTime.parse(json["transdate"]),
-    apiInfo: json["api_info"],
+    notes: json["notes"],
     status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {
     "transnum": transnum,
-    "target": target,
+    "source": source,
     "amount": amount,
     "currency": currency,
     "currency_name": currencyName,
     "transdate": transdate.toIso8601String(),
-    "api_info": apiInfo,
+    "notes": notes,
     "status": status,
   };
 }

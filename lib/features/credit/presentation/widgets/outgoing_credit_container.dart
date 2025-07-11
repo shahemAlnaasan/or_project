@@ -2,18 +2,21 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_details_dialog.dart';
+import 'package:golder_octopus/common/widgets/custom_action_button.dart';
+import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
+import 'package:golder_octopus/features/credit/presentation/widgets/outgoing_credit_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class OutgoingCreditContainer extends StatelessWidget {
-  const OutgoingCreditContainer({super.key});
+  final OutgoingCreditResponse outgoingCreditsResponse;
+  const OutgoingCreditContainer({super.key, required this.outgoingCreditsResponse});
 
-  void _showDetailsDialog(BuildContext context) {
+  void _showDetailsDialog(BuildContext context, {required OutgoingCreditResponse outgoingCreditsResponse}) {
     showDialog(
       context: context,
       builder: (context) {
-        return TransferDetailsDialog();
+        return OutgoingCreditDetailsDialog(outgoingCreditsResponse: outgoingCreditsResponse);
       },
     );
   }
@@ -21,66 +24,62 @@ class OutgoingCreditContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showDetailsDialog(context),
+      onTap: () => _showDetailsDialog(context, outgoingCreditsResponse: outgoingCreditsResponse),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
+        child: Column(
+          spacing: 20,
           children: [
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText.bodySmall(
-                    LocaleKeys.transfer_outgoing_transfers.tr(),
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: AppText.bodyMedium(
+                      "ادلب - ابراهيم كللي",
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.bold,
+                      color: context.onPrimaryColor,
+                    ),
                   ),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall("0965292417", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall("ادلب - ابراهيم كللي", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AppText.bodySmall("7", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall(
-                    LocaleKeys.home_dolar.tr(),
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      AppText.bodyMedium("7", textAlign: TextAlign.center, fontWeight: FontWeight.bold),
+                      const SizedBox(height: 3),
+                      AppText.bodyMedium(
+                        LocaleKeys.home_dolar.tr(),
+                        textAlign: TextAlign.start,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 5),
+                      Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
+                    ],
                   ),
-                  const SizedBox(height: 5),
-                  Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
-                ],
-              ),
+                ),
+              ],
             ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  AppText.bodySmall(LocaleKeys.home_dolar.tr(), fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold)],
-              ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: CustomActionButton(onPressed: () {}, text: "اشعار", backgroundColor: context.primaryContainer),
+                ),
+
+                Expanded(
+                  child: CustomActionButton(
+                    onPressed: () => _showDetailsDialog(context, outgoingCreditsResponse: outgoingCreditsResponse),
+                    text: "تفاصيل",
+                    backgroundColor: context.primaryContainer,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

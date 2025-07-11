@@ -5,4 +5,6 @@ class AppEndPoint {
   static const loginAuth = 'loginAuth';
   static const accountInfo = 'account_info';
   static const accountStatement = 'account_stmt';
+  static const getOutgoingCredits = 'get_out_itimad';
+  static const getIncomingCredits = 'get_in_itimad';
 }
