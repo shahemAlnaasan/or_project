@@ -17,8 +17,6 @@ class AccountStatementRemoteDataSource with ApiHandler {
     return handleApiCall(
       apiCall: () => httpClient.post(AppEndPoint.accountStatement, data: params.getBody()),
       fromJson: (json) => AccountStatementResponse.fromJson(json),
-
-      validateApi: false,
     );
   }
 }

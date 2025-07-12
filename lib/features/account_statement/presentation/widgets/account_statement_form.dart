@@ -9,6 +9,7 @@ import 'package:golder_octopus/common/widgets/custom_text_field.dart';
 import 'package:golder_octopus/common/widgets/date_dropdown_field.dart';
 import 'package:golder_octopus/common/widgets/large_button.dart';
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
+import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/domain/use_cases/account_statement_usecase.dart';
 import 'package:golder_octopus/features/account_statement/presentation/bloc/account_statement_bloc.dart';
 import 'package:golder_octopus/features/home/presentation/widgets/currency_balance_container.dart';
@@ -20,7 +21,14 @@ class AccountStatementForm extends StatefulWidget {
   final AccountStatementResponse accountStatement;
   final List<Statment> statments;
   final CurrencyType? currencyType;
-  const AccountStatementForm({super.key, this.currencyType, required this.accountStatement, required this.statments});
+  final CurrenciesResponse? currenciesResponse;
+  const AccountStatementForm({
+    super.key,
+    this.currencyType,
+    required this.accountStatement,
+    required this.statments,
+    required this.currenciesResponse,
+  });
 
   @override
   State<AccountStatementForm> createState() => _NewTransferFormState();
@@ -28,30 +36,31 @@ class AccountStatementForm extends StatefulWidget {
 
 class _NewTransferFormState extends State<AccountStatementForm> {
   final _formKey = GlobalKey<FormState>();
+  final currencyFallBack = Cur(currency: '', currencyName: '', op: '', price: '', currencyImg: null);
   late final Map<PredefinedDateRange, String> predefinedDateOptions;
   PredefinedDateRange selectedRange = PredefinedDateRange.none;
   String? selectedCurrency;
+  List<String> selectCurrency = [];
+  Map<String, String> currencyNameToCode = {};
+
   DateTime? fromDate = DateTime.now().subtract(Duration(days: 5));
   DateTime? toDate = DateTime.now();
-
   String? getCurrencyLabel(CurrencyType? type) {
+    final curs = widget.currenciesResponse?.curs ?? [];
+
     switch (type) {
       case CurrencyType.euro:
-        return LocaleKeys.exchange_euro.tr();
+        return curs.firstWhere((c) => c.currency.toLowerCase() == 'eur', orElse: () => currencyFallBack).currencyName;
+
       case CurrencyType.turkish:
-        return LocaleKeys.home_turkish_lira.tr();
+        return curs.firstWhere((c) => c.currency.toLowerCase() == 'tl', orElse: () => currencyFallBack).currencyName;
+
       case CurrencyType.dolar:
-        return LocaleKeys.home_dolar.tr();
+        return curs.firstWhere((c) => c.currency.toLowerCase() == 'usd', orElse: () => currencyFallBack).currencyName;
+
       default:
         return null;
     }
-  }
-
-  String getCurrencyCodeFromLabel(String? label) {
-    if (label == LocaleKeys.home_dolar.tr()) return 'usd';
-    if (label == LocaleKeys.exchange_euro.tr()) return 'eur';
-    if (label == LocaleKeys.home_turkish_lira.tr()) return 'tl';
-    return '';
   }
 
   String formatDate(DateTime? date) {
@@ -59,16 +68,16 @@ class _NewTransferFormState extends State<AccountStatementForm> {
     return '${date.year}-${date.month}-${date.day}';
   }
 
-  List<String> selectCurrency = [
-    LocaleKeys.exchange_euro.tr(),
-    LocaleKeys.home_turkish_lira.tr(),
-    LocaleKeys.home_dolar.tr(),
-  ];
-
   @override
   void initState() {
     super.initState();
-    selectedCurrency = getCurrencyLabel(widget.currencyType);
+
+    final curs = widget.currenciesResponse?.curs ?? [];
+    selectCurrency = curs.map((e) => e.currencyName).toList();
+    currencyNameToCode = {for (var cur in curs) cur.currencyName: cur.currency};
+
+    selectedCurrency = getCurrencyLabel(widget.currencyType); // optional fallback
+
     predefinedDateOptions = {
       PredefinedDateRange.none: LocaleKeys.account_statement_select_date.tr(),
       PredefinedDateRange.today: LocaleKeys.account_statement_only_today.tr(),
@@ -174,9 +183,8 @@ class _NewTransferFormState extends State<AccountStatementForm> {
                                     final params = AccountStatementParams(
                                       startDate: formatDate(fromDate),
                                       endDate: formatDate(toDate),
-                                      currency: getCurrencyCodeFromLabel(selectedCurrency),
+                                      currency: currencyNameToCode[selectedCurrency] ?? '',
                                     );
-
                                     context.read<AccountStatementBloc>().add(GetAccountStatementEvent(params: params));
                                   }
                                 },

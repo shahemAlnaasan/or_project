@@ -23,10 +23,10 @@ class CreditReceiptScreen extends StatefulWidget {
   const CreditReceiptScreen({super.key, required this.data});
 
   @override
-  State<CreditReceiptScreen> createState() => _ReceiptScreenState();
+  State<CreditReceiptScreen> createState() => _CreditReceiptScreenState();
 }
 
-class _ReceiptScreenState extends State<CreditReceiptScreen> {
+class _CreditReceiptScreenState extends State<CreditReceiptScreen> {
   final GlobalKey _globalKey = GlobalKey();
 
   Future<void> _downloadImage() async {

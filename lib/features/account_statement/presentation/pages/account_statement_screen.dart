@@ -13,6 +13,7 @@ import 'package:golder_octopus/common/widgets/large_button.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
 import 'package:golder_octopus/core/di/injection.dart';
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
+import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/presentation/bloc/account_statement_bloc.dart';
 import 'package:golder_octopus/features/account_statement/presentation/widgets/account_statement_form.dart';
 import 'package:golder_octopus/features/account_statement/presentation/widgets/account_statement_table.dart';
@@ -25,7 +26,9 @@ import 'package:toastification/toastification.dart';
 
 class AccountStatementScreen extends StatefulWidget {
   final CurrencyType? currencyType;
-  const AccountStatementScreen({super.key, this.currencyType});
+  final CurrenciesResponse? currenciesResponse;
+
+  const AccountStatementScreen({super.key, this.currencyType, required this.currenciesResponse});
 
   @override
   State<AccountStatementScreen> createState() => _AccountStatementScreenState();
@@ -132,6 +135,7 @@ class _AccountStatementScreenState extends State<AccountStatementScreen> {
                     currencyType: widget.currencyType,
                     accountStatement: accountStatementResponse,
                     statments: filteredList,
+                    currenciesResponse: widget.currenciesResponse,
                   ),
 
                   BlocBuilder<AccountStatementBloc, AccountStatementState>(

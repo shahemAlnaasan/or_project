@@ -3,6 +3,7 @@ import 'package:golder_octopus/core/config/endpoints.dart';
 import 'package:golder_octopus/core/network/api_handler.dart';
 import 'package:golder_octopus/core/network/exceptions.dart';
 import 'package:golder_octopus/core/network/http_client.dart';
+import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
 import 'package:injectable/injectable.dart';
 
@@ -17,6 +18,13 @@ class HomeRemoteDataSource with ApiHandler {
       apiCall: () => httpClient.post(AppEndPoint.accountInfo),
       fromJson: (json) => AccountInfoResponse.fromJson(json),
       validateApi: false,
+    );
+  }
+
+  Future<Either<Failure, CurrenciesResponse>> currencies() async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.getCurrencies),
+      fromJson: (json) => CurrenciesResponse.fromJson(json),
     );
   }
 }

@@ -7,13 +7,30 @@ import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
 import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/pages/transfer_receipt_screen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
 class IncomingCreditDetailsDialog extends StatelessWidget {
   final IncomingCreditsResponse incomingCreditsResponse;
   const IncomingCreditDetailsDialog({super.key, required this.incomingCreditsResponse});
+
+  String getCreditStatus(String status) {
+    switch (status) {
+      case "1":
+        return "غير مستلم";
+      case "2":
+        return "مستلم";
+      case "3":
+        return "محذوف";
+      case "4":
+        return "محجوز";
+      case "5":
+        return "مجمد";
+
+      default:
+        return "غير مستلمة";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,40 +71,30 @@ class IncomingCreditDetailsDialog extends StatelessWidget {
 
               // Info rows using variables
               _infoRow(
-                label: LocaleKeys.transfer_transmitting_center.tr(),
+                label: LocaleKeys.credits_credit_source.tr(),
                 value: incomingCreditsResponse.source,
                 context: context,
               ),
               _infoRow(
-                label: LocaleKeys.transfer_destination.tr(),
+                label: LocaleKeys.credits_credit_destination.tr(),
                 value: incomingCreditsResponse.source,
                 context: context,
               ),
-              _infoRow(label: LocaleKeys.transfer_amount.tr(), value: incomingCreditsResponse.source, context: context),
-              _infoRow(label: LocaleKeys.transfer_fees.tr(), value: incomingCreditsResponse.source, context: context),
+              _infoRow(label: LocaleKeys.credits_amount.tr(), value: incomingCreditsResponse.source, context: context),
               _infoRow(
-                label: LocaleKeys.transfer_date_of_transfer.tr(),
-                value: incomingCreditsResponse.source,
-                context: context,
-              ),
-              _infoRow(
-                label: LocaleKeys.transfer_transfer_number.tr(),
+                label: LocaleKeys.credits_transfer_date.tr(),
                 value: incomingCreditsResponse.source,
                 context: context,
               ),
               _infoRow(
-                label: LocaleKeys.transfer_sender_name.tr(),
+                label: LocaleKeys.credits_credit_number.tr(),
                 value: incomingCreditsResponse.source,
                 context: context,
               ),
+              _infoRow(label: LocaleKeys.credits_notes.tr(), value: incomingCreditsResponse.source, context: context),
               _infoRow(
-                label: LocaleKeys.transfer_beneficiary_name.tr(),
-                value: incomingCreditsResponse.source,
-                context: context,
-              ),
-              _infoRow(
-                label: LocaleKeys.transfer_beneficiary_phone.tr(),
-                value: incomingCreditsResponse.source,
+                label: LocaleKeys.credits_status.tr(),
+                value: getCreditStatus(incomingCreditsResponse.status),
                 context: context,
               ),
               const SizedBox(height: 16),
@@ -100,13 +107,17 @@ class IncomingCreditDetailsDialog extends StatelessWidget {
                   runSpacing: 8,
                   alignment: WrapAlignment.center,
                   children: [
-                    _dialogButton(context, "تعديل", Icons.edit, Color(0xffa992e8), onPressed: () {}),
-                    _dialogButton(context, "إلغاء", Icons.delete, Color(0xff71cbaf), onPressed: () {}),
                     _dialogButton(
                       context,
-                      "نسخ",
-                      Icons.copy,
-                      Color(0xffcc5a56),
+                      label: "حسنا",
+                      color: const Color.fromARGB(255, 106, 222, 222),
+                      onPressed: () => context.pop(),
+                    ),
+                    _dialogButton(
+                      context,
+                      label: "نسخ",
+                      icon: Icons.copy,
+                      color: Color(0xffcc5a56),
                       onPressed: () {
                         final data = '''
 ${incomingCreditsResponse.source}  
@@ -126,28 +137,6 @@ ${incomingCreditsResponse.source}
                           type: ToastificationType.success,
                         );
                       },
-                    ),
-                    _dialogButton(
-                      context,
-                      "إشعار",
-                      Icons.notifications,
-                      Color(0xff79bdd8),
-                      onPressed:
-                          () => context.push(
-                            TransferReceiptScreen(
-                              data: {
-                                "ref": "BR23066215948",
-                                "date": "2025-06-23",
-                                "destination": "إدلب - 109",
-                                "source": "999",
-                                "secret": "26465",
-                                "phone": "626262626",
-                                "receiver": "بيتتيت",
-                                "amount": "1,000",
-                                "address": "إدلب، إبراهيم كلي، جانب دوار الشهداء",
-                              },
-                            ),
-                          ),
                     ),
                   ],
                 ),
@@ -172,10 +161,10 @@ Widget _infoRow({required String label, required String value, required BuildCon
 }
 
 Widget _dialogButton(
-  BuildContext context,
-  String label,
-  IconData icon,
-  Color color, {
+  BuildContext context, {
+  required String label,
+  IconData? icon,
+  required Color color,
   required void Function()? onPressed,
 }) {
   return ElevatedButton.icon(
@@ -184,7 +173,7 @@ Widget _dialogButton(
       backgroundColor: color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     ),
-    icon: Icon(icon, size: 18, color: context.onPrimaryColor),
+    icon: icon != null ? Icon(icon, size: 18, color: context.onPrimaryColor) : null,
     label: AppText.labelLarge(label, color: context.onPrimaryColor, fontWeight: FontWeight.bold),
   );
 }

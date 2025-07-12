@@ -46,10 +46,12 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onTabTapped(int index) {
     if (_selectedIndex == index) {
-      // Already selected
       final currentNavigator = _navigatorKeys[index]!.currentState!;
       if (currentNavigator.canPop()) {
         currentNavigator.popUntil((route) => route.isFirst);
+      } else {
+        final widget = _rootScreens[index];
+        currentNavigator.pushReplacement(MaterialPageRoute(builder: (BuildContext context) => widget));
       }
     } else {
       setState(() {

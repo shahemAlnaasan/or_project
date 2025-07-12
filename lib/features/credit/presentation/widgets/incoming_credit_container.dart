@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
+import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/receive_credit_screen.dart';
 import 'package:golder_octopus/features/credit/presentation/widgets/incoming_credit_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 
@@ -34,10 +36,16 @@ class IncomingCreditContainer extends StatelessWidget {
                 spacing: 10,
                 children: [
                   AppText.bodyMedium("${index + 1}", textAlign: TextAlign.center, fontWeight: FontWeight.bold),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(color: context.primaryContainer, borderRadius: BorderRadius.circular(8)),
-                    child: Text("استلام"),
+                  GestureDetector(
+                    onTap: () => context.push(ReceiveCreditScreen()),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: context.primaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text("استلام"),
+                    ),
                   ),
                 ],
               ),

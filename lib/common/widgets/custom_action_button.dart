@@ -21,7 +21,7 @@ class CustomActionButton extends StatelessWidget {
     this.backgroundColor,
     this.isFlexible = false,
     this.isOutlined = false,
-    this.circularRadius = 12.0,
+    this.circularRadius = 8.0,
     this.height,
     this.width,
     super.key,

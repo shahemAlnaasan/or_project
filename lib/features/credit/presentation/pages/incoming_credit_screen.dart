@@ -4,31 +4,86 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
+import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
 import 'package:golder_octopus/common/widgets/custom_text_field.dart';
+import 'package:golder_octopus/common/widgets/toast_dialog.dart';
 import 'package:golder_octopus/core/di/injection.dart';
+import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
 import 'package:golder_octopus/features/credit/domain/use_cases/incoming_credit_usecase.dart';
 import 'package:golder_octopus/features/credit/presentation/bloc/credit_bloc.dart';
 import 'package:golder_octopus/features/credit/presentation/widgets/incoming_credit_container.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
+import 'package:toastification/toastification.dart';
 
 class IncomingCreditScreen extends StatefulWidget {
   const IncomingCreditScreen({super.key});
 
   @override
-  State<IncomingCreditScreen> createState() => _OutgoingTransferScreenState();
+  State<IncomingCreditScreen> createState() => _IncomingCreditScreenState();
 }
 
-class _OutgoingTransferScreenState extends State<IncomingCreditScreen> {
+class _IncomingCreditScreenState extends State<IncomingCreditScreen> {
   final TextEditingController searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
   late IncomingCreditParams params;
-  String _formatDateTime(DateTime dateTime) {
-    return "${dateTime.day}-${dateTime.month}-${dateTime.year}";
-  }
+  final int _itemsPerPage = 10;
+  List<IncomingCreditsResponse> allCredits = [];
+  List<IncomingCreditsResponse> visibleCredits = [];
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
     params = IncomingCreditParams(startDate: _formatDateTime(DateTime(2000, 1, 2)));
+
+    _scrollController.addListener(_onScroll);
+    searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = searchController.text.toLowerCase();
+
+    setState(() {
+      if (query.isEmpty) {
+        // Reset pagination
+        visibleCredits = allCredits.take(_itemsPerPage).toList();
+      } else {
+        // Filter all credits by source (case-insensitive)
+        visibleCredits = allCredits.where((credit) => credit.source.toLowerCase().contains(query)).toList();
+      }
+    });
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100 && !_isLoadingMore) {
+      _loadMoreItems();
+    }
+  }
+
+  void _loadMoreItems() {
+    if (visibleCredits.length >= allCredits.length) return;
+
+    setState(() => _isLoadingMore = true);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      final nextItems = allCredits.skip(visibleCredits.length).take(_itemsPerPage).toList();
+      setState(() {
+        visibleCredits.addAll(nextItems);
+        _isLoadingMore = false;
+      });
+    });
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return "${dateTime.day}-${dateTime.month}-${dateTime.year}";
   }
 
   @override
@@ -36,79 +91,113 @@ class _OutgoingTransferScreenState extends State<IncomingCreditScreen> {
     return BlocProvider(
       lazy: false,
       create: (context) => getIt<CreditBloc>()..add(GetIncomingCreditsEvent(params: params)),
-      child: Scaffold(
-        backgroundColor: context.background,
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
-            width: context.screenWidth,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppText.displaySmall(
-                  LocaleKeys.home_incoming_credits.tr(),
-                  textAlign: TextAlign.start,
-                  fontWeight: FontWeight.bold,
-                ),
-                SizedBox(height: 20),
-                buildTextField(
-                  hint: LocaleKeys.transfer_search.tr(),
-                  sufIcon: Icon(Icons.search),
-                  controller: searchController,
-                ),
-                SizedBox(height: 10),
+      child: BlocListener<CreditBloc, CreditState>(
+        listener: (context, state) {
+          if (state.status == CreditStatus.failure) {
+            ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
+          }
+        },
+        child: Scaffold(
+          backgroundColor: context.background,
+          body: SingleChildScrollView(
+            controller: _scrollController,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
+              width: context.screenWidth,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppText.displaySmall(
+                    LocaleKeys.home_incoming_credits.tr(),
+                    textAlign: TextAlign.start,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  SizedBox(height: 20),
+                  buildTextField(
+                    hint: LocaleKeys.transfer_search.tr(),
+                    sufIcon: Icon(Icons.search),
+                    controller: searchController,
+                  ),
+                  SizedBox(height: 10),
 
-                Container(
-                  decoration: BoxDecoration(color: context.primaryContainer, borderRadius: BorderRadius.circular(5)),
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Text(
-                          "sfafs",
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Center(
+                  Container(
+                    decoration: BoxDecoration(color: context.primaryContainer, borderRadius: BorderRadius.circular(5)),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    child: Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          flex: 1,
                           child: Text(
-                            LocaleKeys.credits_credit_source.tr(),
-                            textAlign: TextAlign.start,
+                            "sfafs",
                             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          LocaleKeys.credits_amount.tr(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                        Expanded(
+                          flex: 2,
+                          child: Center(
+                            child: Text(
+                              LocaleKeys.credits_credit_source.tr(),
+                              textAlign: TextAlign.start,
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            LocaleKeys.credits_amount.tr(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                BlocBuilder<CreditBloc, CreditState>(
-                  builder: (context, state) {
-                    if (state.status == CreditStatus.success) {
-                      if (state.incomingCredits == null || state.incomingCredits!.isEmpty) {
-                        return Center(child: AppText.bodyMedium("لا يوجد اعتمادات واردة"));
+                  SizedBox(height: 10),
+                  BlocBuilder<CreditBloc, CreditState>(
+                    builder: (context, state) {
+                      if (state.status == CreditStatus.loading) {
+                        return Center(child: CustomProgressIndecator(color: context.onPrimaryColor));
                       }
-                    }
-                    return Column(
-                      children: List.generate(
-                        state.incomingCredits!.length,
-                        (index) => IncomingCreditContainer(incomingCredit: state.incomingCredits![index], index: index),
-                      ),
-                    );
-                  },
-                ),
-              ],
+
+                      if (state.status == CreditStatus.success) {
+                        if (state.incomingCredits == null || state.incomingCredits!.isEmpty) {
+                          return Center(child: AppText.bodyMedium("لا يوجد اعتمادات واردة"));
+                        }
+
+                        if (allCredits.isEmpty) {
+                          allCredits = state.incomingCredits!;
+                          visibleCredits = allCredits.take(_itemsPerPage).toList();
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: visibleCredits.length + (_isLoadingMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index < visibleCredits.length) {
+                              return Column(
+                                children: [
+                                  IncomingCreditContainer(incomingCredit: visibleCredits[index], index: index),
+                                  SizedBox(height: 10),
+                                ],
+                              );
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(child: CustomProgressIndecator(color: context.onPrimaryColor)),
+                              );
+                            }
+                          },
+                        );
+                      }
+
+                      return Center(child: AppText.bodyMedium("لا يوجد اعتمادات واردة", color: context.onPrimaryColor));
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

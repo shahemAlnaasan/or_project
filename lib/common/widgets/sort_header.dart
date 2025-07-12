@@ -51,20 +51,22 @@ class _SortHeaderState extends State<SortHeader> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         mainAxisAlignment: widget.mainAxisAlignment ?? MainAxisAlignment.start,
-
         children:
             widget.columns.map((column) {
               final direction = _sortState[column]!;
-              return GestureDetector(
-                onTap: column.trim().isEmpty ? null : () => _toggleSort(column),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Row(
-                    children: [
-                      Text(column, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                      const SizedBox(width: 4),
-                      _getSortIcon(direction),
-                    ],
+              return Expanded(
+                child: GestureDetector(
+                  onTap: column.trim().isEmpty ? null : () => _toggleSort(column),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(column, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                        const SizedBox(width: 4),
+                        _getSortIcon(direction),
+                      ],
+                    ),
                   ),
                 ),
               );

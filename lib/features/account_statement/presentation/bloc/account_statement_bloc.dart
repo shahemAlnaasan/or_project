@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
+import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/domain/use_cases/account_statement_usecase.dart';
 import 'package:injectable/injectable.dart';
 

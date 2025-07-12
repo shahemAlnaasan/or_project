@@ -60,6 +60,7 @@
   "credits" : {
     "outgoing_credits": "اعتمادات صادرة",
     "incoming_credits": "اعتمادات واردة",
+    "receive_credit": "استلام اعتماد",
     "company": "الشركة",
     "credit_type": "نوع الاعتماد",
     "currency": "العملة",
@@ -71,7 +72,15 @@
     "credit_source": "مصدر الاعتماد",
     "money_amount": "الملبغ",
     "destination": "الوجهة",
-    "transfer_date": "تاريخ التحويل"
+    "transfer_date": "تاريخ التحويل",
+    "credit_destination" : "وجهة الاعتماد",
+    "fees_money" : "العمولة",
+    "date" : "تاريخ",
+    "credit_number" : "رقم الاعتماد",
+    "secret_number" : "الرقم السري",
+    "status" : "الحالة",
+    "date_of_send" : "تاريخ الارسال",
+    "accept_all_terms" : "أوافق على جميع الشروط المذكوره أعلاه وأريد استلام الاعتماد في حسابي"
   },
   "account_statement": {
     "choose_date": "اختيار الوقت",

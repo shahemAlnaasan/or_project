@@ -61,6 +61,7 @@ abstract class  LocaleKeys {
   static const transfer = 'transfer';
   static const credits_outgoing_credits = 'credits.outgoing_credits';
   static const credits_incoming_credits = 'credits.incoming_credits';
+  static const credits_receive_credit = 'credits.receive_credit';
   static const credits_company = 'credits.company';
   static const credits_credit_type = 'credits.credit_type';
   static const credits_currency = 'credits.currency';
@@ -73,6 +74,14 @@ abstract class  LocaleKeys {
   static const credits_money_amount = 'credits.money_amount';
   static const credits_destination = 'credits.destination';
   static const credits_transfer_date = 'credits.transfer_date';
+  static const credits_credit_destination = 'credits.credit_destination';
+  static const credits_fees_money = 'credits.fees_money';
+  static const credits_date = 'credits.date';
+  static const credits_credit_number = 'credits.credit_number';
+  static const credits_secret_number = 'credits.secret_number';
+  static const credits_status = 'credits.status';
+  static const credits_date_of_send = 'credits.date_of_send';
+  static const credits_accept_all_terms = 'credits.accept_all_terms';
   static const credits = 'credits';
   static const account_statement_choose_date = 'account_statement.choose_date';
   static const account_statement_center_name = 'account_statement.center_name';
@@ -103,6 +112,7 @@ abstract class  LocaleKeys {
   static const auth_welcome_to_golden_octopus = 'auth.welcome_to_golden_octopus';
   static const auth_to_download_google_authenticator = 'auth.to_download_google_authenticator';
   static const auth_login = 'auth.login';
+  static const auth_verify = 'auth.verify';
   static const auth_username = 'auth.username';
   static const auth_verify_code = 'auth.verify_code';
   static const auth_password = 'auth.password';

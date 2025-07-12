@@ -46,7 +46,7 @@ class _NewTransferFormState extends State<VerifyLoginForm> {
           ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
         }
         if (state.status == Status.success) {
-          context.push(MainScreen());
+          context.pushAndRemoveUntil(MainScreen());
         }
       },
       child: BlocBuilder<AuthBloc, AuthState>(

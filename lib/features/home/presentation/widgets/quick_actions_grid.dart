@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
+import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/presentation/pages/account_statement_screen.dart';
 import 'package:golder_octopus/features/credit/presentation/pages/incoming_credit_screen.dart';
 import 'package:golder_octopus/features/credit/presentation/pages/outgoing_credit_screen.dart';
@@ -18,7 +19,9 @@ import 'package:golder_octopus/generated/assets.gen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class QuickActionsGrid extends StatefulWidget {
-  const QuickActionsGrid({super.key});
+  final CurrenciesResponse? currenciesResponse;
+
+  const QuickActionsGrid({super.key, required this.currenciesResponse});
 
   @override
   State<QuickActionsGrid> createState() => _QuickActionsGridState();
@@ -46,7 +49,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
       GridItem(
         icon: Assets.images.quickActions.accountStatement.path,
         label: LocaleKeys.home_account_statement.tr(),
-        onTap: () => context.push(AccountStatementScreen()),
+        onTap: () => context.push(AccountStatementScreen(currenciesResponse: widget.currenciesResponse)),
       ),
       GridItem(
         icon: Assets.images.quickActions.outgoingTransfer.path,
@@ -85,7 +88,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
       ),
       GridItem(
         icon: Assets.images.quickActions.moneyWithdraw.path,
-        label: LocaleKeys.home_withdrawl_transfer.tr(),
+        label: "LocaleKeys.home_withdrawl_transfer.tr()",
         onTap: () => print('Settings tapped'),
       ),
     ];
@@ -100,7 +103,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
           crossAxisCount: 4,
           crossAxisSpacing: 15,
           mainAxisSpacing: 10,
-          childAspectRatio: 1 / 1.2,
+          // childAspectRatio: 1 / 1.3,
         ),
         itemBuilder: (context, index) {
           final item = gridItems[index];
@@ -112,19 +115,21 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [BoxShadow(color: const Color(0x20000000), blurRadius: 5, offset: const Offset(0, 4))],
               ),
-              padding: const EdgeInsets.all(2),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(item.icon, scale: 2.5),
+                  Image.asset(item.icon, scale: 2.6),
                   const SizedBox(height: 4),
-                  AppText.labelMedium(
-                    item.label,
-                    textAlign: TextAlign.center,
-                    fontWeight: FontWeight.w600,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  Flexible(
+                    child: AppText.labelMedium(
+                      item.label,
+                      textAlign: TextAlign.center,
+                      fontWeight: FontWeight.w600,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),

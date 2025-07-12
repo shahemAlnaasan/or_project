@@ -34,6 +34,7 @@ class OutgoingCreditContainer extends StatelessWidget {
             Row(
               // mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                   child: Align(

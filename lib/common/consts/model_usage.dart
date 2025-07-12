@@ -1,4 +1,5 @@
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
+import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
 
 class ModelUsage {
   final AccountStatementResponse accountStatementResponse = AccountStatementResponse(
@@ -25,4 +26,11 @@ class ModelUsage {
     outTotal: 0,
     inTotal: 0,
   );
+
+  final List<Acc> acc = [
+    Acc(amount: 0, currency: "eur", currencyName: "يورو", currencyImg: "currencyImg"),
+    Acc(amount: 0, currency: "usd", currencyName: "دولار", currencyImg: "currencyImg"),
+    Acc(amount: 0, currency: "tl", currencyName: "ليرة تركية", currencyImg: "currencyImg"),
+    Acc(amount: 0, currency: "", currencyName: "مقوم", currencyImg: "currencyImg"),
+  ];
 }

@@ -1,4 +1,5 @@
 import 'package:golder_octopus/common/consts/typedef.dart';
+import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/home/data/data_sources/home_remote_data_source.dart';
 import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
 import 'package:golder_octopus/features/home/domain/repositories/home_repository.dart';
@@ -13,5 +14,10 @@ class HomeRepositoryImp implements HomeRepository {
   @override
   DataResponse<AccountInfoResponse> accountInfo() {
     return remoteDataSource.accountInfo();
+  }
+
+  @override
+  DataResponse<CurrenciesResponse> currencies() {
+    return remoteDataSource.currencies();
   }
 }

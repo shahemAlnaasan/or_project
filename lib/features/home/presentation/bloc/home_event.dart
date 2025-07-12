@@ -8,3 +8,5 @@ sealed class HomeEvent extends Equatable {
 }
 
 class GetAccountInfoEvent extends HomeEvent {}
+
+class GetCurrenciesEvent extends HomeEvent {}

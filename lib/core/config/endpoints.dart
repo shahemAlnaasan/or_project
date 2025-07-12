@@ -7,4 +7,7 @@ class AppEndPoint {
   static const accountStatement = 'account_stmt';
   static const getOutgoingCredits = 'get_out_itimad';
   static const getIncomingCredits = 'get_in_itimad';
+  static const getIncomingTransfer = 'get_in_trans';
+  static const getOutgoingTransfer = 'get_in_trans';
+  static const getCurrencies = 'get_curs';
 }

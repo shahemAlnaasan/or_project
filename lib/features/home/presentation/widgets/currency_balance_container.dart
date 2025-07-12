@@ -3,6 +3,7 @@ import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
+import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/presentation/pages/account_statement_screen.dart';
 import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
@@ -10,9 +11,11 @@ import 'package:golder_octopus/generated/assets.gen.dart';
 enum CurrencyType { turkish, dolar, euro, total }
 
 class CurrencyBalanceContainer extends StatelessWidget {
+  final CurrenciesResponse? currenciesResponse;
+
   final Acc acc;
 
-  const CurrencyBalanceContainer({super.key, required this.acc});
+  const CurrencyBalanceContainer({super.key, required this.acc, required this.currenciesResponse});
 
   String getIcon(String currencyName) {
     switch (currencyName) {
@@ -20,7 +23,7 @@ class CurrencyBalanceContainer extends StatelessWidget {
         return Assets.images.flags.europe.path;
       case 'دولار':
         return Assets.images.flags.unitedStates.path;
-      case 'تركي':
+      case 'ليرة تركية':
         return Assets.images.flags.turkey.path;
       case 'رصيد مقوم':
         return Assets.images.flags.balanceScale.path;
@@ -57,7 +60,13 @@ class CurrencyBalanceContainer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(30, 5, 30, 0),
       child: GestureDetector(
-        onTap: () => context.push(AccountStatementScreen(currencyType: getCurrencyType(acc.currency))),
+        onTap:
+            () => context.push(
+              AccountStatementScreen(
+                currencyType: getCurrencyType(acc.currency),
+                currenciesResponse: currenciesResponse,
+              ),
+            ),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
           width: context.screenWidth,
@@ -69,17 +78,17 @@ class CurrencyBalanceContainer extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(getIcon(acc.currencyName), scale: 3),
+              Image.asset(getIcon(acc.currencyName), scale: 3.2),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  AppText.headlineLarge(
+                  AppText.headlineMedium(
                     acc.amount.toStringAsFixed(2),
                     fontWeight: FontWeight.bold,
                     color: color,
                     textDirection: TextDirection.ltr,
                   ),
-                  AppText.bodyMedium(
+                  AppText.bodySmall(
                     "${acc.currencyName} ${getBalanceDirectionText()}",
                     textAlign: TextAlign.right,
                     color: color,

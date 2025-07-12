@@ -7,7 +7,7 @@ import 'package:golder_octopus/common/widgets/custom_text_field.dart';
 import 'package:golder_octopus/common/widgets/date_dropdown_field.dart';
 import 'package:golder_octopus/common/widgets/large_button.dart';
 import 'package:golder_octopus/common/widgets/sort_header.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_container.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/incoming_transfer_container.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class OutgoingTransferScreen extends StatefulWidget {
@@ -80,7 +80,7 @@ class _OutgoingTransferScreenState extends State<OutgoingTransferScreen> {
               SizedBox(height: 10),
               SortHeader(),
               SizedBox(height: 10),
-              TransferContainer(),
+              // TransferContainer(),
             ],
           ),
         ),

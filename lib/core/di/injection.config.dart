@@ -50,8 +50,18 @@ import '../../features/home/data/repositories/home_repository_imp.dart'
 import '../../features/home/domain/repositories/home_repository.dart' as _i0;
 import '../../features/home/domain/use_cases/account_info_usecase.dart'
     as _i822;
+import '../../features/home/domain/use_cases/currencies_usecase.dart' as _i573;
 import '../../features/home/presentation/bloc/home_bloc.dart' as _i202;
 import '../../features/main/presentation/bloc/main_bloc.dart' as _i1014;
+import '../../features/transfer/data/data_sources/transfer_remote_data_source.dart'
+    as _i1047;
+import '../../features/transfer/data/repositories/transfer_repository_imp.dart'
+    as _i505;
+import '../../features/transfer/domain/repositories/transfer_repository.dart'
+    as _i336;
+import '../../features/transfer/domain/use_cases/incoming_transfer_usecase.dart'
+    as _i597;
+import '../../features/transfer/presentation/bloc/transfer_bloc.dart' as _i279;
 import '../datasources/hive_helper.dart' as _i330;
 import '../network/http_client.dart' as _i1069;
 
@@ -80,6 +90,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i350.HomeRemoteDataSource>(
       () => _i350.HomeRemoteDataSource(httpClient: gh<_i1069.HTTPClient>()),
     );
+    gh.factory<_i1047.TransferRemoteDataSource>(
+      () =>
+          _i1047.TransferRemoteDataSource(httpClient: gh<_i1069.HTTPClient>()),
+    );
     gh.factory<_i854.AccountStatementRepository>(
       () => _i612.AccountStatementRepositoryImp(
         accountStatementRemoteDataSource:
@@ -91,14 +105,19 @@ extension GetItInjectableX on _i174.GetIt {
         creditRemoteDataSource: gh<_i785.CreditRemoteDataSource>(),
       ),
     );
+    gh.factory<_i947.IncomingCreditUsecase>(
+      () => _i947.IncomingCreditUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
+      ),
+    );
     gh.factory<_i702.OutgoingCreditUsecase>(
       () => _i702.OutgoingCreditUsecase(
         creditRepository: gh<_i473.CreditRepository>(),
       ),
     );
-    gh.factory<_i947.IncomingCreditUsecase>(
-      () => _i947.IncomingCreditUsecase(
-        creditRepository: gh<_i473.CreditRepository>(),
+    gh.factory<_i336.TransferRepository>(
+      () => _i505.TransferRepositoryImp(
+        transferRemoteDataSource: gh<_i1047.TransferRemoteDataSource>(),
       ),
     );
     gh.factory<_i787.AuthRepository>(
@@ -111,6 +130,11 @@ extension GetItInjectableX on _i174.GetIt {
         remoteDataSource: gh<_i350.HomeRemoteDataSource>(),
       ),
     );
+    gh.factory<_i597.IncomingTransferUsecase>(
+      () => _i597.IncomingTransferUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
     gh.factory<_i14.AccountStatementUsecase>(
       () => _i14.AccountStatementUsecase(
         accountStatementRepository: gh<_i854.AccountStatementRepository>(),
@@ -119,6 +143,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i128.AccountStatementBloc>(
       () => _i128.AccountStatementBloc(
         accountStatementUsecase: gh<_i14.AccountStatementUsecase>(),
+      ),
+    );
+    gh.factory<_i279.TransferBloc>(
+      () => _i279.TransferBloc(
+        incomingTransferUsecase: gh<_i597.IncomingTransferUsecase>(),
       ),
     );
     gh.factory<_i1012.LoginUsecase>(
@@ -137,6 +166,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i822.AccountInfoUsecase>(
       () => _i822.AccountInfoUsecase(homeRepository: gh<_i0.HomeRepository>()),
     );
+    gh.factory<_i573.CurrenciesUsecase>(
+      () => _i573.CurrenciesUsecase(homeRepository: gh<_i0.HomeRepository>()),
+    );
     gh.factory<_i504.CreditBloc>(
       () => _i504.CreditBloc(
         outgoingCreditUsecase: gh<_i702.OutgoingCreditUsecase>(),
@@ -144,7 +176,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i202.HomeBloc>(
-      () => _i202.HomeBloc(accountInfoUsecase: gh<_i822.AccountInfoUsecase>()),
+      () => _i202.HomeBloc(
+        accountInfoUsecase: gh<_i822.AccountInfoUsecase>(),
+        currenciesUsecase: gh<_i573.CurrenciesUsecase>(),
+      ),
     );
     return this;
   }

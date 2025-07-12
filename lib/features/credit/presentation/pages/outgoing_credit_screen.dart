@@ -11,6 +11,7 @@ import 'package:golder_octopus/common/widgets/large_button.dart';
 import 'package:golder_octopus/common/widgets/sort_header.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
 import 'package:golder_octopus/core/di/injection.dart';
+import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
 import 'package:golder_octopus/features/credit/domain/use_cases/outgoing_credit_usecase.dart';
 import 'package:golder_octopus/features/credit/presentation/bloc/credit_bloc.dart';
 import 'package:golder_octopus/features/credit/presentation/widgets/outgoing_credit_container.dart';
@@ -21,18 +22,71 @@ class OutgoingCreditScreen extends StatefulWidget {
   const OutgoingCreditScreen({super.key});
 
   @override
-  State<OutgoingCreditScreen> createState() => _OutgoingTransferScreenState();
+  State<OutgoingCreditScreen> createState() => _OutgoingCreditScreenState();
 }
 
-class _OutgoingTransferScreenState extends State<OutgoingCreditScreen> {
-  String _formatDateTime(DateTime dateTime) {
-    return "${dateTime.day}-${dateTime.month}-${dateTime.year}";
-  }
-
+class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
   final TextEditingController searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   DateTime? fromDate = DateTime.now().subtract(Duration(days: 5));
   DateTime? toDate = DateTime.now();
+
+  final int _itemsPerPage = 10;
+  List<OutgoingCreditResponse> allCredits = [];
+  List<OutgoingCreditResponse> visibleCredits = [];
+  bool _isLoadingMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = searchController.text.toLowerCase();
+
+    setState(() {
+      if (query.isEmpty) {
+        visibleCredits = allCredits.take(_itemsPerPage).toList();
+      } else {
+        visibleCredits = allCredits.where((credit) => credit.target.toLowerCase().contains(query)).toList();
+      }
+    });
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 100 && !_isLoadingMore) {
+      _loadMoreItems();
+    }
+  }
+
+  void _loadMoreItems() {
+    if (visibleCredits.length >= allCredits.length) return;
+
+    setState(() => _isLoadingMore = true);
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      final nextItems = allCredits.skip(visibleCredits.length).take(_itemsPerPage).toList();
+      setState(() {
+        visibleCredits.addAll(nextItems);
+        _isLoadingMore = false;
+      });
+    });
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -46,6 +100,7 @@ class _OutgoingTransferScreenState extends State<OutgoingCreditScreen> {
         child: Scaffold(
           backgroundColor: context.background,
           body: SingleChildScrollView(
+            controller: _scrollController,
             child: Container(
               padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
               width: context.screenWidth,
@@ -89,12 +144,12 @@ class _OutgoingTransferScreenState extends State<OutgoingCreditScreen> {
                                 state.status == CreditStatus.loading
                                     ? () {}
                                     : () {
-                                      OutgoingCreditParams params = OutgoingCreditParams(
-                                        startDate: _formatDateTime(
-                                          fromDate ?? DateTime.now().subtract(Duration(days: 5)),
-                                        ),
-                                        endDate: _formatDateTime(toDate ?? DateTime.now()),
+                                      final params = OutgoingCreditParams(
+                                        startDate: _formatDateTime(fromDate!),
+                                        endDate: _formatDateTime(toDate!),
                                       );
+                                      allCredits.clear(); // Reset old data
+                                      visibleCredits.clear();
                                       context.read<CreditBloc>().add(GetOutgoingCreditsEvent(params: params));
                                     },
                             text: LocaleKeys.transfer_search.tr(),
@@ -116,7 +171,7 @@ class _OutgoingTransferScreenState extends State<OutgoingCreditScreen> {
                     controller: searchController,
                   ),
                   SizedBox(height: 10),
-                  SortHeader(columns: ['وجهة الاعتماد', 'المبلغ'], mainAxisAlignment: MainAxisAlignment.spaceAround),
+                  SortHeader(columns: ['وجهة الاعتماد', 'المبلغ']),
                   SizedBox(height: 10),
                   BlocBuilder<CreditBloc, CreditState>(
                     builder: (context, state) {
@@ -124,14 +179,34 @@ class _OutgoingTransferScreenState extends State<OutgoingCreditScreen> {
                         if (state.outgoingCredits == null || state.outgoingCredits!.isEmpty) {
                           return Center(child: AppText.bodyMedium("لا يوجد اعتمادات صادرة"));
                         }
-                        return Column(
-                          spacing: 15,
-                          children: List.generate(
-                            state.outgoingCredits!.length,
-                            (index) => OutgoingCreditContainer(outgoingCreditsResponse: state.outgoingCredits![index]),
-                          ),
+
+                        if (allCredits.isEmpty) {
+                          allCredits = state.outgoingCredits!;
+                          visibleCredits = allCredits.take(_itemsPerPage).toList();
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: visibleCredits.length + (_isLoadingMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index < visibleCredits.length) {
+                              return Column(
+                                children: [
+                                  OutgoingCreditContainer(outgoingCreditsResponse: visibleCredits[index]),
+                                  SizedBox(height: 10),
+                                ],
+                              );
+                            } else {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(child: CustomProgressIndecator(color: context.onPrimaryColor)),
+                              );
+                            }
+                          },
                         );
                       }
+
                       return SizedBox.shrink();
                     },
                   ),
