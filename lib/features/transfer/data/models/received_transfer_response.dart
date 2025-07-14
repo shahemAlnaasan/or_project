@@ -1,29 +1,29 @@
 // To parse this JSON data, do
 //
-//     final incomingTransferResponse = incomingTransferResponseFromJson(jsonString);
+//     final receivedTransfersResponse = receivedTransfersResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-IncomingTransferResponse incomingTransferResponseFromJson(String str) =>
-    IncomingTransferResponse.fromJson(json.decode(str));
+ReceivedTransfersResponse receivedTransfersResponseFromJson(String str) =>
+    ReceivedTransfersResponse.fromJson(json.decode(str));
 
-String incomingTransferResponseToJson(IncomingTransferResponse data) => json.encode(data.toJson());
+String receivedTransfersResponseToJson(ReceivedTransfersResponse data) => json.encode(data.toJson());
 
-class IncomingTransferResponse {
+class ReceivedTransfersResponse {
   int status;
-  List<IncomingTransfers> data;
+  List<ReceivedTransfers> data;
 
-  IncomingTransferResponse({required this.status, required this.data});
+  ReceivedTransfersResponse({required this.status, required this.data});
 
-  factory IncomingTransferResponse.fromJson(Map<String, dynamic> json) => IncomingTransferResponse(
+  factory ReceivedTransfersResponse.fromJson(Map<String, dynamic> json) => ReceivedTransfersResponse(
     status: json["status"],
-    data: List<IncomingTransfers>.from(json["data"].map((x) => IncomingTransfers.fromJson(x))),
+    data: List<ReceivedTransfers>.from(json["data"].map((x) => ReceivedTransfers.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {"status": status, "data": List<dynamic>.from(data.map((x) => x.toJson()))};
 }
 
-class IncomingTransfers {
+class ReceivedTransfers {
   String transnum;
   String source;
   String amount;
@@ -33,7 +33,7 @@ class IncomingTransfers {
   String notes;
   String status;
 
-  IncomingTransfers({
+  ReceivedTransfers({
     required this.transnum,
     required this.source,
     required this.amount,
@@ -44,7 +44,7 @@ class IncomingTransfers {
     required this.status,
   });
 
-  factory IncomingTransfers.fromJson(Map<String, dynamic> json) => IncomingTransfers(
+  factory ReceivedTransfers.fromJson(Map<String, dynamic> json) => ReceivedTransfers(
     transnum: json["transnum"],
     source: json["source"],
     amount: json["amount"],

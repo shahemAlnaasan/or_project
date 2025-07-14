@@ -129,7 +129,7 @@ class _IncomingCreditScreenState extends State<IncomingCreditScreen> {
                         Expanded(
                           flex: 1,
                           child: Text(
-                            "sfafs",
+                            "",
                             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
                           ),
                         ),

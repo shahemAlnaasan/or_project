@@ -61,6 +61,10 @@ import '../../features/transfer/domain/repositories/transfer_repository.dart'
     as _i336;
 import '../../features/transfer/domain/use_cases/incoming_transfer_usecase.dart'
     as _i597;
+import '../../features/transfer/domain/use_cases/outgoing_transfers_usecase.dart'
+    as _i869;
+import '../../features/transfer/domain/use_cases/received_transfers_usecase.dart'
+    as _i66;
 import '../../features/transfer/presentation/bloc/transfer_bloc.dart' as _i279;
 import '../datasources/hive_helper.dart' as _i330;
 import '../network/http_client.dart' as _i1069;
@@ -135,19 +139,31 @@ extension GetItInjectableX on _i174.GetIt {
         transferRepository: gh<_i336.TransferRepository>(),
       ),
     );
+    gh.factory<_i869.OutgoingTransfersUsecase>(
+      () => _i869.OutgoingTransfersUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
+    gh.factory<_i66.ReceivedTransfersUsecase>(
+      () => _i66.ReceivedTransfersUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
     gh.factory<_i14.AccountStatementUsecase>(
       () => _i14.AccountStatementUsecase(
         accountStatementRepository: gh<_i854.AccountStatementRepository>(),
       ),
     );
-    gh.factory<_i128.AccountStatementBloc>(
-      () => _i128.AccountStatementBloc(
-        accountStatementUsecase: gh<_i14.AccountStatementUsecase>(),
-      ),
-    );
     gh.factory<_i279.TransferBloc>(
       () => _i279.TransferBloc(
         incomingTransferUsecase: gh<_i597.IncomingTransferUsecase>(),
+        outgoingTransferUsecase: gh<_i869.OutgoingTransfersUsecase>(),
+        receivedTransfersUsecase: gh<_i66.ReceivedTransfersUsecase>(),
+      ),
+    );
+    gh.factory<_i128.AccountStatementBloc>(
+      () => _i128.AccountStatementBloc(
+        accountStatementUsecase: gh<_i14.AccountStatementUsecase>(),
       ),
     );
     gh.factory<_i1012.LoginUsecase>(

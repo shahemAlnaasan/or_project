@@ -88,7 +88,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
       ),
       GridItem(
         icon: Assets.images.quickActions.moneyWithdraw.path,
-        label: "LocaleKeys.home_withdrawl_transfer.tr()",
+        label: LocaleKeys.home_withdrawl_transfer.tr(),
         onTap: () => print('Settings tapped'),
       ),
     ];
@@ -100,10 +100,11 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
         padding: const EdgeInsets.only(top: 1),
         itemCount: gridItems.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          // mainAxisExtent: 150,
           crossAxisCount: 4,
           crossAxisSpacing: 15,
           mainAxisSpacing: 10,
-          // childAspectRatio: 1 / 1.3,
+          childAspectRatio: 1 / 1.35,
         ),
         itemBuilder: (context, index) {
           final item = gridItems[index];
@@ -115,9 +116,9 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [BoxShadow(color: const Color(0x20000000), blurRadius: 5, offset: const Offset(0, 4))],
               ),
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 2),
+              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                // mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(item.icon, scale: 2.6),
@@ -127,7 +128,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
                       item.label,
                       textAlign: TextAlign.center,
                       fontWeight: FontWeight.w600,
-                      maxLines: 3,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),

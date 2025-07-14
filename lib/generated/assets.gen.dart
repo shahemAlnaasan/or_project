@@ -31,6 +31,10 @@ class $AssetsImagesGen {
   $AssetsImagesQuickActionsGen get quickActions =>
       const $AssetsImagesQuickActionsGen();
 
+  /// Directory path: assets/images/side_actions
+  $AssetsImagesSideActionsGen get sideActions =>
+      const $AssetsImagesSideActionsGen();
+
   /// List of all assets
   List<AssetGenImage> get values => [google, printer];
 }
@@ -220,6 +224,25 @@ class $AssetsImagesQuickActionsGen {
     syria,
     transfer,
   ];
+}
+
+class $AssetsImagesSideActionsGen {
+  const $AssetsImagesSideActionsGen();
+
+  /// File path: assets/images/side_actions/last_transfer.png
+  AssetGenImage get lastTransfer =>
+      const AssetGenImage('assets/images/side_actions/last_transfer.png');
+
+  /// File path: assets/images/side_actions/qr.png
+  AssetGenImage get qr =>
+      const AssetGenImage('assets/images/side_actions/qr.png');
+
+  /// File path: assets/images/side_actions/user.png
+  AssetGenImage get user =>
+      const AssetGenImage('assets/images/side_actions/user.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [lastTransfer, qr, user];
 }
 
 class Assets {

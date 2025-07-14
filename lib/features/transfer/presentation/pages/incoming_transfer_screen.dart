@@ -26,8 +26,8 @@ class _IncomingTransferScreenState extends State<IncomingTransferScreen> {
   final ScrollController _scrollController = ScrollController();
 
   final int _itemsPerPage = 10;
-  List<Datum> allTransfers = [];
-  List<Datum> visibleTransfers = [];
+  List<IncomingTransfers> allTransfers = [];
+  List<IncomingTransfers> visibleTransfers = [];
   bool _isLoadingMore = false;
 
   @override
@@ -104,22 +104,22 @@ class _IncomingTransferScreenState extends State<IncomingTransferScreen> {
                 const SizedBox(height: 10),
                 SortHeader(
                   columns: ['المستفيد', 'العمولة', 'المبلغ'].reversed.toList(),
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
                 const SizedBox(height: 10),
                 BlocBuilder<TransferBloc, TransferState>(
                   builder: (context, state) {
-                    if (state.transferStatus == Status.loading) {
+                    if (state.incomingTransferStatus == Status.loading) {
                       return Center(child: CustomProgressIndecator(color: context.onPrimaryColor));
                     }
 
-                    if (state.transferStatus == Status.success) {
-                      if (state.incomingTransfers == null || state.incomingTransfers!.data.isEmpty) {
+                    if (state.incomingTransferStatus == Status.success) {
+                      if (state.incomingTransferResponse == null || state.incomingTransferResponse!.data.isEmpty) {
                         return Center(child: AppText.bodyMedium("لا يوجد حوالات واردة"));
                       }
 
                       if (allTransfers.isEmpty) {
-                        allTransfers = state.incomingTransfers!.data;
+                        allTransfers = state.incomingTransferResponse!.data;
                         visibleTransfers = allTransfers.take(_itemsPerPage).toList();
                       }
 

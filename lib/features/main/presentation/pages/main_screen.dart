@@ -23,6 +23,13 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 2;
+  // bool _isQuickActionsExpanded = false;
+
+  // void _toggleQuickActions() {
+  //   setState(() {
+  //     _isQuickActionsExpanded = !_isQuickActionsExpanded;
+  //   });
+  // }
 
   final _navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
@@ -75,9 +82,31 @@ class _MainScreenState extends State<MainScreen> {
       appBar: mainAppbar(context),
       extendBody: true,
       backgroundColor: context.background,
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: List.generate(_rootScreens.length, (i) => _buildTabNavigator(i)),
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: _selectedIndex,
+            children: List.generate(_rootScreens.length, (i) => _buildTabNavigator(i)),
+          ),
+          // AnimatedPositioned(
+          //   duration: const Duration(milliseconds: 300),
+          //   curve: Curves.easeInOut,
+          //   top: 100,
+          //   left: _isQuickActionsExpanded ? 100 : -30, // Slide in/out horizontally
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       _buildQuickAction(
+          //         icon: Assets.images.sideActions.user.path,
+          //         actionWidget: UserInfoAction(),
+          //         onTap: () {
+          //           _toggleQuickActions();
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          // ),
+        ],
       ),
       bottomNavigationBar: _buildBottomBar(),
     );
@@ -88,7 +117,7 @@ class _MainScreenState extends State<MainScreen> {
       decoration: BoxDecoration(border: Border(top: BorderSide(color: context.onPrimaryColor))),
       child: BottomAppBar(
         notchMargin: 16,
-        padding: const EdgeInsets.only(bottom: 5, top: 6),
+        padding: const EdgeInsets.only(bottom: 2, top: 6),
         height: 75,
         color: context.background,
         child: Row(
@@ -119,7 +148,7 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(icon, scale: 5, color: context.secondary),
+            Image.asset(icon, scale: 5.5, color: context.secondary),
             const SizedBox(height: 1),
             AppText.bodyMedium(
               [
@@ -129,13 +158,17 @@ class _MainScreenState extends State<MainScreen> {
                 LocaleKeys.navbar_incoming_transfers.tr(),
                 LocaleKeys.navbar_exchange.tr(),
               ][index],
-              style: context.textTheme.labelMedium!.copyWith(color: context.secondary, fontWeight: FontWeight.w900),
+              style: context.textTheme.labelMedium!.copyWith(
+                color: context.secondary,
+                fontWeight: FontWeight.w900,
+                fontSize: 11,
+              ),
             ),
             const SizedBox(height: 4),
             AnimatedContainer(
               duration: const Duration(milliseconds: 250),
-              width: 6,
-              height: 6,
+              width: 5,
+              height: 5,
               decoration: BoxDecoration(
                 color: isSelected ? context.secondary : Colors.transparent,
                 shape: BoxShape.circle,
@@ -146,4 +179,24 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
+  // Widget _buildQuickAction({required String icon, required void Function()? onTap, required Widget actionWidget}) {
+  //   return Row(
+  //     children: [
+  //       GestureDetector(
+  //         onTap: onTap,
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             color: Colors.transparent,
+  //             borderRadius: BorderRadius.circular(12),
+  //             boxShadow: [BoxShadow(color: context.onPrimaryColor.withAlpha(100))],
+  //           ),
+  //           padding: EdgeInsets.all(8),
+  //           child: Image.asset(icon, color: context.primaryColor, scale: 4),
+  //         ),
+  //       ),
+  //       actionWidget,
+  //     ],
+  //   );
+  // }
 }

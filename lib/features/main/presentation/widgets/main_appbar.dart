@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/consts/app_keys.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
+import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/theme/app_theme.dart';
 import 'package:golder_octopus/core/datasources/hive_helper.dart';
+import 'package:golder_octopus/features/auth/presentation/pages/login_screen.dart';
 import 'package:golder_octopus/features/main/presentation/bloc/main_bloc.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 
 AppBar mainAppbar(BuildContext context) {
   return AppBar(
+    toolbarHeight: 50,
     backgroundColor: context.background,
     elevation: 0,
     bottom: PreferredSize(
@@ -30,6 +33,7 @@ AppBar mainAppbar(BuildContext context) {
         onPressed: () {
           HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasLogin, value: false);
           HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasVerifyLogin, value: false);
+          context.pushAndRemoveUntil(LoginScreen());
         },
         context: context,
       ),
@@ -57,7 +61,7 @@ AppBar mainAppbar(BuildContext context) {
           padding: EdgeInsets.only(right: 15),
           child: GestureDetector(
             onTap: () {},
-            child: Image.asset(Assets.images.navbar.option.path, scale: 4, color: context.onPrimaryColor),
+            child: Image.asset(Assets.images.navbar.option.path, scale: 4.5, color: context.onPrimaryColor),
           ),
         ),
       ],
@@ -73,9 +77,10 @@ Widget buildActionButton({
 }) {
   return GestureDetector(
     onTap: onPressed,
-    child: Padding(
+    child: Container(
       padding: EdgeInsets.all(10),
-      child: Image.asset(icon, scale: scale ?? 8, color: context.onPrimaryColor),
+      margin: EdgeInsets.symmetric(horizontal: 2),
+      child: Image.asset(icon, scale: scale ?? 8.4, color: context.onPrimaryColor),
     ),
   );
 }

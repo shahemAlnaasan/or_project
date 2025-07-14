@@ -31,6 +31,11 @@ class ToastificationDialog {
       applyBlurEffect: true,
       pauseOnHover: true,
       type: type,
+      closeButton: ToastCloseButton(
+        buttonBuilder: (context, onClose) {
+          return SizedBox();
+        },
+      ),
       borderSide: const BorderSide(width: 0),
       margin: const EdgeInsets.all(14),
       showProgressBar: false,

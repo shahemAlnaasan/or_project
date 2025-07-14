@@ -44,7 +44,7 @@ class _NewsSliderState extends State<NewsSlider> {
         },
         child: Container(
           key: ValueKey(_currentIndex),
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
@@ -53,7 +53,7 @@ class _NewsSliderState extends State<NewsSlider> {
           ),
           child: Text(
             updates[_currentIndex],
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.secondary,
               fontWeight: FontWeight.bold,
             ),

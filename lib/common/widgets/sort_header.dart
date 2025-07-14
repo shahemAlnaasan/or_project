@@ -7,7 +7,7 @@ class SortHeader extends StatefulWidget {
   final List<String> columns;
   final MainAxisAlignment? mainAxisAlignment;
 
-  const SortHeader({super.key, this.columns = const ['المستفيد', 'المبلغ', 'العمولة', '   '], this.mainAxisAlignment});
+  const SortHeader({super.key, this.columns = const ['المستفيد', 'المبلغ', 'العمولة'], this.mainAxisAlignment});
 
   @override
   State<SortHeader> createState() => _SortHeaderState();
@@ -50,23 +50,20 @@ class _SortHeaderState extends State<SortHeader> {
       decoration: BoxDecoration(color: context.primaryContainer, borderRadius: BorderRadius.circular(5)),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
-        mainAxisAlignment: widget.mainAxisAlignment ?? MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children:
             widget.columns.map((column) {
               final direction = _sortState[column]!;
               return Expanded(
                 child: GestureDetector(
                   onTap: column.trim().isEmpty ? null : () => _toggleSort(column),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(column, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                        const SizedBox(width: 4),
-                        _getSortIcon(direction),
-                      ],
-                    ),
+                  child: Row(
+                    mainAxisAlignment: widget.mainAxisAlignment ?? MainAxisAlignment.start,
+                    children: [
+                      Text(column, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 4),
+                      _getSortIcon(direction),
+                    ],
                   ),
                 ),
               );

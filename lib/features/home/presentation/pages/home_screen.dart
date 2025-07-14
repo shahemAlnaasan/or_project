@@ -42,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         backgroundColor: context.background,
-
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.only(bottom: 75.0),
@@ -92,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 QuickActionsGrid(currenciesResponse: currenciesResponse),
-                SizedBox(height: 1),
+                SizedBox(height: 3),
                 NewsSlider(),
                 SizedBox(height: 20),
               ],

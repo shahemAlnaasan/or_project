@@ -1,16 +1,14 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_action_button.dart';
-import 'package:golder_octopus/features/transfer/data/models/received_transfer_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/outgoing_transfer_response.dart';
 import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
 
-class ReceivedTransferContainer extends StatelessWidget {
-  final ReceivedTransfers receivedTransfers;
-  const ReceivedTransferContainer({super.key, required this.receivedTransfers});
+class OutgoingTransferContainer extends StatelessWidget {
+  final OutgoingTransfers outgoingTransfers;
+  const OutgoingTransferContainer({super.key, required this.outgoingTransfers});
 
   void _showDetailsDialog(BuildContext context) {
     showDialog(
@@ -27,37 +25,40 @@ class ReceivedTransferContainer extends StatelessWidget {
       onTap: () => _showDetailsDialog(context),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Column(
           children: [
             Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       AppText.bodySmall(
-                        LocaleKeys.transfer_outgoing_transfers.tr(),
+                        outgoingTransfers.amount,
                         textAlign: TextAlign.start,
                         fontWeight: FontWeight.bold,
                       ),
                       const SizedBox(height: 5),
-                      AppText.bodySmall("0965292417", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                      AppText.bodySmall(outgoingTransfers.currencyName, fontWeight: FontWeight.bold),
                       const SizedBox(height: 5),
-                      AppText.bodySmall("ادلب - ابراهيم كللي", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                      Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
                     ],
                   ),
                 ),
                 Expanded(
-                  flex: 1,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AppText.bodySmall("7", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
+                      AppText.bodySmall(
+                        outgoingTransfers.amount,
+                        textAlign: TextAlign.start,
+                        fontWeight: FontWeight.bold,
+                      ),
                       const SizedBox(height: 5),
                       AppText.bodySmall(
-                        LocaleKeys.home_dolar.tr(),
+                        outgoingTransfers.currencyName,
                         textAlign: TextAlign.start,
                         fontWeight: FontWeight.bold,
                       ),
@@ -67,25 +68,36 @@ class ReceivedTransferContainer extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                      const SizedBox(height: 5),
-                      AppText.bodySmall(LocaleKeys.home_dolar.tr(), fontWeight: FontWeight.bold),
-                      const SizedBox(height: 5),
-                      Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
+                      AppText.bodySmall(
+                        outgoingTransfers.target,
+                        textAlign: TextAlign.start,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
             SizedBox(height: 10),
-            CustomActionButton(
-              onPressed: () => _showDetailsDialog(context),
-              text: "تفاصيل",
-              backgroundColor: context.primaryContainer,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: CustomActionButton(onPressed: () {}, text: "اشعار", backgroundColor: context.primaryContainer),
+                ),
+
+                Expanded(
+                  child: CustomActionButton(
+                    onPressed: () => _showDetailsDialog(context),
+                    text: "تفاصيل",
+                    backgroundColor: context.primaryContainer,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

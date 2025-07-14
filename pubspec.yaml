@@ -91,6 +91,7 @@ flutter:
     - assets/images/logo/
     - assets/images/flags/
     - assets/images/quick_actions/
+    - assets/images/side_actions/
 
   # example:
   # fonts:

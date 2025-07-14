@@ -9,7 +9,7 @@ import 'package:golder_octopus/generated/assets.gen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class IncomingTransferContainer extends StatelessWidget {
-  final Datum incomingTransfers;
+  final IncomingTransfers incomingTransfers;
   const IncomingTransferContainer({super.key, required this.incomingTransfers});
 
   void _showDetailsDialog(BuildContext context) {
@@ -87,7 +87,7 @@ class IncomingTransferContainer extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               spacing: 8,
