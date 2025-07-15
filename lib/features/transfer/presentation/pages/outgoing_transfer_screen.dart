@@ -47,7 +47,21 @@ class _OutgoingTransferScreenState extends State<OutgoingTransferScreen> {
       if (query.isEmpty) {
         visibleTransfers = allTransfers.take(_itemsPerPage).toList();
       } else {
-        visibleTransfers = allTransfers.where((transfer) => transfer.target.toLowerCase().contains(query)).toList();
+        visibleTransfers =
+            allTransfers.where((transfer) {
+              final target = transfer.target.toLowerCase();
+              final benename = transfer.benename.toLowerCase();
+              final benephone = transfer.benephone.toLowerCase();
+              final amount = transfer.amount.toString().toLowerCase();
+              final tax = transfer.tax.toString().toLowerCase();
+              final currencyName = transfer.currencyName.toString().toLowerCase();
+              return target.contains(query) ||
+                  amount.contains(query) ||
+                  currencyName.contains(query) ||
+                  benename.contains(query) ||
+                  benephone.contains(query) ||
+                  tax.contains(query);
+            }).toList();
       }
     });
   }
@@ -69,6 +83,31 @@ class _OutgoingTransferScreenState extends State<OutgoingTransferScreen> {
         visibleTransfers.addAll(nextItems);
         _isLoadingMore = false;
       });
+    });
+  }
+
+  void _sortTransfers(String field, SortDirection direction) {
+    if (direction == SortDirection.none || direction == SortDirection.nothing) return;
+
+    Comparator<OutgoingTransfers> comparator;
+
+    switch (field) {
+      case 'المبلغ':
+        comparator = (a, b) => a.amount.compareTo(b.amount);
+        break;
+      case 'العمولة':
+        comparator = (a, b) => a.tax.compareTo(b.tax);
+        break;
+      case 'المستفيد':
+        comparator = (a, b) => a.benename.compareTo(b.benename);
+        break;
+      default:
+        return;
+    }
+
+    setState(() {
+      allTransfers.sort(direction == SortDirection.ascending ? comparator : (a, b) => comparator(b, a));
+      visibleTransfers = allTransfers.take(_itemsPerPage).toList();
     });
   }
 
@@ -162,7 +201,13 @@ class _OutgoingTransferScreenState extends State<OutgoingTransferScreen> {
                   controller: searchController,
                 ),
                 SizedBox(height: 10),
-                SortHeader(columns: ['المستفيد', 'العمولة', 'المبلغ'].reversed.toList()),
+                SortHeader(
+                  columns: [
+                    SortColumn(label: 'المبلغ', onSort: (direction) => _sortTransfers('المبلغ', direction)),
+                    SortColumn(label: 'العمولة', onSort: (direction) => _sortTransfers('العمولة', direction)),
+                    SortColumn(label: 'المستفيد', onSort: (direction) => _sortTransfers('المستفيد', direction)),
+                  ],
+                ),
                 SizedBox(height: 10),
                 BlocBuilder<TransferBloc, TransferState>(
                   builder: (context, state) {

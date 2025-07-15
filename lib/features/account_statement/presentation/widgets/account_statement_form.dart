@@ -8,12 +8,14 @@ import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
 import 'package:golder_octopus/common/widgets/custom_text_field.dart';
 import 'package:golder_octopus/common/widgets/date_dropdown_field.dart';
 import 'package:golder_octopus/common/widgets/large_button.dart';
+import 'package:golder_octopus/common/widgets/toast_dialog.dart';
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
 import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/domain/use_cases/account_statement_usecase.dart';
 import 'package:golder_octopus/features/account_statement/presentation/bloc/account_statement_bloc.dart';
 import 'package:golder_octopus/features/home/presentation/widgets/currency_balance_container.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
+import 'package:toastification/toastification.dart';
 
 enum PredefinedDateRange { none, today, thisMonth, thisYear, all }
 
@@ -96,11 +98,11 @@ class _NewTransferFormState extends State<AccountStatementForm> {
         break;
       case PredefinedDateRange.thisMonth:
         fromDate = DateTime(now.year, now.month, 1);
-        toDate = DateTime(now.year, now.month + 1, 0);
+        toDate = now;
         break;
       case PredefinedDateRange.thisYear:
         fromDate = DateTime(now.year, 1, 1);
-        toDate = DateTime(now.year, 12, 31);
+        toDate = now;
         break;
       case PredefinedDateRange.all:
         fromDate = DateTime(2000);
@@ -179,13 +181,19 @@ class _NewTransferFormState extends State<AccountStatementForm> {
                             state.status == AcccountStmtStatus.loading
                                 ? () {}
                                 : () {
-                                  if (_formKey.currentState!.validate()) {
+                                  if (selectedCurrency != null && selectedCurrency!.isNotEmpty) {
                                     final params = AccountStatementParams(
                                       startDate: formatDate(fromDate),
                                       endDate: formatDate(toDate),
                                       currency: currencyNameToCode[selectedCurrency] ?? '',
                                     );
                                     context.read<AccountStatementBloc>().add(GetAccountStatementEvent(params: params));
+                                  } else {
+                                    ToastificationDialog.showToast(
+                                      msg: "الرجاء اختيار العملة",
+                                      context: context,
+                                      type: ToastificationType.error,
+                                    );
                                   }
                                 },
                         textStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),

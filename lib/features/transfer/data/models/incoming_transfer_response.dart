@@ -29,6 +29,9 @@ class IncomingTransfers {
   String amount;
   String currency;
   String currencyName;
+  String benename;
+  String benephone;
+  String tax;
   DateTime transdate;
   String notes;
   String status;
@@ -42,6 +45,9 @@ class IncomingTransfers {
     required this.transdate,
     required this.notes,
     required this.status,
+    required this.benename,
+    required this.benephone,
+    required this.tax,
   });
 
   factory IncomingTransfers.fromJson(Map<String, dynamic> json) => IncomingTransfers(
@@ -53,6 +59,9 @@ class IncomingTransfers {
     transdate: DateTime.parse(json["transdate"]),
     notes: json["notes"],
     status: json["status"],
+    tax: json["tax"],
+    benename: json["benename"],
+    benephone: json["benephone"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -64,5 +73,8 @@ class IncomingTransfers {
     "transdate": transdate.toIso8601String(),
     "notes": notes,
     "status": status,
+    "tax": tax,
+    "benename": benename,
+    "benephone": benephone,
   };
 }

@@ -42,9 +42,21 @@ class _AccountStatementScreenState extends State<AccountStatementScreen> {
   List<Statment> get filteredList {
     if (_searchQuery.isEmpty) return accountStatementResponse.statment;
 
-    return accountStatementResponse.statment
-        .where((item) => (item.notes?.toLowerCase().contains(_searchQuery) ?? false))
-        .toList();
+    return accountStatementResponse.statment.where((item) {
+      final query = _searchQuery.toLowerCase();
+
+      final notes = item.notes?.toLowerCase() ?? '';
+      final transNum = item.transnum.toLowerCase();
+      final date = item.date.toString().toLowerCase();
+      final amount = item.amount.toString().toLowerCase();
+      final type = item.type.toLowerCase();
+
+      return notes.contains(query) ||
+          transNum.contains(query) ||
+          type.contains(query) ||
+          date.contains(query) ||
+          amount.contains(query);
+    }).toList();
   }
 
   String getAccountStatementBalanceText(AccountStatementResponse accountStatement) {

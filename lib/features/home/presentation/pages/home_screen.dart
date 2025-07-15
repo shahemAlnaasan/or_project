@@ -37,7 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
         }
         if (state.currenciesStatus == Status.success) {
-          currenciesResponse = state.currencies;
+          setState(() {
+            currenciesResponse = state.currencies;
+          });
         }
       },
       child: Scaffold(

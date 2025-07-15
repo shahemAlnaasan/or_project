@@ -153,8 +153,8 @@ class _NewAccountStatementTableState extends State<AccountStatementTable> {
                     children: [
                       buildCellText(lable: "", height: 50),
                       buildCellText(lable: "", height: 50),
-                      buildCellText(lable: "${widget.inTotal}", height: 50, color: Colors.red),
-                      buildCellText(lable: "${widget.outTotal}", height: 50, color: Colors.blue),
+                      buildCellText(lable: "${widget.outTotal}", height: 50, color: Colors.red),
+                      buildCellText(lable: "${widget.inTotal}", height: 50, color: Colors.blue),
                       buildCellText(lable: "", height: 50),
                       // buildCellText(lable: "", height: 50),
                     ],

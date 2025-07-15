@@ -76,6 +76,28 @@ class _OutgoingTransferScreenState extends State<ReceivedTransferScreen> {
     });
   }
 
+  void _sortTransfers(int index, SortDirection direction) {
+    if (direction == SortDirection.none || direction == SortDirection.nothing) return;
+
+    Comparator<ReceivedTransfers> comparator;
+
+    switch (index) {
+      case 0:
+        comparator = (a, b) => a.source.compareTo(b.source);
+        break;
+      case 1:
+        comparator = (a, b) => a.amount.compareTo(b.amount);
+        break;
+      default:
+        return;
+    }
+
+    setState(() {
+      allTransfers.sort(direction == SortDirection.ascending ? comparator : (a, b) => comparator(b, a));
+      visibleTransfers = allTransfers.take(_itemsPerPage).toList();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -165,12 +187,17 @@ class _OutgoingTransferScreenState extends State<ReceivedTransferScreen> {
                 SizedBox(height: 10),
                 SortHeader(
                   columns: [
-                    LocaleKeys.credits_destination.tr(),
-                    LocaleKeys.credits_money_amount.tr(),
-                    LocaleKeys.credits_transfer_date.tr(),
+                    SortColumn(
+                      label: LocaleKeys.credits_destination.tr(),
+                      onSort: (direction) => _sortTransfers(0, direction),
+                    ),
+                    SortColumn(
+                      label: LocaleKeys.credits_money_amount.tr(),
+                      onSort: (direction) => _sortTransfers(1, direction),
+                    ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.center,
                 ),
+
                 SizedBox(height: 10),
                 BlocBuilder<TransferBloc, TransferState>(
                   builder: (context, state) {

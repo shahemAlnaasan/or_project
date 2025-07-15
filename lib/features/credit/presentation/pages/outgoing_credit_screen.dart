@@ -83,6 +83,28 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
     });
   }
 
+  void _sortTransfers(int index, SortDirection direction) {
+    if (direction == SortDirection.none || direction == SortDirection.nothing) return;
+
+    Comparator<OutgoingCreditResponse> comparator;
+
+    switch (index) {
+      case 0:
+        comparator = (a, b) => a.target.compareTo(b.target);
+        break;
+      case 1:
+        comparator = (a, b) => a.amount.compareTo(b.amount);
+        break;
+      default:
+        return;
+    }
+
+    setState(() {
+      allCredits.sort(direction == SortDirection.ascending ? comparator : (a, b) => comparator(b, a));
+      visibleCredits = allCredits.take(_itemsPerPage).toList();
+    });
+  }
+
   String _formatDateTime(DateTime dateTime) {
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
@@ -171,7 +193,13 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
                     controller: searchController,
                   ),
                   SizedBox(height: 10),
-                  SortHeader(columns: ['وجهة الاعتماد', 'المبلغ']),
+                  SortHeader(
+                    columns: [
+                      SortColumn(label: "وجهة الاعتماد", onSort: (direction) => _sortTransfers(0, direction)),
+                      SortColumn(label: "المبلغ", onSort: (direction) => _sortTransfers(1, direction)),
+                    ],
+                  ),
+
                   SizedBox(height: 10),
                   BlocBuilder<CreditBloc, CreditState>(
                     builder: (context, state) {

@@ -75,6 +75,31 @@ class _IncomingTransferScreenState extends State<IncomingTransferScreen> {
     });
   }
 
+  void _sortTransfers(String field, SortDirection direction) {
+    if (direction == SortDirection.none || direction == SortDirection.nothing) return;
+
+    Comparator<IncomingTransfers> comparator;
+
+    switch (field) {
+      case 'المبلغ':
+        comparator = (a, b) => a.amount.compareTo(b.amount);
+        break;
+      case 'العمولة':
+        comparator = (a, b) => a.tax.compareTo(b.tax);
+        break;
+      case 'المستفيد':
+        comparator = (a, b) => a.benename.compareTo(b.benename);
+        break;
+      default:
+        return;
+    }
+
+    setState(() {
+      allTransfers.sort(direction == SortDirection.ascending ? comparator : (a, b) => comparator(b, a));
+      visibleTransfers = allTransfers.take(_itemsPerPage).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -103,9 +128,13 @@ class _IncomingTransferScreenState extends State<IncomingTransferScreen> {
                 ),
                 const SizedBox(height: 10),
                 SortHeader(
-                  columns: ['المستفيد', 'العمولة', 'المبلغ'].reversed.toList(),
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  columns: [
+                    SortColumn(label: 'المبلغ', onSort: (direction) => _sortTransfers('المبلغ', direction)),
+                    SortColumn(label: 'العمولة', onSort: (direction) => _sortTransfers('العمولة', direction)),
+                    SortColumn(label: 'المستفيد', onSort: (direction) => _sortTransfers('المستفيد', direction)),
+                  ],
                 ),
+
                 const SizedBox(height: 10),
                 BlocBuilder<TransferBloc, TransferState>(
                   builder: (context, state) {

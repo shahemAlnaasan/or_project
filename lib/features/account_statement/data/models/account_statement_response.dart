@@ -42,9 +42,9 @@ class AccountStatementResponse {
 
   factory AccountStatementResponse.fromJson(Map<String, dynamic> json) => AccountStatementResponse(
     currentAcc: CurrentAcc.fromJson(json["cuurent_acc"]),
-    currency: json["currency"],
-    currencyName: json["currency_name"],
-    currencySuffix: json["currency_suffix"],
+    currency: json["currency"] ?? "",
+    currencyName: json["currency_name"] ?? "",
+    currencySuffix: json["currency_suffix"] ?? "",
     centerName: json["center_name"],
     centerCity: json["center_city"],
     centerBox: json["center_box"],

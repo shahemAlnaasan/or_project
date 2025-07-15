@@ -44,7 +44,7 @@ class DioClient implements HTTPClient {
     );
     dio.options.headers = {'Content-Type': 'application/json'};
     dio.interceptors.addAll([
-      PrettyDioLogger(requestBody: true, responseBody: true, request: true, requestHeader: true),
+      PrettyDioLogger(requestBody: true, responseBody: true, request: true, requestHeader: true, maxWidth: 60),
       AppDioInterceptor(),
     ]);
 

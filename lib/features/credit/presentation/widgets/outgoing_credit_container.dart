@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
@@ -6,7 +5,6 @@ import 'package:golder_octopus/common/widgets/custom_action_button.dart';
 import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
 import 'package:golder_octopus/features/credit/presentation/widgets/outgoing_credit_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class OutgoingCreditContainer extends StatelessWidget {
   final OutgoingCreditResponse outgoingCreditsResponse;
@@ -21,13 +19,28 @@ class OutgoingCreditContainer extends StatelessWidget {
     );
   }
 
+  String? getIcon(String currencyName) {
+    switch (currencyName) {
+      case 'يورو':
+        return Assets.images.flags.europe.path;
+      case 'دولار':
+        return Assets.images.flags.unitedStates.path;
+      case 'ليرة تركية':
+        return Assets.images.flags.turkey.path;
+      case 'رصيد مقوم':
+        return Assets.images.flags.balanceScale.path;
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _showDetailsDialog(context, outgoingCreditsResponse: outgoingCreditsResponse),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         child: Column(
           spacing: 20,
           children: [
@@ -40,7 +53,7 @@ class OutgoingCreditContainer extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.topRight,
                     child: AppText.bodyMedium(
-                      "ادلب - ابراهيم كللي",
+                      outgoingCreditsResponse.target,
                       textAlign: TextAlign.start,
                       fontWeight: FontWeight.bold,
                       color: context.onPrimaryColor,
@@ -48,18 +61,32 @@ class OutgoingCreditContainer extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Column(
-                    children: [
-                      AppText.bodyMedium("7", textAlign: TextAlign.center, fontWeight: FontWeight.bold),
-                      const SizedBox(height: 3),
-                      AppText.bodyMedium(
-                        LocaleKeys.home_dolar.tr(),
-                        textAlign: TextAlign.start,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      const SizedBox(height: 5),
-                      Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
-                    ],
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Column(
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText.bodyMedium(
+                          outgoingCreditsResponse.amount,
+                          textAlign: TextAlign.start,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 3),
+                        AppText.bodyMedium(
+                          outgoingCreditsResponse.currencyName,
+                          textAlign: TextAlign.start,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        const SizedBox(height: 5),
+                        getIcon(outgoingCreditsResponse.currencyName) != null
+                            ? Image.asset(
+                              getIcon(outgoingCreditsResponse.currencyName)!,
+                              scale: 5,
+                              alignment: Alignment.bottomCenter,
+                            )
+                            : SizedBox.shrink(),
+                      ],
+                    ),
                   ),
                 ),
               ],

@@ -24,9 +24,9 @@ class StatementInfoCard extends StatelessWidget {
       );
 
       if (matching.amount > 0) {
-        return 'مدين لنا ${matching.amount.toStringAsFixed(2)} ${matching.currencyName}';
+        return 'مدين لنا ${matching.amount.toStringAsFixed(1)} ${matching.currencyName}';
       } else if (matching.amount < 0) {
-        return 'دائن علينا ${matching.amount.abs().toStringAsFixed(2)} ${matching.currencyName}';
+        return 'دائن علينا ${matching.amount.abs().toStringAsFixed(1)} ${matching.currencyName}';
       } else {
         return 'لا يوجد رصيد';
       }
@@ -132,9 +132,9 @@ class StatementInfoCard extends StatelessWidget {
           divider,
           buildRow(
             label1: LocaleKeys.account_statement_total_on_us.tr(),
-            value1: accountStatement.inTotal.toString(),
+            value1: accountStatement.outTotal.toStringAsFixed(1),
             label2: LocaleKeys.account_statement_total_for_us.tr(),
-            value2: accountStatement.outTotal.toString(),
+            value2: accountStatement.inTotal.toStringAsFixed(1),
             style1: redStyle,
             style2: blueStyle,
             lable1Color: Colors.red,

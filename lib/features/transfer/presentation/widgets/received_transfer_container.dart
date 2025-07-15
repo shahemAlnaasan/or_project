@@ -68,15 +68,12 @@ class ReceivedTransferContainer extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AppText.bodySmall("7000", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                      const SizedBox(height: 5),
-                      AppText.bodySmall(LocaleKeys.home_dolar.tr(), fontWeight: FontWeight.bold),
-                      const SizedBox(height: 5),
-                      Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
-                    ],
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(color: context.primaryContainer, borderRadius: BorderRadius.circular(8)),
+                    alignment: Alignment.center,
+                    child: Text("وصل", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
                 ),
               ],

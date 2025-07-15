@@ -29,6 +29,9 @@ class OutgoingTransfers {
   String amount;
   String currency;
   String currencyName;
+  String benename;
+  String benephone;
+  String tax;
   DateTime transdate;
   String apiInfo;
   String status;
@@ -39,6 +42,9 @@ class OutgoingTransfers {
     required this.amount,
     required this.currency,
     required this.currencyName,
+    required this.tax,
+    required this.benename,
+    required this.benephone,
     required this.transdate,
     required this.apiInfo,
     required this.status,
@@ -50,6 +56,9 @@ class OutgoingTransfers {
     amount: json["amount"],
     currency: json["currency"],
     currencyName: json["currency_name"],
+    benename: json["benename"],
+    benephone: json["benephone"],
+    tax: json["tax"],
     transdate: DateTime.parse(json["transdate"]),
     apiInfo: json["api_info"],
     status: json["status"],
@@ -61,6 +70,9 @@ class OutgoingTransfers {
     "amount": amount,
     "currency": currency,
     "currency_name": currencyName,
+    "benename": benename,
+    "benephone": benephone,
+    "tax": tax,
     "transdate": transdate.toIso8601String(),
     "api_info": apiInfo,
     "status": status,

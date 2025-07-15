@@ -229,20 +229,54 @@ class $AssetsImagesQuickActionsGen {
 class $AssetsImagesSideActionsGen {
   const $AssetsImagesSideActionsGen();
 
-  /// File path: assets/images/side_actions/last_transfer.png
-  AssetGenImage get lastTransfer =>
-      const AssetGenImage('assets/images/side_actions/last_transfer.png');
+  /// File path: assets/images/side_actions/accounts.png
+  AssetGenImage get accounts =>
+      const AssetGenImage('assets/images/side_actions/accounts.png');
+
+  /// File path: assets/images/side_actions/frame.png
+  AssetGenImage get frame =>
+      const AssetGenImage('assets/images/side_actions/frame.png');
+
+  /// File path: assets/images/side_actions/incoming.png
+  AssetGenImage get incoming =>
+      const AssetGenImage('assets/images/side_actions/incoming.png');
+
+  /// File path: assets/images/side_actions/movments.png
+  AssetGenImage get movments =>
+      const AssetGenImage('assets/images/side_actions/movments.png');
+
+  /// File path: assets/images/side_actions/outgoing.png
+  AssetGenImage get outgoing =>
+      const AssetGenImage('assets/images/side_actions/outgoing.png');
 
   /// File path: assets/images/side_actions/qr.png
   AssetGenImage get qr =>
       const AssetGenImage('assets/images/side_actions/qr.png');
+
+  /// File path: assets/images/side_actions/settings.png
+  AssetGenImage get settings =>
+      const AssetGenImage('assets/images/side_actions/settings.png');
+
+  /// File path: assets/images/side_actions/twitter.png
+  AssetGenImage get twitter =>
+      const AssetGenImage('assets/images/side_actions/twitter.png');
 
   /// File path: assets/images/side_actions/user.png
   AssetGenImage get user =>
       const AssetGenImage('assets/images/side_actions/user.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [lastTransfer, qr, user];
+  List<AssetGenImage> get values => [
+    accounts,
+    frame,
+    incoming,
+    movments,
+    outgoing,
+    qr,
+    settings,
+    twitter,
+    user,
+  ];
 }
 
 class Assets {
