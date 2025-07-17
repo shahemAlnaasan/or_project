@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
@@ -27,6 +28,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 2;
+  final List<int> _tabHistory = [2]; // Start with home
+
   int sideIconShowed = 25;
   bool _showUserInfo = false;
   bool _showMovements = false;
@@ -82,15 +85,12 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onTabTapped(int index) {
     if (_selectedIndex == index) {
-      final currentNavigator = _navigatorKeys[index]!.currentState!;
-      if (currentNavigator.canPop()) {
-        currentNavigator.popUntil((route) => route.isFirst);
-      } else {
-        final widget = _rootScreens[index];
-        currentNavigator.pushReplacement(MaterialPageRoute(builder: (BuildContext context) => widget));
-      }
+      final navigator = _navigatorKeys[index]!.currentState!;
+      navigator.popUntil((route) => route.isFirst);
     } else {
       setState(() {
+        _tabHistory.remove(index); // Avoid duplicates
+        _tabHistory.add(index); // Push current tab
         _selectedIndex = index;
       });
     }
@@ -107,126 +107,144 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Scaffold(
-          appBar: mainAppbar(context, onTap: () => setState(() => _showMenu = !_showMenu)),
-          extendBody: true,
-          backgroundColor: context.background,
-          body: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              setState(() {
-                _showUserInfo = false;
-                _showMovements = false;
-                _showScanQR = false;
-                _showMenu = false;
-              });
-            },
-            child: Stack(
-              children: [
-                IndexedStack(
-                  index: _selectedIndex,
-                  children: List.generate(_rootScreens.length, (i) => _buildTabNavigator(i)),
-                ),
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                  top: 100,
-                  left: _showUserInfo ? -20 : -(context.screenWidth / 1.2) - sideIconShowed,
-                  child: _buildSideAction(
-                    icon: Assets.images.sideActions.user.path,
-                    actionWidget: UserInfoAction(),
-                    onTap: _toggleUserInfo,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        final currentNavigator = _navigatorKeys[_selectedIndex]!.currentState!;
+        if (didPop) return;
+
+        if (currentNavigator.canPop()) {
+          currentNavigator.pop();
+        } else if (_tabHistory.length > 1) {
+          setState(() {
+            _tabHistory.removeLast(); // Remove current
+            _selectedIndex = _tabHistory.last; // Go to previous
+          });
+        } else {
+          SystemNavigator.pop(); // Or show confirmation dialog
+        }
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: mainAppbar(context, onTap: () => setState(() => _showMenu = !_showMenu)),
+            extendBody: true,
+            backgroundColor: context.background,
+            body: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                setState(() {
+                  _showUserInfo = false;
+                  _showMovements = false;
+                  _showScanQR = false;
+                  _showMenu = false;
+                });
+              },
+              child: Stack(
+                children: [
+                  IndexedStack(
+                    index: _selectedIndex,
+                    children: List.generate(_rootScreens.length, (i) => _buildTabNavigator(i)),
                   ),
-                ),
-                // AnimatedPositioned(
-                //   duration: const Duration(milliseconds: 500),
-                //   curve: Curves.easeInOut,
-                //   top: 180,
-                //   left: _showMovements ? -20 : -(context.screenWidth / 1.2) - 20,
-                //   child: _buildSideAction(
-                //     icon: Assets.images.sideActions.user.path,
-                //     actionWidget: MovementsAction(),
-                //     onTap: _toggleMovements,
-                //   ),
-                // ),
-                if (_showScanQR)
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.easeInOut,
-                    top: 180,
-                    left: -20,
+                    top: 100,
+                    left: _showUserInfo ? -20 : -(context.screenWidth / 1.2) - sideIconShowed,
                     child: _buildSideAction(
-                      icon: Assets.images.sideActions.qr.path,
-                      actionWidget: ScanQrAction(),
-                      onTap: _toggleScanQR,
-                    ),
-                  )
-                else
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    top: 180,
-                    left: -(context.screenWidth / 1.2) - sideIconShowed,
-                    child: _buildSideAction(
-                      icon: Assets.images.sideActions.qr.path,
-                      actionWidget: _showScanQR ? ScanQrAction() : SideActionPlaceholder(),
-                      onTap: _toggleScanQR,
+                      icon: Assets.images.sideActions.user.path,
+                      actionWidget: UserInfoAction(),
+                      onTap: _toggleUserInfo,
                     ),
                   ),
-              ],
+                  // AnimatedPositioned(
+                  //   duration: const Duration(milliseconds: 500),
+                  //   curve: Curves.easeInOut,
+                  //   top: 180,
+                  //   left: _showMovements ? -20 : -(context.screenWidth / 1.2) - 20,
+                  //   child: _buildSideAction(
+                  //     icon: Assets.images.sideActions.user.path,
+                  //     actionWidget: MovementsAction(),
+                  //     onTap: _toggleMovements,
+                  //   ),
+                  // ),
+                  if (_showScanQR)
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                      top: 180,
+                      left: -20,
+                      child: _buildSideAction(
+                        icon: Assets.images.sideActions.qr.path,
+                        actionWidget: ScanQrAction(),
+                        onTap: _toggleScanQR,
+                      ),
+                    )
+                  else
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                      top: 180,
+                      left: -(context.screenWidth / 1.2) - sideIconShowed,
+                      child: _buildSideAction(
+                        icon: Assets.images.sideActions.qr.path,
+                        actionWidget: _showScanQR ? ScanQrAction() : SideActionPlaceholder(),
+                        onTap: _toggleScanQR,
+                      ),
+                    ),
+                ],
+              ),
             ),
+            bottomNavigationBar: _buildBottomBar(),
           ),
-          bottomNavigationBar: _buildBottomBar(),
-        ),
-        if (_showMenu)
-          Positioned(
-            top: kToolbarHeight + 20,
-            right: 10,
-            child: Material(
-              elevation: 4,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                width: 250,
-                padding: EdgeInsets.symmetric(vertical: 4),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildMenuItem(label: "الصفحة الرئيسية", icon: Assets.images.navbar.home.path, expandable: false),
-                    _buildMenuItem(
-                      label: "الصادر",
-                      icon: Assets.images.sideActions.outgoing.path,
-                      children: [
-                        _buildMenuItem(
-                          label: "الصفحة الرئيسية",
-                          icon: Assets.images.navbar.home.path,
-                          expandable: false,
-                        ),
-                        _buildMenuItem(
-                          label: "الصفحة الرئيسية",
-                          icon: Assets.images.navbar.home.path,
-                          expandable: false,
-                        ),
-                        _buildMenuItem(
-                          label: "الصفحة الرئيسية",
-                          icon: Assets.images.navbar.home.path,
-                          expandable: false,
-                        ),
-                      ],
-                    ),
-                    _buildMenuItem(label: "الوارد", icon: Assets.images.sideActions.incoming.path),
-                    _buildMenuItem(label: "الاعتمادات", icon: Assets.images.sideActions.incoming.path),
-                    _buildMenuItem(label: "الحسابات", icon: Assets.images.sideActions.accounts.path),
-                    _buildMenuItem(label: "المنشورات", icon: Assets.images.sideActions.twitter.path),
-                    _buildMenuItem(label: "أدوات", icon: Assets.images.sideActions.settings.path),
-                  ],
+          if (_showMenu)
+            Positioned(
+              top: kToolbarHeight + 20,
+              right: 10,
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: 250,
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildMenuItem(label: "الصفحة الرئيسية", icon: Assets.images.navbar.home.path, expandable: false),
+                      _buildMenuItem(
+                        label: "الصادر",
+                        icon: Assets.images.sideActions.outgoing.path,
+                        children: [
+                          _buildMenuItem(
+                            label: "الصفحة الرئيسية",
+                            icon: Assets.images.navbar.home.path,
+                            expandable: false,
+                          ),
+                          _buildMenuItem(
+                            label: "الصفحة الرئيسية",
+                            icon: Assets.images.navbar.home.path,
+                            expandable: false,
+                          ),
+                          _buildMenuItem(
+                            label: "الصفحة الرئيسية",
+                            icon: Assets.images.navbar.home.path,
+                            expandable: false,
+                          ),
+                        ],
+                      ),
+                      _buildMenuItem(label: "الوارد", icon: Assets.images.sideActions.incoming.path),
+                      _buildMenuItem(label: "الاعتمادات", icon: Assets.images.sideActions.incoming.path),
+                      _buildMenuItem(label: "الحسابات", icon: Assets.images.sideActions.accounts.path),
+                      _buildMenuItem(label: "المنشورات", icon: Assets.images.sideActions.twitter.path),
+                      _buildMenuItem(label: "أدوات", icon: Assets.images.sideActions.settings.path),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 

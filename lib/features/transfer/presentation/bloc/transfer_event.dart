@@ -20,3 +20,23 @@ class GetReceivedTransfersEvent extends TransferEvent {
 
   const GetReceivedTransfersEvent({required this.params});
 }
+
+class NewTransferEvent extends TransferEvent {
+  final NewTransferParams params;
+
+  const NewTransferEvent({required this.params});
+}
+
+class GetTransTargetsEvent extends TransferEvent {}
+
+class GetTargetInfoEvent extends TransferEvent {
+  final GetTargetInfoParams params;
+
+  const GetTargetInfoEvent({required this.params});
+}
+
+class GetTaxEvent extends TransferEvent {
+  final GetTaxParams params;
+
+  const GetTaxEvent({required this.params});
+}

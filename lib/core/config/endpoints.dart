@@ -11,4 +11,8 @@ class AppEndPoint {
   static const getReceivedTransfer = 'get_rcv_trans';
   static const getOutgoingTransfer = 'get_out_trans';
   static const getCurrencies = 'get_curs';
+  static const newTransfer = 'new_trans';
+  static const getTransTargets = 'get_trans_targets';
+  static const getTargetInfo = 'get_target_info';
+  static const getTax = 'get_tax';
 }

@@ -7,6 +7,8 @@ import 'package:golder_octopus/core/local_models/hive_adapters.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(CurAdapter());
+    registerAdapter(CurrenciesResponseAdapter());
     registerAdapter(LoginParamsAdapter());
     registerAdapter(LoginResponseModelAdapter());
   }
@@ -14,6 +16,8 @@ extension HiveRegistrar on HiveInterface {
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(CurAdapter());
+    registerAdapter(CurrenciesResponseAdapter());
     registerAdapter(LoginParamsAdapter());
     registerAdapter(LoginResponseModelAdapter());
   }

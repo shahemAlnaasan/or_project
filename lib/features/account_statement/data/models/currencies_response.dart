@@ -4,11 +4,13 @@
 
 import 'dart:convert';
 
+import 'package:hive_ce_flutter/hive_flutter.dart';
+
 CurrenciesResponse currenciesResponseFromJson(String str) => CurrenciesResponse.fromJson(json.decode(str));
 
 String currenciesResponseToJson(CurrenciesResponse data) => json.encode(data.toJson());
 
-class CurrenciesResponse {
+class CurrenciesResponse extends HiveObject {
   int status;
   List<Cur> curs;
 
@@ -20,7 +22,7 @@ class CurrenciesResponse {
   Map<String, dynamic> toJson() => {"status": status, "curs": List<dynamic>.from(curs.map((x) => x.toJson()))};
 }
 
-class Cur {
+class Cur extends HiveObject {
   String currency;
   String currencyName;
   String op;

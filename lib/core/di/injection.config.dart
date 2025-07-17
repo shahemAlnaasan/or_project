@@ -59,8 +59,15 @@ import '../../features/transfer/data/repositories/transfer_repository_imp.dart'
     as _i505;
 import '../../features/transfer/domain/repositories/transfer_repository.dart'
     as _i336;
+import '../../features/transfer/domain/use_cases/get_target_info_usecase.dart'
+    as _i226;
+import '../../features/transfer/domain/use_cases/get_tax_usecase.dart' as _i469;
+import '../../features/transfer/domain/use_cases/get_trans_targets_usecase.dart'
+    as _i292;
 import '../../features/transfer/domain/use_cases/incoming_transfer_usecase.dart'
     as _i597;
+import '../../features/transfer/domain/use_cases/new_transfer_usecase.dart'
+    as _i59;
 import '../../features/transfer/domain/use_cases/outgoing_transfers_usecase.dart'
     as _i869;
 import '../../features/transfer/domain/use_cases/received_transfers_usecase.dart'
@@ -134,8 +141,28 @@ extension GetItInjectableX on _i174.GetIt {
         remoteDataSource: gh<_i350.HomeRemoteDataSource>(),
       ),
     );
+    gh.factory<_i226.GetTargetInfoUsecase>(
+      () => _i226.GetTargetInfoUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
+    gh.factory<_i469.GetTaxUsecase>(
+      () => _i469.GetTaxUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
+    gh.factory<_i292.GetTransTargetsUsecase>(
+      () => _i292.GetTransTargetsUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
     gh.factory<_i597.IncomingTransferUsecase>(
       () => _i597.IncomingTransferUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
+    gh.factory<_i59.NewTransferUsecase>(
+      () => _i59.NewTransferUsecase(
         transferRepository: gh<_i336.TransferRepository>(),
       ),
     );
@@ -152,13 +179,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i14.AccountStatementUsecase>(
       () => _i14.AccountStatementUsecase(
         accountStatementRepository: gh<_i854.AccountStatementRepository>(),
-      ),
-    );
-    gh.factory<_i279.TransferBloc>(
-      () => _i279.TransferBloc(
-        incomingTransferUsecase: gh<_i597.IncomingTransferUsecase>(),
-        outgoingTransferUsecase: gh<_i869.OutgoingTransfersUsecase>(),
-        receivedTransfersUsecase: gh<_i66.ReceivedTransfersUsecase>(),
       ),
     );
     gh.factory<_i128.AccountStatementBloc>(
@@ -191,10 +211,22 @@ extension GetItInjectableX on _i174.GetIt {
         incomingCreditUsecase: gh<_i947.IncomingCreditUsecase>(),
       ),
     );
+    gh.factory<_i279.TransferBloc>(
+      () => _i279.TransferBloc(
+        incomingTransferUsecase: gh<_i597.IncomingTransferUsecase>(),
+        getTaxUsecase: gh<_i469.GetTaxUsecase>(),
+        outgoingTransferUsecase: gh<_i869.OutgoingTransfersUsecase>(),
+        receivedTransfersUsecase: gh<_i66.ReceivedTransfersUsecase>(),
+        newTransferUsecase: gh<_i59.NewTransferUsecase>(),
+        getTransTargetsUsecase: gh<_i292.GetTransTargetsUsecase>(),
+        getTargetInfoUsecase: gh<_i226.GetTargetInfoUsecase>(),
+      ),
+    );
     gh.factory<_i202.HomeBloc>(
       () => _i202.HomeBloc(
         accountInfoUsecase: gh<_i822.AccountInfoUsecase>(),
         currenciesUsecase: gh<_i573.CurrenciesUsecase>(),
+        getTransTargetsUsecase: gh<_i292.GetTransTargetsUsecase>(),
       ),
     );
     return this;

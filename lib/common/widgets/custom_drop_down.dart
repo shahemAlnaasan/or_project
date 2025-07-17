@@ -3,14 +3,17 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/theme/text_theme.dart';
 
-class CustomDropdown extends StatelessWidget {
+class CustomDropdown<T> extends StatelessWidget {
   final bool enableSearch;
-  final List<String> menuList;
+  final List<T> menuList;
   final String labelText;
   final String hintText;
-  final String? initaValue;
-  final String? Function(String?)? singleSelectValidator;
-  final Function(String?)? onChanged;
+  final T? initaValue;
+  final String? Function(T?)? singleSelectValidator;
+  final Function(T?)? onChanged;
+  final double menuMaxHeight;
+  final String Function(T)? itemAsString;
+  final bool Function(T, T)? compareFn;
 
   const CustomDropdown({
     super.key,
@@ -21,6 +24,9 @@ class CustomDropdown extends StatelessWidget {
     this.singleSelectValidator,
     this.enableSearch = false,
     this.onChanged,
+    this.menuMaxHeight = 200,
+    this.itemAsString,
+    this.compareFn,
   });
 
   @override
@@ -29,16 +35,19 @@ class CustomDropdown extends StatelessWidget {
   }
 
   Widget _buildSingleSelectDropdown(BuildContext context) {
-    return DropdownSearch<String>(
+    return DropdownSearch<T>(
+      compareFn: compareFn,
       validator: singleSelectValidator,
       items: (filter, loadProps) => menuList,
+      selectedItem: initaValue,
+      itemAsString: itemAsString,
+      onChanged: onChanged,
       suffixProps: DropdownSuffixProps(
         dropdownButtonProps: DropdownButtonProps(
           iconClosed: Icon(Icons.keyboard_arrow_down, color: context.onPrimaryColor),
           iconOpened: Icon(Icons.keyboard_arrow_up, color: context.onPrimaryColor),
         ),
       ),
-      selectedItem: initaValue,
       decoratorProps: DropDownDecoratorProps(
         isHovering: true,
         baseStyle: textTheme.titleSmall!.copyWith(color: context.onPrimaryColor),
@@ -64,7 +73,7 @@ class CustomDropdown extends StatelessWidget {
         ),
       ),
       popupProps: PopupProps.menu(
-        constraints: BoxConstraints(maxHeight: 200),
+        constraints: BoxConstraints(maxHeight: menuMaxHeight),
         containerBuilder: (context, child) {
           return Container(
             decoration: BoxDecoration(
@@ -83,30 +92,30 @@ class CustomDropdown extends StatelessWidget {
         ),
         showSearchBox: enableSearch,
         searchFieldProps: TextFieldProps(
+          cursorColor: context.onPrimaryColor,
           decoration: InputDecoration(
+            focusColor: context.onPrimaryColor,
+            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: context.onPrimaryColor)),
+            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: context.onPrimaryColor)),
             hintText: "بحث",
             suffixIcon: const Icon(Icons.search),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           ),
         ),
         itemBuilder: (context, item, isDisabled, isSelected) {
+          final display = itemAsString != null ? itemAsString!(item) : item.toString();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Text(item, style: textTheme.titleSmall!.copyWith(color: context.onPrimaryColor)),
+                child: Text(display, style: textTheme.titleSmall!.copyWith(color: context.onPrimaryColor)),
               ),
               Divider(color: Colors.grey[500], thickness: 1, height: 1),
             ],
           );
         },
       ),
-      onChanged: (String? selected) {
-        if (onChanged != null) {
-          onChanged!(selected);
-        }
-      },
     );
   }
 }
