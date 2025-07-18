@@ -6,12 +6,14 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
+import 'package:golder_octopus/features/transfer/data/models/received_transfer_response.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/transfer_receipt_screen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
-class TransferDetailsDialog extends StatelessWidget {
-  const TransferDetailsDialog({super.key});
+class ReceivedTransferDetailsDialog extends StatelessWidget {
+  final ReceivedTransfers receivedTransfers;
+  const ReceivedTransferDetailsDialog({super.key, required this.receivedTransfers});
 
   @override
   Widget build(BuildContext context) {

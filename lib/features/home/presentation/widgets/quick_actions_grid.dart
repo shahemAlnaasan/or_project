@@ -49,7 +49,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
       GridItem(
         icon: Assets.images.quickActions.accountStatement.path,
         label: LocaleKeys.home_account_statement.tr(),
-        onTap: () => context.push(AccountStatementScreen(currenciesResponse: widget.currenciesResponse)),
+        onTap: () => context.push(AccountStatementScreen()),
       ),
       GridItem(
         icon: Assets.images.quickActions.outgoingTransfer.path,

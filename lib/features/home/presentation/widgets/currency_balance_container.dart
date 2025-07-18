@@ -3,7 +3,6 @@ import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/presentation/pages/account_statement_screen.dart';
 import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
@@ -11,11 +10,9 @@ import 'package:golder_octopus/generated/assets.gen.dart';
 enum CurrencyType { turkish, dolar, euro, total }
 
 class CurrencyBalanceContainer extends StatelessWidget {
-  final CurrenciesResponse? currenciesResponse;
-
   final Acc acc;
 
-  const CurrencyBalanceContainer({super.key, required this.acc, required this.currenciesResponse});
+  const CurrencyBalanceContainer({super.key, required this.acc});
 
   String getIcon(String currencyName) {
     switch (currencyName) {
@@ -60,13 +57,7 @@ class CurrencyBalanceContainer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(30, 5, 30, 0),
       child: GestureDetector(
-        onTap:
-            () => context.push(
-              AccountStatementScreen(
-                currencyType: getCurrencyType(acc.currency),
-                currenciesResponse: currenciesResponse,
-              ),
-            ),
+        onTap: () => context.push(AccountStatementScreen(currencyType: getCurrencyType(acc.currency))),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
           width: context.screenWidth,

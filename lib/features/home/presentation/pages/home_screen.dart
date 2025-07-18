@@ -61,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             containersColor: context.primaryColor,
                             enableSwitchAnimation: true,
                             child: CurrencyBalanceContainer(
-                              currenciesResponse: null,
                               acc: Acc(
                                 amount: 10,
                                 currency: "currency",
@@ -77,17 +76,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Column(
                         children: List.generate(
                           state.accountInfo!.accs.length,
-                          (index) => CurrencyBalanceContainer(
-                            acc: state.accountInfo!.accs[index],
-                            currenciesResponse: currenciesResponse,
-                          ),
+                          (index) => CurrencyBalanceContainer(acc: state.accountInfo!.accs[index]),
                         ),
                       );
                     }
                     return Column(
                       children: List.generate(
                         ModelUsage().acc.length,
-                        (index) => CurrencyBalanceContainer(acc: ModelUsage().acc[index], currenciesResponse: null),
+                        (index) => CurrencyBalanceContainer(acc: ModelUsage().acc[index]),
                       ),
                     );
                   },

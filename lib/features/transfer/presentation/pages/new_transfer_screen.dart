@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/new_transfer_form.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/forms/new_transfer_form.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class NewTransferScreen extends StatelessWidget {

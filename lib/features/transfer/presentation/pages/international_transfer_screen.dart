@@ -4,7 +4,7 @@ import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/features/transfer/presentation/widgets/exchange_table.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/international_transfer_form.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/forms/international_transfer_form.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class InternationalTransferScreen extends StatelessWidget {

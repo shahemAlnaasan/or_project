@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/consts/model_usage.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
+import 'package:golder_octopus/common/state_managment/bloc_state.dart';
 import 'package:golder_octopus/common/utils/number_to_arabic_words.dart';
 import 'package:golder_octopus/common/utils/pdf_generator.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
@@ -15,7 +16,7 @@ import 'package:golder_octopus/core/di/injection.dart';
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
 import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/presentation/bloc/account_statement_bloc.dart';
-import 'package:golder_octopus/features/account_statement/presentation/widgets/account_statement_form.dart';
+import 'package:golder_octopus/features/account_statement/presentation/widgets/forms/account_statement_form.dart';
 import 'package:golder_octopus/features/account_statement/presentation/widgets/account_statement_table.dart';
 import 'package:golder_octopus/features/account_statement/presentation/widgets/balance_in_words_container.dart';
 import 'package:golder_octopus/features/account_statement/presentation/widgets/statement_info_card.dart';
@@ -26,9 +27,8 @@ import 'package:toastification/toastification.dart';
 
 class AccountStatementScreen extends StatefulWidget {
   final CurrencyType? currencyType;
-  final CurrenciesResponse? currenciesResponse;
 
-  const AccountStatementScreen({super.key, this.currencyType, required this.currenciesResponse});
+  const AccountStatementScreen({super.key, this.currencyType});
 
   @override
   State<AccountStatementScreen> createState() => _AccountStatementScreenState();
@@ -37,6 +37,7 @@ class AccountStatementScreen extends StatefulWidget {
 class _AccountStatementScreenState extends State<AccountStatementScreen> {
   AccountStatementResponse accountStatementResponse = ModelUsage().accountStatementResponse;
   final TextEditingController searchController = TextEditingController();
+  CurrenciesResponse? currenciesResponse;
   String _searchQuery = "";
 
   List<Statment> get filteredList {
@@ -120,11 +121,16 @@ class _AccountStatementScreenState extends State<AccountStatementScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<AccountStatementBloc>(),
+      create: (context) => getIt<AccountStatementBloc>()..add(GetCurrenciesEvent()),
       child: BlocListener<AccountStatementBloc, AccountStatementState>(
         listener: (context, state) {
           if (state.status == AcccountStmtStatus.failure) {
             ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
+          }
+          if (state.getCurreciesStatus == Status.success) {
+            setState(() {
+              currenciesResponse = state.currenciesResponse;
+            });
           }
         },
         child: Scaffold(
@@ -147,7 +153,7 @@ class _AccountStatementScreenState extends State<AccountStatementScreen> {
                     currencyType: widget.currencyType,
                     accountStatement: accountStatementResponse,
                     statments: filteredList,
-                    currenciesResponse: widget.currenciesResponse,
+                    currenciesResponse: currenciesResponse,
                   ),
 
                   BlocBuilder<AccountStatementBloc, AccountStatementState>(

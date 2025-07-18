@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/features/exchange/data/models/exchange_model.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
@@ -11,15 +10,6 @@ enum ExchangeType { euroDolar, goldDolar, silverDolar }
 
 class ExchangeContainer extends StatelessWidget {
   ExchangeContainer({super.key});
-
-  void _showDetailsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return TransferDetailsDialog();
-      },
-    );
-  }
 
   final List<ExchangeModel> exchangeList = [
     ExchangeModel(
@@ -50,34 +40,31 @@ class ExchangeContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _showDetailsDialog(context),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            decoration: BoxDecoration(
-              color: context.primaryContainer,
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: FractionallySizedBox(
-                widthFactor: 0.5,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    AppText.bodyMedium(LocaleKeys.exchange_sell.tr(), fontWeight: FontWeight.bold),
-                    AppText.bodyMedium(LocaleKeys.exchange_buy.tr(), fontWeight: FontWeight.bold),
-                  ],
-                ),
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: context.primaryContainer,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  AppText.bodyMedium(LocaleKeys.exchange_sell.tr(), fontWeight: FontWeight.bold),
+                  AppText.bodyMedium(LocaleKeys.exchange_buy.tr(), fontWeight: FontWeight.bold),
+                ],
               ),
             ),
           ),
+        ),
 
-          ...exchangeList.map((e) => buildExchangeRow(e, context)),
-        ],
-      ),
+        ...exchangeList.map((e) => buildExchangeRow(e, context)),
+      ],
     );
   }
 

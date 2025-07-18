@@ -21,7 +21,11 @@
 },
 "transfer" : {
   "new_transfer": "حوالة جديدة",
+  "reserved_transfer": "حوالة محجوزة لحين تنفيذ العمل",
+ "please_contact_center" : "الرجاء التواصل مع الادارة لفك حجز الحوالة، لن يستطيع المركز المستقبل تسليم الحوالة قبل فك حجزها",
   "exchange": "تصريف",
+  "branch": "الفرع",
+  "total" : "المجموع",
   "outgoing_transfers": "الحوالات الصادرة",
   "incoming_transfers": "الحوالات الواردة",
   "outgoing_transfer": "حوالة صادرة",
@@ -103,6 +107,15 @@
     "only_this_year": "هذا العام فقط",
     "all": "الكل"
 
+  },
+
+  "posts": {
+    "posts": "المنشورات",
+    "new_post": "منشور جديد",
+    "post_context": "نص المنشور",
+    "post_image": "صورة المنشور",
+    "upload_image": "تحميل صورة",
+    "post": "نشر"
   },
   "navbar": {
     "home": "الرئيسية",

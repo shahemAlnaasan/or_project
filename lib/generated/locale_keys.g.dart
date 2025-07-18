@@ -23,7 +23,11 @@ abstract class  LocaleKeys {
   static const home_withdrawl_transfer = 'home.withdrawl_transfer';
   static const home = 'home';
   static const transfer_new_transfer = 'transfer.new_transfer';
+  static const transfer_reserved_transfer = 'transfer.reserved_transfer';
+  static const transfer_please_contact_center = 'transfer.please_contact_center';
   static const transfer_exchange = 'transfer.exchange';
+  static const transfer_branch = 'transfer.branch';
+  static const transfer_total = 'transfer.total';
   static const transfer_outgoing_transfers = 'transfer.outgoing_transfers';
   static const transfer_incoming_transfers = 'transfer.incoming_transfers';
   static const transfer_outgoing_transfer = 'transfer.outgoing_transfer';
@@ -103,6 +107,13 @@ abstract class  LocaleKeys {
   static const account_statement_only_this_year = 'account_statement.only_this_year';
   static const account_statement_all = 'account_statement.all';
   static const account_statement = 'account_statement';
+  static const posts_posts = 'posts.posts';
+  static const posts_new_post = 'posts.new_post';
+  static const posts_post_context = 'posts.post_context';
+  static const posts_post_image = 'posts.post_image';
+  static const posts_upload_image = 'posts.upload_image';
+  static const posts_post = 'posts.post';
+  static const posts = 'posts';
   static const navbar_home = 'navbar.home';
   static const navbar_new_transfer = 'navbar.new_transfer';
   static const navbar_outgoing_transfers = 'navbar.outgoing_transfers';

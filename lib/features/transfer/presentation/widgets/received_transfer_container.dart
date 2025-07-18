@@ -4,7 +4,7 @@ import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_action_button.dart';
 import 'package:golder_octopus/features/transfer/data/models/received_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_details_dialog.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/dialogs/received_transfer_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
@@ -16,7 +16,7 @@ class ReceivedTransferContainer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return TransferDetailsDialog();
+        return ReceivedTransferDetailsDialog(receivedTransfers: receivedTransfers);
       },
     );
   }

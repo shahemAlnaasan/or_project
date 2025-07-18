@@ -3,18 +3,18 @@ import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_action_button.dart';
 import 'package:golder_octopus/features/transfer/data/models/incoming_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_details_dialog.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/dialogs/incoming_transfer_details_dialog.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 
 class IncomingTransferContainer extends StatelessWidget {
   final IncomingTransfers incomingTransfers;
   const IncomingTransferContainer({super.key, required this.incomingTransfers});
 
-  void _showDetailsDialog(BuildContext context) {
+  void _showDetailsDialog(BuildContext context, {required IncomingTransfers incomingTransfers}) {
     showDialog(
       context: context,
       builder: (context) {
-        return TransferDetailsDialog();
+        return IncomingTransferDetailsDialog(incomingTransfers: incomingTransfers);
       },
     );
   }
@@ -22,7 +22,7 @@ class IncomingTransferContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showDetailsDialog(context),
+      onTap: () => _showDetailsDialog(context, incomingTransfers: incomingTransfers),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -100,7 +100,7 @@ class IncomingTransferContainer extends StatelessWidget {
 
                 Expanded(
                   child: CustomActionButton(
-                    onPressed: () => _showDetailsDialog(context),
+                    onPressed: () => _showDetailsDialog(context, incomingTransfers: incomingTransfers),
                     text: "تفاصيل",
                     backgroundColor: context.primaryContainer,
                   ),

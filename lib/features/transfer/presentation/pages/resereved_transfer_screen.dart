@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/exchange_table.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/forms/syrian_transfer_form.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/forms/reserved_transfer_form.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
-class SyrianTransferScreen extends StatelessWidget {
-  const SyrianTransferScreen({super.key});
+class ReserevedTransferScreen extends StatelessWidget {
+  const ReserevedTransferScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +21,19 @@ class SyrianTransferScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppText.displaySmall(
-                LocaleKeys.home_syrian_transfer.tr(),
+                LocaleKeys.transfer_reserved_transfer.tr(),
                 textAlign: TextAlign.start,
                 fontWeight: FontWeight.bold,
+                color: context.onPrimaryColor,
+              ),
+              AppText.bodyMedium(
+                LocaleKeys.transfer_please_contact_center.tr(),
+                textAlign: TextAlign.center,
+                fontWeight: FontWeight.bold,
+                color: Colors.red,
               ),
               SizedBox(height: 20),
-              SyrianTransferForm(),
-              ExchangeTable(),
-              SizedBox(height: 10),
+              ReservedTransferForm(),
             ],
           ),
         ),

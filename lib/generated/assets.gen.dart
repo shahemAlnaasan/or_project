@@ -12,11 +12,27 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/block.png
+  AssetGenImage get block => const AssetGenImage('assets/images/block.png');
+
+  /// File path: assets/images/check.png
+  AssetGenImage get check => const AssetGenImage('assets/images/check.png');
+
+  /// File path: assets/images/credit.png
+  AssetGenImage get credit => const AssetGenImage('assets/images/credit.png');
+
+  /// File path: assets/images/data_analytics.png
+  AssetGenImage get dataAnalytics =>
+      const AssetGenImage('assets/images/data_analytics.png');
+
   /// Directory path: assets/images/flags
   $AssetsImagesFlagsGen get flags => const $AssetsImagesFlagsGen();
 
   /// File path: assets/images/google.png
   AssetGenImage get google => const AssetGenImage('assets/images/google.png');
+
+  /// File path: assets/images/heart.png
+  AssetGenImage get heart => const AssetGenImage('assets/images/heart.png');
 
   /// Directory path: assets/images/logo
   $AssetsImagesLogoGen get logo => const $AssetsImagesLogoGen();
@@ -36,7 +52,15 @@ class $AssetsImagesGen {
       const $AssetsImagesSideActionsGen();
 
   /// List of all assets
-  List<AssetGenImage> get values => [google, printer];
+  List<AssetGenImage> get values => [
+    block,
+    check,
+    credit,
+    dataAnalytics,
+    google,
+    heart,
+    printer,
+  ];
 }
 
 class $AssetsTranslationsGen {

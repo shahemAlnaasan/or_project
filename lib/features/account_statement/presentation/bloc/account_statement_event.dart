@@ -12,3 +12,5 @@ class GetAccountStatementEvent extends AccountStatementEvent {
 
   const GetAccountStatementEvent({required this.params});
 }
+
+class GetCurrenciesEvent extends AccountStatementEvent {}

@@ -6,6 +6,7 @@ import 'package:golder_octopus/common/state_managment/bloc_state.dart';
 import 'package:golder_octopus/common/utils/device_info.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_drop_down.dart';
+import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
 import 'package:golder_octopus/common/widgets/custom_text_field.dart';
 import 'package:golder_octopus/common/widgets/large_button.dart';
 import 'package:golder_octopus/core/di/injection.dart';
@@ -265,31 +266,34 @@ class _NewTransferFormState extends State<NewTransferForm> {
                 BlocBuilder<TransferBloc, TransferState>(
                   builder: (context, state) {
                     return LargeButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          final String deviceType = await DeviceInfo.deviceType();
-                          final String? deviceIp = await DeviceInfo.getDeviceIp();
-
-                          bool isTargetGlobal = selectedTarget!.cid.contains('-');
-                          final NewTransferParams params = NewTransferParams(
-                            target: isTargetGlobal ? 0 : int.parse(selectedTarget!.cid),
-                            rcvname: beneficiaryNameController.text,
-                            rcvphone: beneficiaryPhoneController.text,
-                            amount: int.parse(amountController.text),
-                            currency: selectedCurrency!.currency,
-                            notes: notesController.text,
-                            sender: senderNameController.text,
-                            ipInfo: deviceIp ?? "",
-                            deviceInfo: deviceType,
-                            api: selectedTarget!.api,
-                            apiInfo: isTargetGlobal ? selectedTarget!.cid : "",
-                          );
-                          // context.read<TransferBloc>().add(NewTransferEvent(params: params));
-                        }
-                      },
+                      onPressed:
+                          state.newTransferStatus == Status.loading
+                              ? () {}
+                              : () async {
+                                if (_formKey.currentState!.validate()) {
+                                  final String deviceType = await DeviceInfo.deviceType();
+                                  final String? deviceIp = await DeviceInfo.getDeviceIp();
+                                  bool isTargetGlobal = selectedTarget!.cid.contains('-');
+                                  final NewTransferParams params = NewTransferParams(
+                                    target: isTargetGlobal ? 0 : int.parse(selectedTarget!.cid),
+                                    rcvname: beneficiaryNameController.text,
+                                    rcvphone: beneficiaryPhoneController.text,
+                                    amount: int.parse(amountController.text),
+                                    currency: selectedCurrency!.currency,
+                                    notes: notesController.text,
+                                    sender: senderNameController.text,
+                                    ipInfo: deviceIp ?? "",
+                                    deviceInfo: deviceType,
+                                    api: selectedTarget!.api,
+                                    apiInfo: isTargetGlobal ? selectedTarget!.cid : "",
+                                  );
+                                  // context.read<TransferBloc>().add(NewTransferEvent(params: params));
+                                }
+                              },
                       text: LocaleKeys.transfer_send.tr(),
                       backgroundColor: context.primaryContainer,
                       circularRadius: 12,
+                      child: state.newTransferStatus == Status.loading ? CustomProgressIndecator() : null,
                     );
                   },
                 ),

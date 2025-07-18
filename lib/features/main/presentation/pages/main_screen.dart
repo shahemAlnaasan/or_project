@@ -6,6 +6,10 @@ import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/core/di/injection.dart';
+import 'package:golder_octopus/features/account_statement/presentation/pages/account_statement_screen.dart';
+import 'package:golder_octopus/features/account_statement/presentation/pages/centers_posts_screen.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/incoming_credit_screen.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/outgoing_credit_screen.dart';
 import 'package:golder_octopus/features/exchange/presentation/pages/exchange_screen.dart';
 import 'package:golder_octopus/features/home/presentation/bloc/home_bloc.dart';
 import 'package:golder_octopus/features/home/presentation/pages/home_screen.dart';
@@ -16,6 +20,8 @@ import 'package:golder_octopus/features/main/presentation/widgets/side_actions/u
 import 'package:golder_octopus/features/transfer/presentation/pages/incoming_transfer_screen.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/new_transfer_screen.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/outgoing_transfer_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/received_transfer_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/resereved_transfer_screen.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
@@ -35,7 +41,6 @@ class _MainScreenState extends State<MainScreen> {
   bool _showMovements = false;
   bool _showScanQR = false;
   bool _showMenu = false;
-  bool _expandTools = false;
   String? _expandedMenu;
 
   void _toggleUserInfo() {
@@ -83,17 +88,25 @@ class _MainScreenState extends State<MainScreen> {
     const ExchangeScreen(),
   ];
 
+  void _pushInCurrentTab(Widget screen) {
+    _navigatorKeys[_selectedIndex]!.currentState!.push(MaterialPageRoute(builder: (_) => screen));
+    setState(() => _showMenu = false);
+  }
+
   void _onTabTapped(int index) {
     if (_selectedIndex == index) {
       final navigator = _navigatorKeys[index]!.currentState!;
       navigator.popUntil((route) => route.isFirst);
     } else {
       setState(() {
-        _tabHistory.remove(index); // Avoid duplicates
-        _tabHistory.add(index); // Push current tab
+        _tabHistory.remove(index);
+        _tabHistory.add(index);
         _selectedIndex = index;
       });
     }
+    setState(() {
+      _showMenu = false;
+    });
   }
 
   Widget _buildTabNavigator(int index) {
@@ -117,11 +130,11 @@ class _MainScreenState extends State<MainScreen> {
           currentNavigator.pop();
         } else if (_tabHistory.length > 1) {
           setState(() {
-            _tabHistory.removeLast(); // Remove current
-            _selectedIndex = _tabHistory.last; // Go to previous
+            _tabHistory.removeLast();
+            _selectedIndex = _tabHistory.last;
           });
         } else {
-          SystemNavigator.pop(); // Or show confirmation dialog
+          SystemNavigator.pop();
         }
       },
       child: Stack(
@@ -207,37 +220,152 @@ class _MainScreenState extends State<MainScreen> {
                 child: Container(
                   width: 250,
                   padding: EdgeInsets.symmetric(vertical: 4),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _buildMenuItem(label: "الصفحة الرئيسية", icon: Assets.images.navbar.home.path, expandable: false),
+                      _buildMenuItem(
+                        label: "الصفحة الرئيسية",
+                        icon: Assets.images.navbar.home.path,
+                        expandable: false,
+                        onTap: () {
+                          final navigator = _navigatorKeys[2]!.currentState!;
+                          navigator.popUntil((route) => route.isFirst);
+                          setState(() {
+                            _tabHistory.remove(2);
+                            _tabHistory.add(2);
+                            _selectedIndex = 2;
+                            _showMenu = false;
+                          });
+                        },
+                      ),
                       _buildMenuItem(
                         label: "الصادر",
                         icon: Assets.images.sideActions.outgoing.path,
                         children: [
                           _buildMenuItem(
-                            label: "الصفحة الرئيسية",
-                            icon: Assets.images.navbar.home.path,
+                            label: "الحوالات الصادرة",
+                            icon: Icons.arrow_back_rounded,
                             expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
                           ),
                           _buildMenuItem(
-                            label: "الصفحة الرئيسية",
-                            icon: Assets.images.navbar.home.path,
+                            label: "حوالة محجوزة لحين التنفيذ",
+                            icon: Assets.images.block.path,
                             expandable: false,
-                          ),
-                          _buildMenuItem(
-                            label: "الصفحة الرئيسية",
-                            icon: Assets.images.navbar.home.path,
-                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(ReserevedTransferScreen()),
                           ),
                         ],
                       ),
-                      _buildMenuItem(label: "الوارد", icon: Assets.images.sideActions.incoming.path),
-                      _buildMenuItem(label: "الاعتمادات", icon: Assets.images.sideActions.incoming.path),
-                      _buildMenuItem(label: "الحسابات", icon: Assets.images.sideActions.accounts.path),
-                      _buildMenuItem(label: "المنشورات", icon: Assets.images.sideActions.twitter.path),
-                      _buildMenuItem(label: "أدوات", icon: Assets.images.sideActions.settings.path),
+                      _buildMenuItem(
+                        label: "الوارد",
+                        icon: Assets.images.sideActions.incoming.path,
+                        children: [
+                          _buildMenuItem(
+                            label: "الحوالات الواردة",
+                            icon: Icons.arrow_forward_outlined,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(IncomingTransferScreen()),
+                          ),
+                          _buildMenuItem(
+                            label: "الحوالات المستلمة",
+                            icon: Assets.images.check.path,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(ReceivedTransferScreen()),
+                          ),
+                        ],
+                      ),
+                      _buildMenuItem(
+                        label: "الاعتمادات",
+                        icon: Assets.images.sideActions.incoming.path,
+                        children: [
+                          _buildMenuItem(
+                            label: "اعتمادات صادرة",
+                            icon: Icons.arrow_upward_outlined,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(OutgoingCreditScreen()),
+                          ),
+                          _buildMenuItem(
+                            label: "اعتمادات واردة",
+                            icon: Icons.arrow_downward_outlined,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(IncomingCreditScreen()),
+                          ),
+                        ],
+                      ),
+                      _buildMenuItem(
+                        label: "الحسابات",
+                        icon: Assets.images.sideActions.user.path,
+                        children: [
+                          _buildMenuItem(
+                            label: "كشف حساب",
+                            icon: Assets.images.sideActions.accounts.path,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(AccountStatementScreen()),
+                          ),
+                          _buildMenuItem(
+                            label: "صندوق الارباح",
+                            icon: Assets.images.heart.path,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                          ),
+                        ],
+                      ),
+                      _buildMenuItem(
+                        label: "المنشورات",
+                        icon: Assets.images.sideActions.twitter.path,
+                        children: [
+                          _buildMenuItem(
+                            label: "اخبار الشركة",
+                            icon: Icons.message_outlined,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                          ),
+                          _buildMenuItem(
+                            label: "منشورات المراكز",
+                            icon: Assets.images.sideActions.twitter.path,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(CentersPostsScreen()),
+                          ),
+                        ],
+                      ),
+                      _buildMenuItem(
+                        label: "أدوات",
+                        icon: Assets.images.sideActions.settings.path,
+                        children: [
+                          _buildMenuItem(
+                            label: "ادارة الوكلاء",
+                            icon: Icons.person_add_alt,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                          ),
+                          _buildMenuItem(
+                            label: "التقارير",
+                            icon: Assets.images.dataAnalytics.path,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                          ),
+                          _buildMenuItem(
+                            label: "تغيير كلمة المرور",
+                            icon: Icons.lock_open,
+                            expandable: false,
+                            isSubItem: true,
+                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -347,7 +475,9 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildMenuItem({
     required String label,
-    required String icon,
+    required icon,
+    void Function()? onTap,
+    bool isSubItem = false,
     bool expandable = true,
     List<Widget> children = const [],
   }) {
@@ -356,18 +486,33 @@ class _MainScreenState extends State<MainScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListTile(
-          title: Text(label, style: const TextStyle(fontSize: 15)),
-          leading: Image.asset(icon, scale: 7),
-          trailing:
-              expandable
-                  ? Icon(isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded, size: 22)
-                  : null,
-          onTap: () {
-            setState(() {
-              _expandedMenu = isExpanded ? null : label;
-            });
-          },
+        Padding(
+          padding: EdgeInsets.only(right: isSubItem ? 10 : 0),
+          child: ListTile(
+            textColor: context.onPrimaryColor,
+
+            title: Text(label, style: const TextStyle(fontSize: 15)),
+            leading:
+                icon is String
+                    ? Image.asset(icon, scale: 7.3, color: context.onPrimaryColor)
+                    : Icon(icon, size: 20, color: context.onPrimaryColor),
+            trailing:
+                expandable
+                    ? Icon(
+                      isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                      size: 22,
+                      color: context.onPrimaryColor,
+                    )
+                    : null,
+            onTap:
+                expandable
+                    ? () {
+                      setState(() {
+                        _expandedMenu = isExpanded ? null : label;
+                      });
+                    }
+                    : onTap,
+          ),
         ),
         AnimatedCrossFade(
           firstChild: SizedBox.shrink(),

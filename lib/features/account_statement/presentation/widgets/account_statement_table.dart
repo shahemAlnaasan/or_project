@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart' show StringTranslateEx
 import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
-import 'package:golder_octopus/features/account_statement/presentation/widgets/account_statement_form.dart';
+import 'package:golder_octopus/features/account_statement/presentation/widgets/forms/account_statement_form.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class AccountStatementTable extends StatefulWidget {
