@@ -6,34 +6,36 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
 class IncomingCreditDetailsDialog extends StatelessWidget {
-  final IncomingCreditsResponse incomingCreditsResponse;
-  const IncomingCreditDetailsDialog({super.key, required this.incomingCreditsResponse});
+  final TransDetailsResponse transDetailsResponse;
+  const IncomingCreditDetailsDialog({super.key, required this.transDetailsResponse});
 
-  String getCreditStatus(String status) {
+  String getCreditStatus(int status) {
     switch (status) {
-      case "1":
-        return "غير مستلم";
-      case "2":
-        return "مستلم";
-      case "3":
-        return "محذوف";
-      case "4":
-        return "محجوز";
-      case "5":
-        return "مجمد";
-
+      case 1:
+        return "غير مسلمة";
+      case 2:
+        return "مسلمة";
+      case 3:
+        return "محذوفة";
+      case 4:
+        return "محجوزة";
+      case 5:
+        return "مجمدة";
       default:
-        return "غير مستلمة";
+        return "غير مسلمة";
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final Data transDetails = transDetailsResponse.data;
+    final companyName = "شركة الأخطبـــــوط الذهــبــي";
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
@@ -56,7 +58,7 @@ class IncomingCreditDetailsDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        LocaleKeys.transfer_outgoing_transfer.tr(),
+                        LocaleKeys.credits_incoming_credit.tr(),
                         style: TextStyle(fontWeight: FontWeight.bold, color: context.onPrimaryColor, fontSize: 22),
                       ),
                       GestureDetector(
@@ -70,31 +72,27 @@ class IncomingCreditDetailsDialog extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Info rows using variables
-              _infoRow(
-                label: LocaleKeys.credits_credit_source.tr(),
-                value: incomingCreditsResponse.source,
-                context: context,
-              ),
+              _infoRow(label: LocaleKeys.credits_credit_source.tr(), value: transDetails.srcName, context: context),
               _infoRow(
                 label: LocaleKeys.credits_credit_destination.tr(),
-                value: incomingCreditsResponse.source,
+                value: transDetails.targetName,
                 context: context,
               ),
-              _infoRow(label: LocaleKeys.credits_amount.tr(), value: incomingCreditsResponse.source, context: context),
+              _infoRow(
+                label: LocaleKeys.credits_amount.tr(),
+                value: "${transDetails.amount} ${transDetails.currencyName}",
+                context: context,
+              ),
               _infoRow(
                 label: LocaleKeys.credits_transfer_date.tr(),
-                value: incomingCreditsResponse.source,
+                value: DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate),
                 context: context,
               ),
-              _infoRow(
-                label: LocaleKeys.credits_credit_number.tr(),
-                value: incomingCreditsResponse.source,
-                context: context,
-              ),
-              _infoRow(label: LocaleKeys.credits_notes.tr(), value: incomingCreditsResponse.source, context: context),
+              _infoRow(label: LocaleKeys.credits_credit_number.tr(), value: transDetails.transnum, context: context),
+              _infoRow(label: LocaleKeys.credits_notes.tr(), value: transDetails.notes, context: context),
               _infoRow(
                 label: LocaleKeys.credits_status.tr(),
-                value: getCreditStatus(incomingCreditsResponse.status),
+                value: getCreditStatus(int.parse(transDetails.status)),
                 context: context,
               ),
               const SizedBox(height: 16),
@@ -120,15 +118,15 @@ class IncomingCreditDetailsDialog extends StatelessWidget {
                       color: Color(0xffcc5a56),
                       onPressed: () {
                         final data = '''
-${incomingCreditsResponse.source}  
-المبلغ  :${incomingCreditsResponse.source}  
-العمولة  :${incomingCreditsResponse.source}  
-تاريخ التحويل   :${incomingCreditsResponse.source}  
-رقم الحوالة   :${incomingCreditsResponse.source}  
-اسم المستفيد   :${incomingCreditsResponse.source}  
-الملاحظات    :${incomingCreditsResponse.source}  
-الرقم السري    :${incomingCreditsResponse.source}  
-الحالة  :  ${incomingCreditsResponse.source}    
+$companyName
+مصدر الاعتماد  :${transDetails.srcName}  
+وجهة الاعتماد  :${transDetails.targetName}  
+المبلغ   :${transDetails.amount} ${transDetails.currencyName}  
+العمولة   :${transDetails.fee} ${transDetails.currencyName}  
+تاريخ   :${transDetails.transdate}  
+رقم الاعتماد    :${transDetails.transnum}  
+ملاحظات    :${transDetails.notes}  
+الحالة  :  ${getCreditStatus(int.parse(transDetails.status))}    
 ''';
                         Clipboard.setData(ClipboardData(text: data));
                         ToastificationDialog.showToast(

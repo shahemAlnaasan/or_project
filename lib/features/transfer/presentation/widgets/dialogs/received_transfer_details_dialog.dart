@@ -7,7 +7,6 @@ import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
 import 'package:golder_octopus/features/transfer/data/models/received_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/pages/transfer_receipt_screen.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
@@ -127,28 +126,28 @@ $companyName
                         );
                       },
                     ),
-                    _dialogButton(
-                      context,
-                      "إشعار",
-                      Icons.notifications,
-                      Color(0xff79bdd8),
-                      onPressed:
-                          () => context.push(
-                            TransferReceiptScreen(
-                              data: {
-                                "ref": "BR23066215948",
-                                "date": "2025-06-23",
-                                "destination": "إدلب - 109",
-                                "source": "999",
-                                "secret": "26465",
-                                "phone": "626262626",
-                                "receiver": "بيتتيت",
-                                "amount": "1,000",
-                                "address": "إدلب، إبراهيم كلي، جانب دوار الشهداء",
-                              },
-                            ),
-                          ),
-                    ),
+                    // _dialogButton(
+                    //   context,
+                    //   "إشعار",
+                    //   Icons.notifications,
+                    //   Color(0xff79bdd8),
+                    //   onPressed:
+                    //       () => context.push(
+                    //         TransferReceiptScreen(
+                    //           data: {
+                    //             "ref": "BR23066215948",
+                    //             "date": "2025-06-23",
+                    //             "destination": "إدلب - 109",
+                    //             "source": "999",
+                    //             "secret": "26465",
+                    //             "phone": "626262626",
+                    //             "receiver": "بيتتيت",
+                    //             "amount": "1,000",
+                    //             "address": "إدلب، إبراهيم كلي، جانب دوار الشهداء",
+                    //           },
+                    //         ),
+                    //       ),
+                    // ),
                   ],
                 ),
               ),

@@ -2,13 +2,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
+import 'package:golder_octopus/common/utils/number_to_arabic_words.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_text_field.dart';
 import 'package:golder_octopus/common/widgets/large_button.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 
 class ReceiveCreditScreen extends StatefulWidget {
-  const ReceiveCreditScreen({super.key});
+  final TransDetailsResponse transDetailsResponse;
+  const ReceiveCreditScreen({super.key, required this.transDetailsResponse});
 
   @override
   State<ReceiveCreditScreen> createState() => _ReceiveCreditScreenState();
@@ -18,6 +21,12 @@ class _ReceiveCreditScreenState extends State<ReceiveCreditScreen> {
   bool checkBoxValue = false;
 
   final TextEditingController secretFormController = TextEditingController();
+  String getFinalBalance(String amount) {
+    String balanceInWords = NumberToArabicWords.convertToWords(double.parse(amount).toInt());
+
+    return balanceInWords;
+  }
+
   String textOne =
       "أي عمل يوز USDT لمبلغ أكبر من المعتاد أو بعموله وأجور أكبر من المعتاد لزبون مجهول ممكن أن يكون عمل غير شرعي الرجاء لا تدع الطمع في الأجور الجذابه أن يجرك وخذ وقتك للتأكد من صحه الاعتماد عن طريق التواصل مع الشركه أو مع المكتب المصدر قبل أن تستلم الاعتماد في حسابك لأنك ستكون مسؤول عن هذا المبلغ";
   String textTwo =
@@ -28,6 +37,7 @@ class _ReceiveCreditScreenState extends State<ReceiveCreditScreen> {
       "أؤكد على عدم قبول أي اعتماد لأعمال يوزUSDT أو لأعمال مشبوهه لزبائن خارجيين , أنا كوجهه الاعتماد مسؤول عن التحقق من مصدر الاعتماد تحت طائله حجز المبلغ";
   @override
   Widget build(BuildContext context) {
+    final Data transDetails = widget.transDetailsResponse.data;
     return Scaffold(
       backgroundColor: context.background,
       body: SingleChildScrollView(
@@ -52,12 +62,23 @@ class _ReceiveCreditScreenState extends State<ReceiveCreditScreen> {
 
                 child: Column(
                   children: [
-                    _buildRowData(lable: LocaleKeys.credits_credit_number.tr(), value: "value"),
-                    _buildRowData(lable: LocaleKeys.credits_date_of_send.tr(), value: "value"),
+                    _buildRowData(lable: LocaleKeys.credits_credit_number.tr(), value: transDetails.transnum),
+                    _buildRowData(
+                      lable: LocaleKeys.credits_date_of_send.tr(),
+                      value: DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate),
+                    ),
                     SizedBox(height: 15),
-                    _buildRowData(lable: LocaleKeys.credits_amount.tr(), value: "value", valueColor: Colors.red),
-                    _buildRowData(lable: "", value: "value", valueColor: Colors.red),
-                    _buildRowData(lable: LocaleKeys.credits_destination.tr(), value: "value"),
+                    _buildRowData(
+                      lable: LocaleKeys.credits_amount.tr(),
+                      value: "${transDetails.amount} ${transDetails.currencyName}",
+                      valueColor: Colors.red,
+                    ),
+                    _buildRowData(
+                      lable: "",
+                      value: "${getFinalBalance(transDetails.amount)} ${transDetails.currencyName}",
+                      valueColor: Colors.red,
+                    ),
+                    _buildRowData(lable: LocaleKeys.credits_destination.tr(), value: transDetails.targetName),
                     SizedBox(height: 20),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -108,8 +129,8 @@ class _ReceiveCreditScreenState extends State<ReceiveCreditScreen> {
               Row(
                 children: [
                   Checkbox(
-                    checkColor: context.onPrimaryColor,
-                    fillColor: WidgetStatePropertyAll(context.primaryContainer),
+                    checkColor: context.primaryContainer,
+                    fillColor: WidgetStatePropertyAll(context.primaryColor),
                     value: checkBoxValue,
                     onChanged: (val) {
                       setState(() {

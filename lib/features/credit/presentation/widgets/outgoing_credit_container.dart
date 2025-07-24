@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_action_button.dart';
 import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
-import 'package:golder_octopus/features/credit/presentation/widgets/outgoing_credit_details_dialog.dart';
+import 'package:golder_octopus/features/credit/presentation/bloc/credit_bloc.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 
 class OutgoingCreditContainer extends StatelessWidget {
   final OutgoingCreditResponse outgoingCreditsResponse;
   const OutgoingCreditContainer({super.key, required this.outgoingCreditsResponse});
-
-  void _showDetailsDialog(BuildContext context, {required OutgoingCreditResponse outgoingCreditsResponse}) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return OutgoingCreditDetailsDialog(outgoingCreditsResponse: outgoingCreditsResponse);
-      },
-    );
-  }
 
   String? getIcon(String currencyName) {
     switch (currencyName) {
@@ -37,7 +30,10 @@ class OutgoingCreditContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showDetailsDialog(context, outgoingCreditsResponse: outgoingCreditsResponse),
+      onTap: () {
+        TransDetailsParams params = TransDetailsParams(transNum: outgoingCreditsResponse.transnum);
+        context.read<CreditBloc>().add(GetOutgoingCreditDetailsEvent(params: params));
+      },
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
@@ -92,22 +88,13 @@ class OutgoingCreditContainer extends StatelessWidget {
               ],
             ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              spacing: 8,
-              children: [
-                Expanded(
-                  child: CustomActionButton(onPressed: () {}, text: "اشعار", backgroundColor: context.primaryContainer),
-                ),
-
-                Expanded(
-                  child: CustomActionButton(
-                    onPressed: () => _showDetailsDialog(context, outgoingCreditsResponse: outgoingCreditsResponse),
-                    text: "تفاصيل",
-                    backgroundColor: context.primaryContainer,
-                  ),
-                ),
-              ],
+            CustomActionButton(
+              onPressed: () {
+                TransDetailsParams params = TransDetailsParams(transNum: outgoingCreditsResponse.transnum);
+                context.read<CreditBloc>().add(GetOutgoingCreditDetailsEvent(params: params));
+              },
+              text: "تفاصيل",
+              backgroundColor: context.primaryContainer,
             ),
           ],
         ),

@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_action_button.dart';
 import 'package:golder_octopus/features/transfer/data/models/outgoing_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/dialogs/outgoing_transfer_details_dialog.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
+import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 
 class OutgoingTransferContainer extends StatelessWidget {
   final OutgoingTransfers outgoingTransfers;
   const OutgoingTransferContainer({super.key, required this.outgoingTransfers});
 
-  void _showDetailsDialog(BuildContext context, {required OutgoingTransfers outgoingTransfers}) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return OutgoingTransferDetailsDialog(outgoingTransfers: outgoingTransfers);
-      },
-    );
+  void triggerEvent(BuildContext context, {required String transNum, bool isForDialog = true}) {
+    TransDetailsParams params = TransDetailsParams(transNum: outgoingTransfers.transnum);
+    context.read<TransferBloc>().add(GetTransDetailsEvent(params: params, isForDialog: isForDialog));
   }
 
   String? getIcon(String currencyName) {
@@ -35,7 +33,7 @@ class OutgoingTransferContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showDetailsDialog(context, outgoingTransfers: outgoingTransfers),
+      onTap: () => triggerEvent(context, transNum: outgoingTransfers.transnum),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -118,12 +116,16 @@ class OutgoingTransferContainer extends StatelessWidget {
               spacing: 8,
               children: [
                 Expanded(
-                  child: CustomActionButton(onPressed: () {}, text: "اشعار", backgroundColor: context.primaryContainer),
+                  child: CustomActionButton(
+                    onPressed: () => triggerEvent(context, transNum: outgoingTransfers.transnum, isForDialog: false),
+                    text: "اشعار",
+                    backgroundColor: context.primaryContainer,
+                  ),
                 ),
 
                 Expanded(
                   child: CustomActionButton(
-                    onPressed: () => _showDetailsDialog(context, outgoingTransfers: outgoingTransfers),
+                    onPressed: () => triggerEvent(context, transNum: outgoingTransfers.transnum),
                     text: "تفاصيل",
                     backgroundColor: context.primaryContainer,
                   ),

@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_action_button.dart';
 import 'package:golder_octopus/features/transfer/data/models/incoming_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/dialogs/incoming_transfer_details_dialog.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
+import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 
 class IncomingTransferContainer extends StatelessWidget {
   final IncomingTransfers incomingTransfers;
   const IncomingTransferContainer({super.key, required this.incomingTransfers});
-
-  void _showDetailsDialog(BuildContext context, {required IncomingTransfers incomingTransfers}) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return IncomingTransferDetailsDialog(incomingTransfers: incomingTransfers);
-      },
-    );
+  void triggerEvent(BuildContext context, {required String transNum, bool isForDialog = true}) {
+    TransDetailsParams params = TransDetailsParams(transNum: transNum);
+    context.read<TransferBloc>().add(GetIncomingTransDetailsEvent(params: params));
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showDetailsDialog(context, incomingTransfers: incomingTransfers),
+      onTap: () => triggerEvent(context, transNum: incomingTransfers.transnum),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -90,22 +87,10 @@ class IncomingTransferContainer extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              spacing: 8,
-              children: [
-                Expanded(
-                  child: CustomActionButton(onPressed: () {}, text: "اشعار", backgroundColor: context.primaryContainer),
-                ),
-
-                Expanded(
-                  child: CustomActionButton(
-                    onPressed: () => _showDetailsDialog(context, incomingTransfers: incomingTransfers),
-                    text: "تفاصيل",
-                    backgroundColor: context.primaryContainer,
-                  ),
-                ),
-              ],
+            CustomActionButton(
+              onPressed: () => triggerEvent(context, transNum: incomingTransfers.transnum),
+              text: "تفاصيل",
+              backgroundColor: context.primaryContainer,
             ),
           ],
         ),

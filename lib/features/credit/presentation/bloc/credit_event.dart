@@ -18,3 +18,16 @@ class GetIncomingCreditsEvent extends CreditEvent {
 
   const GetIncomingCreditsEvent({required this.params});
 }
+
+class GetOutgoingCreditDetailsEvent extends CreditEvent {
+  final TransDetailsParams params;
+
+  const GetOutgoingCreditDetailsEvent({required this.params});
+}
+
+class GetIncomingCreditDetailsEvent extends CreditEvent {
+  final TransDetailsParams params;
+  final bool isForDialog;
+
+  const GetIncomingCreditDetailsEvent({required this.params, this.isForDialog = true});
+}

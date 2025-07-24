@@ -10,7 +10,6 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_reciept.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -62,8 +61,9 @@ class _CreditReceiptScreenState extends State<CreditReceiptScreen> {
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/shared_receipt.png');
       await file.writeAsBytes(pngBytes);
+      final params = ShareParams(text: 'إشعار الحوالة', files: [XFile(file.path)]);
 
-      await Share.shareXFiles([XFile(file.path)], text: 'إشعار الحوالة');
+      await SharePlus.instance.share(params);
     } catch (e) {
       ToastificationDialog.showToast(msg: "خطأ اثناء المشاركة", context: context, type: ToastificationType.error);
     }
@@ -78,7 +78,7 @@ class _CreditReceiptScreenState extends State<CreditReceiptScreen> {
         width: context.screenWidth,
         child: Column(
           children: [
-            TransferReciept(globalKey: _globalKey, data: widget.data),
+            // TransferReciept(globalKey: _globalKey, data: widget.data),
             // const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

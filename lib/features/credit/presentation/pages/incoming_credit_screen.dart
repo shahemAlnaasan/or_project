@@ -2,7 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
+import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
+import 'package:golder_octopus/common/state_managment/bloc_state.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
 import 'package:golder_octopus/common/widgets/custom_text_field.dart';
@@ -11,7 +13,10 @@ import 'package:golder_octopus/core/di/injection.dart';
 import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
 import 'package:golder_octopus/features/credit/domain/use_cases/incoming_credit_usecase.dart';
 import 'package:golder_octopus/features/credit/presentation/bloc/credit_bloc.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/receive_credit_screen.dart';
 import 'package:golder_octopus/features/credit/presentation/widgets/incoming_credit_container.dart';
+import 'package:golder_octopus/features/credit/presentation/widgets/dialog/incoming_credit_details_dialog.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
@@ -86,6 +91,15 @@ class _IncomingCreditScreenState extends State<IncomingCreditScreen> {
     return "${dateTime.day}-${dateTime.month}-${dateTime.year}";
   }
 
+  void _showDetailsDialog(BuildContext context, {required TransDetailsResponse transDetailsResponse}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return IncomingCreditDetailsDialog(transDetailsResponse: transDetailsResponse);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -96,109 +110,141 @@ class _IncomingCreditScreenState extends State<IncomingCreditScreen> {
           if (state.status == CreditStatus.failure) {
             ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
           }
+          if (state.incomingCreditDetailsStatus == Status.loading) {
+            ToastificationDialog.showLoading(context: context);
+          }
+          if (state.incomingCreditDetailsStatus == Status.success && state.incomingCreditDetailsResponse != null) {
+            if (state.isForDialog) {
+              ToastificationDialog.dismiss();
+              _showDetailsDialog(context, transDetailsResponse: state.incomingCreditDetailsResponse!);
+            } else {
+              ToastificationDialog.dismiss();
+              context.push(ReceiveCreditScreen(transDetailsResponse: state.incomingCreditDetailsResponse!));
+            }
+          }
         },
         child: Scaffold(
           backgroundColor: context.background,
-          body: SingleChildScrollView(
-            controller: _scrollController,
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
-              width: context.screenWidth,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText.displaySmall(
-                    LocaleKeys.home_incoming_credits.tr(),
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  SizedBox(height: 20),
-                  buildTextField(
-                    hint: LocaleKeys.transfer_search.tr(),
-                    sufIcon: Icon(Icons.search),
-                    controller: searchController,
-                  ),
-                  SizedBox(height: 10),
-
-                  Container(
-                    decoration: BoxDecoration(color: context.primaryContainer, borderRadius: BorderRadius.circular(5)),
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                    child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            "",
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+          body: Builder(
+            builder: (context) {
+              return RefreshIndicator(
+                backgroundColor: context.primaryColor,
+                color: context.onPrimaryColor,
+                onRefresh: () async {
+                  context.read<CreditBloc>().add(GetIncomingCreditsEvent(params: params));
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  controller: _scrollController,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
+                      width: context.screenWidth,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppText.displaySmall(
+                            LocaleKeys.home_incoming_credits.tr(),
+                            textAlign: TextAlign.start,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Center(
-                            child: Text(
-                              LocaleKeys.credits_credit_source.tr(),
-                              textAlign: TextAlign.start,
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                          SizedBox(height: 20),
+                          buildTextField(
+                            hint: LocaleKeys.transfer_search.tr(),
+                            sufIcon: Icon(Icons.search),
+                            controller: searchController,
+                          ),
+                          SizedBox(height: 10),
+
+                          Container(
+                            decoration: BoxDecoration(
+                              color: context.primaryContainer,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            child: Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    "",
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Center(
+                                    child: Text(
+                                      LocaleKeys.credits_credit_source.tr(),
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    LocaleKeys.credits_amount.tr(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            LocaleKeys.credits_amount.tr(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 17),
+                          SizedBox(height: 10),
+                          BlocBuilder<CreditBloc, CreditState>(
+                            builder: (context, state) {
+                              if (state.status == CreditStatus.loading) {
+                                return Center(child: CustomProgressIndecator(color: context.onPrimaryColor));
+                              }
+
+                              if (state.status == CreditStatus.success) {
+                                if (state.incomingCredits == null || state.incomingCredits!.isEmpty) {
+                                  return Center(child: AppText.bodyMedium("لا يوجد اعتمادات واردة"));
+                                }
+
+                                if (allCredits.isEmpty) {
+                                  allCredits = state.incomingCredits!;
+                                  visibleCredits = allCredits.take(_itemsPerPage).toList();
+                                }
+
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: visibleCredits.length + (_isLoadingMore ? 1 : 0),
+                                  itemBuilder: (context, index) {
+                                    if (index < visibleCredits.length) {
+                                      return Column(
+                                        children: [
+                                          IncomingCreditContainer(incomingCredit: visibleCredits[index], index: index),
+                                          SizedBox(height: 10),
+                                        ],
+                                      );
+                                    } else {
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(child: CustomProgressIndecator(color: context.onPrimaryColor)),
+                                      );
+                                    }
+                                  },
+                                );
+                              }
+
+                              return Center(
+                                child: AppText.bodyMedium("لا يوجد اعتمادات واردة", color: context.onPrimaryColor),
+                              );
+                            },
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  BlocBuilder<CreditBloc, CreditState>(
-                    builder: (context, state) {
-                      if (state.status == CreditStatus.loading) {
-                        return Center(child: CustomProgressIndecator(color: context.onPrimaryColor));
-                      }
-
-                      if (state.status == CreditStatus.success) {
-                        if (state.incomingCredits == null || state.incomingCredits!.isEmpty) {
-                          return Center(child: AppText.bodyMedium("لا يوجد اعتمادات واردة"));
-                        }
-
-                        if (allCredits.isEmpty) {
-                          allCredits = state.incomingCredits!;
-                          visibleCredits = allCredits.take(_itemsPerPage).toList();
-                        }
-
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: visibleCredits.length + (_isLoadingMore ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index < visibleCredits.length) {
-                              return Column(
-                                children: [
-                                  IncomingCreditContainer(incomingCredit: visibleCredits[index], index: index),
-                                  SizedBox(height: 10),
-                                ],
-                              );
-                            } else {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(child: CustomProgressIndecator(color: context.onPrimaryColor)),
-                              );
-                            }
-                          },
-                        );
-                      }
-
-                      return Center(child: AppText.bodyMedium("لا يوجد اعتمادات واردة", color: context.onPrimaryColor));
-                    },
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

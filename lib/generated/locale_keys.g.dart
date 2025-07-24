@@ -31,6 +31,7 @@ abstract class  LocaleKeys {
   static const transfer_outgoing_transfers = 'transfer.outgoing_transfers';
   static const transfer_incoming_transfers = 'transfer.incoming_transfers';
   static const transfer_outgoing_transfer = 'transfer.outgoing_transfer';
+  static const transfer_incoming_transfer = 'transfer.incoming_transfer';
   static const transfer_beneficiary_name = 'transfer.beneficiary_name';
   static const transfer_beneficiary_phone = 'transfer.beneficiary_phone';
   static const transfer_destination = 'transfer.destination';
@@ -49,8 +50,6 @@ abstract class  LocaleKeys {
   static const transfer_beneficiary = 'transfer.beneficiary';
   static const transfer_amount = 'transfer.amount';
   static const transfer_fees_money = 'transfer.fees_money';
-  static const transfer_next = 'transfer.next';
-  static const transfer_prev = 'transfer.prev';
   static const transfer_copied_to_clipboard = 'transfer.copied_to_clipboard';
   static const transfer_transmitting_center = 'transfer.transmitting_center';
   static const transfer_date_of_transfer = 'transfer.date_of_transfer';
@@ -65,6 +64,7 @@ abstract class  LocaleKeys {
   static const transfer = 'transfer';
   static const credits_outgoing_credits = 'credits.outgoing_credits';
   static const credits_incoming_credits = 'credits.incoming_credits';
+  static const credits_incoming_credit = 'credits.incoming_credit';
   static const credits_receive_credit = 'credits.receive_credit';
   static const credits_company = 'credits.company';
   static const credits_credit_type = 'credits.credit_type';
@@ -114,6 +114,15 @@ abstract class  LocaleKeys {
   static const posts_upload_image = 'posts.upload_image';
   static const posts_post = 'posts.post';
   static const posts = 'posts';
+  static const reports_reports = 'reports.reports';
+  static const reports_center_name = 'reports.center_name';
+  static const reports_outgoing_movments_count = 'reports.outgoing_movments_count';
+  static const reports_incoming_movments_count = 'reports.incoming_movments_count';
+  static const reports_outgoing_transfers_count = 'reports.outgoing_transfers_count';
+  static const reports_incoming_transfers_count = 'reports.incoming_transfers_count';
+  static const reports_depend_on_year_monthes = 'reports.depend_on_year_monthes';
+  static const reports_this_month = 'reports.this_month';
+  static const reports = 'reports';
   static const navbar_home = 'navbar.home';
   static const navbar_new_transfer = 'navbar.new_transfer';
   static const navbar_outgoing_transfers = 'navbar.outgoing_transfers';
@@ -129,6 +138,10 @@ abstract class  LocaleKeys {
   static const auth_password = 'auth.password';
   static const auth_account_name = 'auth.account_name';
   static const auth_add_fingerprint = 'auth.add_fingerprint';
+  static const auth_old_password = 'auth.old_password';
+  static const auth_new_password = 'auth.new_password';
+  static const auth_new_password_again = 'auth.new_password_again';
+  static const auth_change_password = 'auth.change_password';
   static const auth_key = 'auth.key';
   static const auth = 'auth';
   static const exchange_exchange = 'exchange.exchange';

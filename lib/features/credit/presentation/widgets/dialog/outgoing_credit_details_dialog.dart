@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,17 +8,35 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/pages/transfer_receipt_screen.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
 class OutgoingCreditDetailsDialog extends StatelessWidget {
-  final OutgoingCreditResponse outgoingCreditsResponse;
-  const OutgoingCreditDetailsDialog({super.key, required this.outgoingCreditsResponse});
+  final TransDetailsResponse transDetailsResponse;
+  const OutgoingCreditDetailsDialog({super.key, required this.transDetailsResponse});
+  String getTransStatus(int status) {
+    switch (status) {
+      case 1:
+        return "غير مسلمة";
+      case 2:
+        return "مسلمة";
+      case 3:
+        return "محذوفة";
+      case 4:
+        return "محجوزة";
+      case 5:
+        return "مجمدة";
+      default:
+        return "غير مسلمة";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Data transDetails = transDetailsResponse.data;
+    final companyName = "شركة الأخطبـــــوط الذهــبــي";
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
@@ -55,39 +75,23 @@ class OutgoingCreditDetailsDialog extends StatelessWidget {
               // Info rows using variables
               _infoRow(
                 label: LocaleKeys.transfer_transmitting_center.tr(),
-                value: outgoingCreditsResponse.target,
+                value: transDetails.srcName,
                 context: context,
               ),
-              _infoRow(
-                label: LocaleKeys.transfer_destination.tr(),
-                value: outgoingCreditsResponse.target,
-                context: context,
-              ),
-              _infoRow(label: LocaleKeys.transfer_amount.tr(), value: outgoingCreditsResponse.target, context: context),
-              _infoRow(label: LocaleKeys.transfer_fees.tr(), value: outgoingCreditsResponse.target, context: context),
+              _infoRow(label: LocaleKeys.transfer_destination.tr(), value: transDetails.targetName, context: context),
+              _infoRow(label: LocaleKeys.transfer_money_amount.tr(), value: transDetails.amount, context: context),
+              _infoRow(label: LocaleKeys.credits_fees_money.tr(), value: transDetails.fee, context: context),
               _infoRow(
                 label: LocaleKeys.transfer_date_of_transfer.tr(),
-                value: outgoingCreditsResponse.target,
+                value: DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate),
                 context: context,
               ),
+              _infoRow(label: LocaleKeys.credits_credit_number.tr(), value: transDetails.transnum, context: context),
+              _infoRow(label: LocaleKeys.credits_notes.tr(), value: transDetails.notes, context: context),
+              _infoRow(label: LocaleKeys.credits_secret_number.tr(), value: transDetails.password, context: context),
               _infoRow(
-                label: LocaleKeys.transfer_transfer_number.tr(),
-                value: outgoingCreditsResponse.target,
-                context: context,
-              ),
-              _infoRow(
-                label: LocaleKeys.transfer_sender_name.tr(),
-                value: outgoingCreditsResponse.target,
-                context: context,
-              ),
-              _infoRow(
-                label: LocaleKeys.transfer_beneficiary_name.tr(),
-                value: outgoingCreditsResponse.target,
-                context: context,
-              ),
-              _infoRow(
-                label: LocaleKeys.transfer_beneficiary_phone.tr(),
-                value: outgoingCreditsResponse.target,
+                label: LocaleKeys.credits_status.tr(),
+                value: getTransStatus(int.parse(transDetails.status)),
                 context: context,
               ),
               const SizedBox(height: 16),
@@ -100,8 +104,6 @@ class OutgoingCreditDetailsDialog extends StatelessWidget {
                   runSpacing: 8,
                   alignment: WrapAlignment.center,
                   children: [
-                    _dialogButton(context, "تعديل", Icons.edit, Color(0xffa992e8), onPressed: () {}),
-                    _dialogButton(context, "إلغاء", Icons.delete, Color(0xff71cbaf), onPressed: () {}),
                     _dialogButton(
                       context,
                       "نسخ",
@@ -109,15 +111,16 @@ class OutgoingCreditDetailsDialog extends StatelessWidget {
                       Color(0xffcc5a56),
                       onPressed: () {
                         final data = '''
-${outgoingCreditsResponse.target}  
-المبلغ  :${outgoingCreditsResponse.target}  
-العمولة  :${outgoingCreditsResponse.target}  
-تاريخ التحويل   :${outgoingCreditsResponse.target}  
-رقم الحوالة   :${outgoingCreditsResponse.target}  
-اسم المستفيد   :${outgoingCreditsResponse.target}  
-الملاحظات    :${outgoingCreditsResponse.target}  
-الرقم السري    :${outgoingCreditsResponse.target}  
-الحالة  :  ${outgoingCreditsResponse.target}    
+$companyName  
+مصدر الاعتماد  :${transDetails.srcName}  
+وجهة الاعتماد  :${transDetails.targetName}  
+المبلغ   :${transDetails.amount} ${transDetails.currencyName}  
+العمولة   :${transDetails.fee} ${transDetails.currencyName}  
+تاريخ   :${transDetails.transdate}  
+رقم الاعتماد    :${transDetails.transnum}  
+ملاحظات    :${transDetails.notes}  
+الرقم السري    :${transDetails.password}  
+الحالة  :  ${getTransStatus(int.parse(transDetails.status))}    
 ''';
                         Clipboard.setData(ClipboardData(text: data));
                         ToastificationDialog.showToast(
@@ -125,30 +128,10 @@ ${outgoingCreditsResponse.target}
                           context: context,
                           type: ToastificationType.success,
                         );
+                        log(transDetails.transnum);
                       },
                     ),
-                    _dialogButton(
-                      context,
-                      "إشعار",
-                      Icons.notifications,
-                      Color(0xff79bdd8),
-                      onPressed:
-                          () => context.push(
-                            TransferReceiptScreen(
-                              data: {
-                                "ref": "BR23066215948",
-                                "date": "2025-06-23",
-                                "destination": "إدلب - 109",
-                                "source": "999",
-                                "secret": "26465",
-                                "phone": "626262626",
-                                "receiver": "بيتتيت",
-                                "amount": "1,000",
-                                "address": "إدلب، إبراهيم كلي، جانب دوار الشهداء",
-                              },
-                            ),
-                          ),
-                    ),
+                    _dialogButton(context, "حسنا", Icons.check, Color(0xff71cbaf), onPressed: () => context.pop()),
                   ],
                 ),
               ),

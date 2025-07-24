@@ -12,6 +12,7 @@ import 'package:golder_octopus/features/transfer/data/models/incoming_transfer_r
 import 'package:golder_octopus/features/transfer/data/models/new_trans_response.dart';
 import 'package:golder_octopus/features/transfer/data/models/outgoing_transfer_response.dart';
 import 'package:golder_octopus/features/transfer/data/models/received_transfer_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_target_info_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_tax_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_trans_targets_usecase.dart';
@@ -19,6 +20,7 @@ import 'package:golder_octopus/features/transfer/domain/use_cases/incoming_trans
 import 'package:golder_octopus/features/transfer/domain/use_cases/new_transfer_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/outgoing_transfers_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/received_transfers_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 part 'transfer_event.dart';
@@ -33,6 +35,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   final GetTransTargetsUsecase getTransTargetsUsecase;
   final GetTargetInfoUsecase getTargetInfoUsecase;
   final GetTaxUsecase getTaxUsecase;
+  final TransDetailsUsecase transDetailsUsecase;
   TransferBloc({
     required this.incomingTransferUsecase,
     required this.getTaxUsecase,
@@ -41,6 +44,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     required this.newTransferUsecase,
     required this.getTransTargetsUsecase,
     required this.getTargetInfoUsecase,
+    required this.transDetailsUsecase,
   }) : super(TransferState()) {
     on<GetIncomingTransfersEvent>(_onGetIncomingTransfersEvent);
     on<GetOutgoingTransfersEvent>(_onGetOutgoingTransfersEvent);
@@ -49,6 +53,8 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     on<GetTransTargetsEvent>(_onGetTransTargetsEvent);
     on<GetTargetInfoEvent>(_onGetTargetInfoEvent);
     on<GetTaxEvent>(_onGetTaxEvent);
+    on<GetTransDetailsEvent>(_onGetTransDetailsEvent);
+    on<GetIncomingTransDetailsEvent>(_onGetIncomingTransDetailsEvent);
   }
 
   Future<void> _onGetIncomingTransfersEvent(GetIncomingTransfersEvent event, Emitter<TransferState> emit) async {
@@ -103,6 +109,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       },
       (right) {
         emit(state.copyWith(newTransferStatus: Status.success, newTransResponse: right));
+        emit(state.copyWith(newTransferStatus: Status.initial));
       },
     );
   }
@@ -127,6 +134,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
         emit(
           state.copyWith(getTransTargetsStatus: Status.success, getTransTargetsResponse: right, getTaxResponse: null),
         );
+        emit(state.copyWith(getTransTargetsStatus: Status.initial));
       },
     );
   }
@@ -153,6 +161,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
             getTaxResponse: null,
           ),
         );
+        emit(state.copyWith(getTargetInfoStatus: Status.initial));
       },
     );
   }
@@ -167,6 +176,41 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       },
       (right) {
         emit(state.copyWith(getTaxStatus: Status.success, getTaxResponse: right));
+        emit(state.copyWith(getTaxStatus: Status.success));
+      },
+    );
+  }
+
+  Future<void> _onGetTransDetailsEvent(GetTransDetailsEvent event, Emitter<TransferState> emit) async {
+    emit(state.copyWith(transDetailsStatus: Status.loading, transDetailsResponse: null));
+    final result = await transDetailsUsecase(params: event.params);
+
+    result.fold(
+      (left) {
+        emit(state.copyWith(transDetailsStatus: Status.failure, errorMessage: left.message));
+      },
+      (right) {
+        emit(
+          state.copyWith(
+            transDetailsStatus: Status.success,
+            transDetailsResponse: right,
+            isForDialog: event.isForDialog ? true : false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onGetIncomingTransDetailsEvent(GetIncomingTransDetailsEvent event, Emitter<TransferState> emit) async {
+    emit(state.copyWith(incomingTransDetailsStatus: Status.loading));
+    final result = await transDetailsUsecase(params: event.params);
+
+    result.fold(
+      (left) {
+        emit(state.copyWith(incomingTransDetailsStatus: Status.failure, errorMessage: left.message));
+      },
+      (right) {
+        emit(state.copyWith(incomingTransDetailsStatus: Status.success, incomingTransDetailsResponse: right));
       },
     );
   }

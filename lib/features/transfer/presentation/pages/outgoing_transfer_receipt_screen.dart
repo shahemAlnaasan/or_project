@@ -10,6 +10,7 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/features/transfer/presentation/widgets/transfer_reciept.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
@@ -17,16 +18,16 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:toastification/toastification.dart';
 
-class TransferReceiptScreen extends StatefulWidget {
-  final Map<String, String> data;
+class OutgoingTransferReceiptScreen extends StatefulWidget {
+  final TransDetailsResponse transDetailsResponse;
 
-  const TransferReceiptScreen({super.key, required this.data});
+  const OutgoingTransferReceiptScreen({super.key, required this.transDetailsResponse});
 
   @override
-  State<TransferReceiptScreen> createState() => _ReceiptScreenState();
+  State<OutgoingTransferReceiptScreen> createState() => _ReceiptScreenState();
 }
 
-class _ReceiptScreenState extends State<TransferReceiptScreen> {
+class _ReceiptScreenState extends State<OutgoingTransferReceiptScreen> {
   final GlobalKey _globalKey = GlobalKey();
 
   Future<void> _downloadImage() async {
@@ -62,8 +63,9 @@ class _ReceiptScreenState extends State<TransferReceiptScreen> {
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/shared_receipt.png');
       await file.writeAsBytes(pngBytes);
+      final params = ShareParams(text: 'إشعار الحوالة', files: [XFile(file.path)]);
 
-      await Share.shareXFiles([XFile(file.path)], text: 'إشعار الحوالة');
+      await SharePlus.instance.share(params);
     } catch (e) {
       ToastificationDialog.showToast(msg: "خطأ اثناء المشاركة", context: context, type: ToastificationType.error);
     }
@@ -71,6 +73,9 @@ class _ReceiptScreenState extends State<TransferReceiptScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Data transDetails = widget.transDetailsResponse.data;
+    final companyName = "شركة الأخطبـــــوط الذهــبــي";
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -78,8 +83,7 @@ class _ReceiptScreenState extends State<TransferReceiptScreen> {
         width: context.screenWidth,
         child: Column(
           children: [
-            TransferReciept(globalKey: _globalKey, data: widget.data),
-            // const SizedBox(height: 10),
+            TransferReciept(globalKey: _globalKey, transDetailsResponse: widget.transDetailsResponse),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -94,7 +98,16 @@ class _ReceiptScreenState extends State<TransferReceiptScreen> {
                 _buildButton(
                   label: "نسخ المعلومات",
                   onTap: () {
-                    final data = '''''';
+                    final data = '''
+$companyName  
+المبلغ  :${transDetails.amount}
+رقم الحركة   :${transDetails.transnum}
+الرقم السري    :${transDetails.password}
+المبلغ    :${transDetails.amount}
+المستفيد   :${transDetails.benifName}-${transDetails.benifPhone}
+الوجهة   :${transDetails.targetName}-${transDetails.targetAddress}-${transDetails.targetBox}
+تاريخ الارسال   :${transDetails.transdate}
+''';
                     Clipboard.setData(ClipboardData(text: data));
                     ToastificationDialog.showToast(
                       msg: LocaleKeys.transfer_copied_to_clipboard.tr(),

@@ -14,7 +14,6 @@ import 'package:golder_octopus/common/widgets/large_button.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
 import 'package:golder_octopus/core/di/injection.dart';
 import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
-import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
 import 'package:golder_octopus/features/account_statement/presentation/bloc/account_statement_bloc.dart';
 import 'package:golder_octopus/features/account_statement/presentation/widgets/forms/account_statement_form.dart';
 import 'package:golder_octopus/features/account_statement/presentation/widgets/account_statement_table.dart';
@@ -37,7 +36,6 @@ class AccountStatementScreen extends StatefulWidget {
 class _AccountStatementScreenState extends State<AccountStatementScreen> {
   AccountStatementResponse accountStatementResponse = ModelUsage().accountStatementResponse;
   final TextEditingController searchController = TextEditingController();
-  CurrenciesResponse? currenciesResponse;
   String _searchQuery = "";
 
   List<Statment> get filteredList {
@@ -124,13 +122,8 @@ class _AccountStatementScreenState extends State<AccountStatementScreen> {
       create: (context) => getIt<AccountStatementBloc>()..add(GetCurrenciesEvent()),
       child: BlocListener<AccountStatementBloc, AccountStatementState>(
         listener: (context, state) {
-          if (state.status == AcccountStmtStatus.failure) {
+          if (state.accountStatmentStatus == Status.failure) {
             ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
-          }
-          if (state.getCurreciesStatus == Status.success) {
-            setState(() {
-              currenciesResponse = state.currenciesResponse;
-            });
           }
         },
         child: Scaffold(
@@ -153,12 +146,11 @@ class _AccountStatementScreenState extends State<AccountStatementScreen> {
                     currencyType: widget.currencyType,
                     accountStatement: accountStatementResponse,
                     statments: filteredList,
-                    currenciesResponse: currenciesResponse,
                   ),
 
                   BlocBuilder<AccountStatementBloc, AccountStatementState>(
                     builder: (context, state) {
-                      if (state.status == AcccountStmtStatus.success) {
+                      if (state.accountStatmentStatus == Status.success) {
                         accountStatementResponse = state.accountStatement!;
                         return Column(
                           children: [

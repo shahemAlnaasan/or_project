@@ -24,12 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   CurrenciesResponse? currenciesResponse;
 
   @override
-  void initState() {
-    context.read<HomeBloc>().add(GetCurrenciesEvent());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
@@ -44,55 +38,65 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Scaffold(
         backgroundColor: context.background,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 75.0),
-            child: Column(
-              spacing: 3,
-              children: [
-                BlocBuilder<HomeBloc, HomeState>(
-                  builder: (context, state) {
-                    if (state.homeStatus == Status.loading || state.homeStatus == Status.initial) {
-                      return Column(
-                        children: List.generate(
-                          4,
-                          (index) => Skeletonizer(
-                            enabled: true,
-                            containersColor: context.primaryColor,
-                            enableSwitchAnimation: true,
-                            child: CurrencyBalanceContainer(
-                              acc: Acc(
-                                amount: 10,
-                                currency: "currency",
-                                currencyName: "currencyName",
-                                currencyImg: "currencyImg",
+        body: RefreshIndicator(
+          color: context.onPrimaryColor,
+          backgroundColor: context.primaryColor,
+          onRefresh: () async {
+            context.read<HomeBloc>()
+              ..add(GetAccountInfoEvent())
+              ..add(GetCurrenciesEvent());
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 75.0),
+              child: Column(
+                spacing: 3,
+                children: [
+                  BlocBuilder<HomeBloc, HomeState>(
+                    builder: (context, state) {
+                      if (state.homeStatus == Status.loading || state.homeStatus == Status.initial) {
+                        return Column(
+                          children: List.generate(
+                            4,
+                            (index) => Skeletonizer(
+                              enabled: true,
+                              containersColor: context.primaryColor,
+                              enableSwitchAnimation: true,
+                              child: CurrencyBalanceContainer(
+                                acc: Acc(
+                                  amount: 10,
+                                  currency: "currency",
+                                  currencyName: "currencyName",
+                                  currencyImg: "currencyImg",
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }
-                    if (state.homeStatus == Status.success) {
+                        );
+                      }
+                      if (state.homeStatus == Status.success) {
+                        return Column(
+                          children: List.generate(
+                            state.accountInfo!.accs.length,
+                            (index) => CurrencyBalanceContainer(acc: state.accountInfo!.accs[index]),
+                          ),
+                        );
+                      }
                       return Column(
                         children: List.generate(
-                          state.accountInfo!.accs.length,
-                          (index) => CurrencyBalanceContainer(acc: state.accountInfo!.accs[index]),
+                          ModelUsage().acc.length,
+                          (index) => CurrencyBalanceContainer(acc: ModelUsage().acc[index]),
                         ),
                       );
-                    }
-                    return Column(
-                      children: List.generate(
-                        ModelUsage().acc.length,
-                        (index) => CurrencyBalanceContainer(acc: ModelUsage().acc[index]),
-                      ),
-                    );
-                  },
-                ),
-                QuickActionsGrid(currenciesResponse: currenciesResponse),
-                SizedBox(height: 3),
-                NewsSlider(),
-                SizedBox(height: 20),
-              ],
+                    },
+                  ),
+                  QuickActionsGrid(currenciesResponse: currenciesResponse),
+                  SizedBox(height: 3),
+                  NewsSlider(),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),

@@ -9,14 +9,20 @@ class TransferState extends Equatable {
   final Status? getTransTargetsStatus;
   final Status? getTargetInfoStatus;
   final Status? getTaxStatus;
+  final Status? transDetailsStatus;
+  final Status? incomingTransDetailsStatus;
 
   final String? errorMessage;
+
+  final bool isForDialog;
 
   final IncomingTransferResponse? incomingTransferResponse;
   final OutgoingTransferResponse? outgoingTransferResponse;
   final ReceivedTransfersResponse? receivedTransfersResponse;
   final CurrenciesResponse? currenciesResponse;
   final GetTaxResponse? getTaxResponse;
+  final TransDetailsResponse? transDetailsResponse;
+  final TransDetailsResponse? incomingTransDetailsResponse;
 
   final NewTransResponse? newTransResponse;
   final GetTransTargetsResponse? getTransTargetsResponse;
@@ -30,6 +36,8 @@ class TransferState extends Equatable {
     this.incomingTransferStatus,
     this.outgoingTransferStatus,
     this.receivedTransferStatus,
+    this.incomingTransDetailsStatus,
+    this.transDetailsStatus,
     this.getTaxStatus,
     this.newTransferStatus,
     this.getTransTargetsStatus,
@@ -43,6 +51,9 @@ class TransferState extends Equatable {
     this.getTargetInfoResponse,
     this.currenciesResponse,
     this.getTaxResponse,
+    this.transDetailsResponse,
+    this.incomingTransDetailsResponse,
+    this.isForDialog = true,
   });
 
   TransferState copyWith({
@@ -54,6 +65,10 @@ class TransferState extends Equatable {
     Status? getTransTargetsStatus,
     Status? getTargetInfoStatus,
     Status? getTaxStatus,
+    Status? transDetailsStatus,
+    Status? incomingTransDetailsStatus,
+
+    bool? isForDialog,
 
     String? errorMessage,
 
@@ -62,6 +77,8 @@ class TransferState extends Equatable {
     ReceivedTransfersResponse? receivedTransfersResponse,
     CurrenciesResponse? currenciesResponse,
     GetTaxResponse? getTaxResponse,
+    TransDetailsResponse? transDetailsResponse,
+    TransDetailsResponse? incomingTransDetailsResponse,
 
     NewTransResponse? newTransResponse,
     GetTransTargetsResponse? getTransTargetsResponse,
@@ -75,6 +92,10 @@ class TransferState extends Equatable {
       outgoingTransferStatus: outgoingTransferStatus ?? this.outgoingTransferStatus,
       receivedTransferStatus: receivedTransferStatus ?? this.receivedTransferStatus,
       getTaxStatus: getTaxStatus ?? this.getTaxStatus,
+      transDetailsStatus: transDetailsStatus ?? this.transDetailsStatus,
+      incomingTransDetailsStatus: incomingTransDetailsStatus ?? this.incomingTransDetailsStatus,
+
+      isForDialog: isForDialog ?? this.isForDialog,
 
       newTransferStatus: newTransferStatus ?? this.newTransferStatus,
       getTransTargetsStatus: getTransTargetsStatus ?? this.getTransTargetsStatus,
@@ -91,6 +112,8 @@ class TransferState extends Equatable {
       getTransTargetsResponse: getTransTargetsResponse ?? this.getTransTargetsResponse,
       getTargetInfoResponse: getTargetInfoResponse ?? this.getTargetInfoResponse,
       getTaxResponse: getTaxResponse ?? this.getTaxResponse,
+      transDetailsResponse: transDetailsResponse ?? this.transDetailsResponse,
+      incomingTransDetailsResponse: incomingTransDetailsResponse ?? this.incomingTransDetailsResponse,
 
       fromDate: fromDate ?? this.fromDate,
       toDate: toDate ?? this.toDate,
@@ -102,6 +125,8 @@ class TransferState extends Equatable {
     incomingTransferStatus,
     outgoingTransferStatus,
     receivedTransferStatus,
+    transDetailsStatus,
+    incomingTransDetailsStatus,
     getTaxStatus,
     errorMessage,
     incomingTransferResponse,
@@ -112,6 +137,8 @@ class TransferState extends Equatable {
     getTaxResponse,
     newTransResponse,
     currenciesResponse,
+    transDetailsResponse,
+    incomingTransDetailsResponse,
     fromDate,
     toDate,
   ];

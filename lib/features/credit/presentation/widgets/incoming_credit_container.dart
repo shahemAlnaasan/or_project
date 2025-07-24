@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
+import 'package:golder_octopus/common/widgets/custom_action_button.dart';
 import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
-import 'package:golder_octopus/features/credit/presentation/pages/receive_credit_screen.dart';
-import 'package:golder_octopus/features/credit/presentation/widgets/incoming_credit_details_dialog.dart';
+import 'package:golder_octopus/features/credit/presentation/bloc/credit_bloc.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
 import 'package:golder_octopus/generated/assets.gen.dart';
 
 class IncomingCreditContainer extends StatelessWidget {
@@ -12,71 +13,81 @@ class IncomingCreditContainer extends StatelessWidget {
   final int index;
   const IncomingCreditContainer({super.key, required this.incomingCredit, required this.index});
 
-  void _showDetailsDialog(BuildContext context, {required IncomingCreditsResponse incomingCreditsResponse}) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return IncomingCreditDetailsDialog(incomingCreditsResponse: incomingCreditsResponse);
-      },
-    );
+  void triggerEvent(BuildContext context, {required String transNum, bool isForDialog = true}) {
+    TransDetailsParams params = TransDetailsParams(transNum: transNum);
+    context.read<CreditBloc>().add(GetIncomingCreditDetailsEvent(params: params, isForDialog: isForDialog));
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showDetailsDialog(context, incomingCreditsResponse: incomingCredit),
+      onTap: () => triggerEvent(context, transNum: incomingCredit.transnum),
       child: Container(
         decoration: BoxDecoration(color: context.primaryColor, borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
           children: [
-            Expanded(
-              child: Column(
-                spacing: 10,
-                children: [
-                  AppText.bodyMedium("${index + 1}", textAlign: TextAlign.center, fontWeight: FontWeight.bold),
-                  GestureDetector(
-                    onTap: () => context.push(ReceiveCreditScreen()),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: context.primaryContainer,
-                        borderRadius: BorderRadius.circular(8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    spacing: 10,
+                    children: [
+                      AppText.bodyMedium("${index + 1}", textAlign: TextAlign.center, fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: () => triggerEvent(context, transNum: incomingCredit.transnum, isForDialog: false),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: context.primaryContainer,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text("استلام", style: TextStyle(color: Colors.black, fontSize: 13)),
+                        ),
                       ),
-                      child: Text("استلام"),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Center(
+                    child: AppText.bodyMedium(
+                      incomingCredit.source,
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Center(
-                child: AppText.bodyMedium(
-                  incomingCredit.source,
-                  textAlign: TextAlign.start,
-                  fontWeight: FontWeight.bold,
                 ),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  AppText.bodyMedium(incomingCredit.amount, textAlign: TextAlign.start, fontWeight: FontWeight.bold),
-                  const SizedBox(height: 5),
-                  AppText.bodyMedium(
-                    incomingCredit.currencyName,
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      AppText.bodyMedium(
+                        incomingCredit.amount,
+                        textAlign: TextAlign.start,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 5),
+                      AppText.bodyMedium(
+                        incomingCredit.currencyName,
+                        textAlign: TextAlign.start,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      const SizedBox(height: 10),
+                      Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
+                      const SizedBox(height: 10),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  Image.asset(Assets.images.flags.unitedStates.path, scale: 5, alignment: Alignment.bottomCenter),
-                ],
-              ),
+                ),
+              ],
+            ),
+            CustomActionButton(
+              onPressed: () => triggerEvent(context, transNum: incomingCredit.transnum),
+              text: "تفاصيل",
+              backgroundColor: context.primaryContainer,
             ),
           ],
         ),

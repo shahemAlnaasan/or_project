@@ -40,3 +40,16 @@ class GetTaxEvent extends TransferEvent {
 
   const GetTaxEvent({required this.params});
 }
+
+class GetTransDetailsEvent extends TransferEvent {
+  final TransDetailsParams params;
+  final bool isForDialog;
+
+  const GetTransDetailsEvent({required this.params, this.isForDialog = true});
+}
+
+class GetIncomingTransDetailsEvent extends TransferEvent {
+  final TransDetailsParams params;
+
+  const GetIncomingTransDetailsEvent({required this.params});
+}

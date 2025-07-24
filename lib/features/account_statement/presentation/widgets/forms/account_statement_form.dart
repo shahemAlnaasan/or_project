@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
+import 'package:golder_octopus/common/state_managment/bloc_state.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_drop_down.dart';
 import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
@@ -23,14 +24,8 @@ class AccountStatementForm extends StatefulWidget {
   final AccountStatementResponse accountStatement;
   final List<Statment> statments;
   final CurrencyType? currencyType;
-  final CurrenciesResponse? currenciesResponse;
-  const AccountStatementForm({
-    super.key,
-    this.currencyType,
-    required this.accountStatement,
-    required this.statments,
-    required this.currenciesResponse,
-  });
+
+  const AccountStatementForm({super.key, this.currencyType, required this.accountStatement, required this.statments});
 
   @override
   State<AccountStatementForm> createState() => _NewTransferFormState();
@@ -41,28 +36,34 @@ class _NewTransferFormState extends State<AccountStatementForm> {
   final currencyFallBack = Cur(currency: '', currencyName: '', op: '', price: '', currencyImg: null);
   late final Map<PredefinedDateRange, String> predefinedDateOptions;
   PredefinedDateRange selectedRange = PredefinedDateRange.none;
-  String? selectedCurrency;
-  List<String> selectCurrency = [];
+  List<Cur> currencies = [];
+  Cur? selectedCurrency;
+
   Map<String, String> currencyNameToCode = {};
 
   DateTime? fromDate = DateTime.now().subtract(Duration(days: 5));
   DateTime? toDate = DateTime.now();
-  String? getCurrencyLabel(CurrencyType? type) {
-    final curs = widget.currenciesResponse?.curs ?? [];
-
+  Cur? getCurrencyLabel({required CurrencyType? type, required List<Cur> curs}) {
     switch (type) {
       case CurrencyType.euro:
-        return curs.firstWhere((c) => c.currency.toLowerCase() == 'eur', orElse: () => currencyFallBack).currencyName;
+        return curs.firstWhere((c) => c.currency.toLowerCase() == 'eur', orElse: () => currencyFallBack);
 
       case CurrencyType.turkish:
-        return curs.firstWhere((c) => c.currency.toLowerCase() == 'tl', orElse: () => currencyFallBack).currencyName;
+        return curs.firstWhere((c) => c.currency.toLowerCase() == 'tl', orElse: () => currencyFallBack);
 
       case CurrencyType.dolar:
-        return curs.firstWhere((c) => c.currency.toLowerCase() == 'usd', orElse: () => currencyFallBack).currencyName;
+        return curs.firstWhere((c) => c.currency.toLowerCase() == 'usd', orElse: () => currencyFallBack);
 
       default:
         return null;
     }
+  }
+
+  String? singleSelectValidator(value) {
+    if (value == null) {
+      return LocaleKeys.transfer_this_field_cant_be_empty.tr();
+    }
+    return null;
   }
 
   String formatDate(DateTime? date) {
@@ -73,12 +74,6 @@ class _NewTransferFormState extends State<AccountStatementForm> {
   @override
   void initState() {
     super.initState();
-
-    final curs = widget.currenciesResponse?.curs ?? [];
-    selectCurrency = curs.map((e) => e.currencyName).toList();
-    currencyNameToCode = {for (var cur in curs) cur.currencyName: cur.currency};
-
-    selectedCurrency = getCurrencyLabel(widget.currencyType); // optional fallback
 
     predefinedDateOptions = {
       PredefinedDateRange.none: LocaleKeys.account_statement_select_date.tr(),
@@ -116,98 +111,115 @@ class _NewTransferFormState extends State<AccountStatementForm> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 8,
-          children: [
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.credits_currency.tr()),
-            CustomDropdown(
-              menuList: selectCurrency,
-              initaValue: selectedCurrency,
-              labelText: LocaleKeys.credits_currency.tr(),
-              hintText: LocaleKeys.credits_currency.tr(),
-              onChanged: (value) {
-                setState(() => selectedCurrency = value);
-              },
-            ),
-
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.account_statement_choose_date.tr()),
-            CustomDropdown(
-              menuList: predefinedDateOptions.values.toList(),
-              initaValue: predefinedDateOptions[selectedRange],
-              labelText: LocaleKeys.account_statement_choose_date.tr(),
-              hintText: LocaleKeys.account_statement_choose_date.tr(),
-              onChanged: (value) {
-                final range = predefinedDateOptions.entries.firstWhere((entry) => entry.value == value).key;
-                setState(() {
-                  selectedRange = range;
-                  setDate(range);
-                });
-              },
-            ),
-
-            if (selectedRange == PredefinedDateRange.none) ...[
+    return BlocListener<AccountStatementBloc, AccountStatementState>(
+      listener: (context, state) {
+        if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
+          setState(() {
+            currencies = state.currenciesResponse!.curs;
+            selectedCurrency = getCurrencyLabel(type: widget.currencyType, curs: currencies);
+          });
+        }
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
               SizedBox(height: 3),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppText.bodyMedium(LocaleKeys.transfer_from_date.tr()),
-                  DateDropdownField(selectedDate: fromDate, onChanged: (picked) => setState(() => fromDate = picked)),
-                ],
+              buildFieldTitle(title: LocaleKeys.credits_currency.tr()),
+              CustomDropdown<Cur>(
+                menuList: currencies,
+                singleSelectValidator: (value) => singleSelectValidator(value),
+                initaValue: selectedCurrency,
+                compareFn: (a, b) => a.currency == b.currency,
+                labelText: LocaleKeys.credits_currency.tr(),
+                hintText: LocaleKeys.credits_currency.tr(),
+                itemAsString: (cur) => cur.currencyName,
+                onChanged: (cur) {
+                  setState(() {
+                    selectedCurrency = cur;
+                  });
+                },
               ),
+
               SizedBox(height: 3),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppText.bodyMedium(LocaleKeys.transfer_to_date.tr()),
-                  DateDropdownField(selectedDate: toDate, onChanged: (picked) => setState(() => toDate = picked)),
-                ],
+              buildFieldTitle(title: LocaleKeys.account_statement_choose_date.tr()),
+              CustomDropdown(
+                menuList: predefinedDateOptions.values.toList(),
+                initaValue: predefinedDateOptions[selectedRange],
+                labelText: LocaleKeys.account_statement_choose_date.tr(),
+                hintText: LocaleKeys.account_statement_choose_date.tr(),
+                onChanged: (value) {
+                  final range = predefinedDateOptions.entries.firstWhere((entry) => entry.value == value).key;
+                  setState(() {
+                    selectedRange = range;
+                    setDate(range);
+                  });
+                },
+              ),
+
+              if (selectedRange == PredefinedDateRange.none) ...[
+                SizedBox(height: 3),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText.bodyMedium(LocaleKeys.transfer_from_date.tr()),
+                    DateDropdownField(selectedDate: fromDate, onChanged: (picked) => setState(() => fromDate = picked)),
+                  ],
+                ),
+                SizedBox(height: 3),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText.bodyMedium(LocaleKeys.transfer_to_date.tr()),
+                    DateDropdownField(selectedDate: toDate, onChanged: (picked) => setState(() => toDate = picked)),
+                  ],
+                ),
+              ],
+              SizedBox(height: 10),
+              BlocBuilder<AccountStatementBloc, AccountStatementState>(
+                builder: (context, state) {
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: LargeButton(
+                          onPressed:
+                              state.accountStatmentStatus == Status.loading
+                                  ? () {}
+                                  : () {
+                                    if (_formKey.currentState!.validate()) {
+                                      final params = AccountStatementParams(
+                                        startDate: formatDate(fromDate),
+                                        endDate: formatDate(toDate),
+                                        currency: selectedCurrency!.currency,
+                                      );
+                                      context.read<AccountStatementBloc>().add(
+                                        GetAccountStatementEvent(params: params),
+                                      );
+                                    } else {
+                                      ToastificationDialog.showToast(
+                                        msg: "الرجاء اختيار العملة",
+                                        context: context,
+                                        type: ToastificationType.error,
+                                      );
+                                    }
+                                  },
+                          textStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          text: LocaleKeys.home_account_statement.tr(),
+                          backgroundColor: context.primaryContainer,
+                          circularRadius: 12,
+                          child: state.accountStatmentStatus == Status.loading ? CustomProgressIndecator() : null,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
-            SizedBox(height: 10),
-            BlocBuilder<AccountStatementBloc, AccountStatementState>(
-              builder: (context, state) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: LargeButton(
-                        onPressed:
-                            state.status == AcccountStmtStatus.loading
-                                ? () {}
-                                : () {
-                                  if (selectedCurrency != null && selectedCurrency!.isNotEmpty) {
-                                    final params = AccountStatementParams(
-                                      startDate: formatDate(fromDate),
-                                      endDate: formatDate(toDate),
-                                      currency: currencyNameToCode[selectedCurrency] ?? '',
-                                    );
-                                    context.read<AccountStatementBloc>().add(GetAccountStatementEvent(params: params));
-                                  } else {
-                                    ToastificationDialog.showToast(
-                                      msg: "الرجاء اختيار العملة",
-                                      context: context,
-                                      type: ToastificationType.error,
-                                    );
-                                  }
-                                },
-                        textStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                        text: LocaleKeys.home_account_statement.tr(),
-                        backgroundColor: context.primaryContainer,
-                        circularRadius: 12,
-                        child: state.status == AcccountStmtStatus.loading ? CustomProgressIndecator() : null,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );

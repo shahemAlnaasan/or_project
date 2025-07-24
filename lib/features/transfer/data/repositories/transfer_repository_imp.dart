@@ -7,6 +7,7 @@ import 'package:golder_octopus/features/transfer/data/models/incoming_transfer_r
 import 'package:golder_octopus/features/transfer/data/models/new_trans_response.dart';
 import 'package:golder_octopus/features/transfer/data/models/outgoing_transfer_response.dart';
 import 'package:golder_octopus/features/transfer/data/models/received_transfer_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/features/transfer/domain/repositories/transfer_repository.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_target_info_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_tax_usecase.dart';
@@ -14,6 +15,7 @@ import 'package:golder_octopus/features/transfer/domain/use_cases/get_trans_targ
 import 'package:golder_octopus/features/transfer/domain/use_cases/new_transfer_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/outgoing_transfers_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/received_transfers_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: TransferRepository)
@@ -55,5 +57,10 @@ class TransferRepositoryImp implements TransferRepository {
   @override
   DataResponse<GetTaxResponse> getTax({required GetTaxParams params}) {
     return transferRemoteDataSource.getTax(params: params);
+  }
+
+  @override
+  DataResponse<TransDetailsResponse> transDetails({required TransDetailsParams params}) {
+    return transferRemoteDataSource.transDetails(params: params);
   }
 }

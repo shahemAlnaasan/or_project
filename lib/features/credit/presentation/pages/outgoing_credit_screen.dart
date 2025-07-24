@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
+import 'package:golder_octopus/common/state_managment/bloc_state.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
 import 'package:golder_octopus/common/widgets/custom_text_field.dart';
@@ -14,7 +15,9 @@ import 'package:golder_octopus/core/di/injection.dart';
 import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
 import 'package:golder_octopus/features/credit/domain/use_cases/outgoing_credit_usecase.dart';
 import 'package:golder_octopus/features/credit/presentation/bloc/credit_bloc.dart';
+import 'package:golder_octopus/features/credit/presentation/widgets/dialog/outgoing_credit_details_dialog.dart';
 import 'package:golder_octopus/features/credit/presentation/widgets/outgoing_credit_container.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
@@ -109,14 +112,39 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
     return "${dateTime.year}-${dateTime.month}-${dateTime.day}";
   }
 
+  void _showDetailsDialog(BuildContext context, {required TransDetailsResponse transDetailsResponse}) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return OutgoingCreditDetailsDialog(transDetailsResponse: transDetailsResponse);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<CreditBloc>(),
+      create:
+          (context) =>
+              getIt<CreditBloc>()..add(
+                GetOutgoingCreditsEvent(
+                  params: OutgoingCreditParams(
+                    startDate: _formatDateTime(fromDate!),
+                    endDate: _formatDateTime(toDate!),
+                  ),
+                ),
+              ),
       child: BlocListener<CreditBloc, CreditState>(
         listener: (context, state) {
           if (state.status == CreditStatus.failure) {
             ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
+          }
+          if (state.outgoingCreditDetailsStatus == Status.loading) {
+            ToastificationDialog.showLoading(context: context);
+          }
+          if (state.outgoingCreditDetailsStatus == Status.success && state.outgoingCreditDetailsResponse != null) {
+            ToastificationDialog.dismiss();
+            _showDetailsDialog(context, transDetailsResponse: state.outgoingCreditDetailsResponse!);
           }
         },
         child: Scaffold(
@@ -170,7 +198,7 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
                                         startDate: _formatDateTime(fromDate!),
                                         endDate: _formatDateTime(toDate!),
                                       );
-                                      allCredits.clear(); // Reset old data
+                                      allCredits.clear();
                                       visibleCredits.clear();
                                       context.read<CreditBloc>().add(GetOutgoingCreditsEvent(params: params));
                                     },

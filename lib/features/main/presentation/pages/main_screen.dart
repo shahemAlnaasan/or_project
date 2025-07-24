@@ -8,6 +8,8 @@ import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/core/di/injection.dart';
 import 'package:golder_octopus/features/account_statement/presentation/pages/account_statement_screen.dart';
 import 'package:golder_octopus/features/account_statement/presentation/pages/centers_posts_screen.dart';
+import 'package:golder_octopus/features/account_statement/presentation/pages/reports_screen.dart';
+import 'package:golder_octopus/features/auth/presentation/pages/change_password_screen.dart';
 import 'package:golder_octopus/features/credit/presentation/pages/incoming_credit_screen.dart';
 import 'package:golder_octopus/features/credit/presentation/pages/outgoing_credit_screen.dart';
 import 'package:golder_octopus/features/exchange/presentation/pages/exchange_screen.dart';
@@ -355,14 +357,14 @@ class _MainScreenState extends State<MainScreen> {
                             icon: Assets.images.dataAnalytics.path,
                             expandable: false,
                             isSubItem: true,
-                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                            onTap: () => _pushInCurrentTab(ReportsScreen()),
                           ),
                           _buildMenuItem(
                             label: "تغيير كلمة المرور",
                             icon: Icons.lock_open,
                             expandable: false,
                             isSubItem: true,
-                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                            onTap: () => _pushInCurrentTab(ChangePasswordScreen()),
                           ),
                         ],
                       ),

@@ -29,7 +29,7 @@ class Data {
   Data({required this.tax, required this.intax, required this.extax, required this.error});
 
   factory Data.fromJson(Map<String, dynamic> json) =>
-      Data(tax: json["tax"]?.toDouble(), intax: json["intax"], extax: json["extax"], error: json["error"]);
+      Data(tax: json["tax"]?.toDouble(), intax: json["intax"].toString(), extax: json["extax"], error: json["error"]);
 
   Map<String, dynamic> toJson() => {"tax": tax, "intax": intax, "extax": extax, "error": error};
 }

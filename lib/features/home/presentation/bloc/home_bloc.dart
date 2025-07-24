@@ -7,7 +7,6 @@ import 'package:golder_octopus/features/account_statement/data/models/currencies
 import 'package:golder_octopus/features/auth/data/models/login_response_model.dart';
 import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
 import 'package:golder_octopus/features/home/domain/use_cases/account_info_usecase.dart';
-import 'package:golder_octopus/features/home/domain/use_cases/currencies_usecase.dart';
 import 'package:golder_octopus/features/transfer/data/models/get_trans_targets_response.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_trans_targets_usecase.dart';
 import 'package:injectable/injectable.dart';
@@ -18,13 +17,10 @@ part 'home_state.dart';
 @injectable
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AccountInfoUsecase accountInfoUsecase;
-  final CurrenciesUsecase currenciesUsecase;
   final GetTransTargetsUsecase getTransTargetsUsecase;
 
-  HomeBloc({required this.accountInfoUsecase, required this.currenciesUsecase, required this.getTransTargetsUsecase})
-    : super(HomeState()) {
+  HomeBloc({required this.accountInfoUsecase, required this.getTransTargetsUsecase}) : super(HomeState()) {
     on<GetAccountInfoEvent>(_onGetAccountInfoEvent);
-    on<GetCurrenciesEvent>(_onGetCurrenciesEvent);
     on<GetTransTargetsEvent>(_onGetTransTargetsEvent);
   }
 
@@ -38,21 +34,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       },
       (right) {
         emit(state.copyWith(homeStatus: Status.success, accountInfo: right));
-      },
-    );
-  }
-
-  Future<void> _onGetCurrenciesEvent(GetCurrenciesEvent event, Emitter<HomeState> emit) async {
-    emit(state.copyWith(currenciesStatus: Status.loading));
-    final result = await currenciesUsecase();
-
-    result.fold(
-      (left) {
-        emit(state.copyWith(currenciesStatus: Status.failure, errorMessage: left.message));
-      },
-      (right) {
-        HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.currenciesResponse, value: right);
-        emit(state.copyWith(currenciesStatus: Status.success, currencies: right));
       },
     );
   }
