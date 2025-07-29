@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/utils/number_to_arabic_words.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/custom_text_field.dart';
-import 'package:golder_octopus/common/widgets/large_button.dart';
-import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../../../../common/utils/number_to_arabic_words.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/custom_text_field.dart';
+import '../../../../common/widgets/large_button.dart';
+import '../../../transfer/data/models/trans_details_response.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class ReceiveCreditScreen extends StatefulWidget {
   final TransDetailsResponse transDetailsResponse;

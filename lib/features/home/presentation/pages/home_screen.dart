@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/consts/model_usage.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/state_managment/bloc_state.dart';
-import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
-import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
-import 'package:golder_octopus/features/home/presentation/bloc/home_bloc.dart';
-import 'package:golder_octopus/features/home/presentation/widgets/currency_balance_container.dart';
-import 'package:golder_octopus/features/home/presentation/widgets/news_slider.dart';
-import 'package:golder_octopus/features/home/presentation/widgets/quick_actions_grid.dart';
+import '../../../../common/consts/model_usage.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/state_managment/bloc_state.dart';
+import '../../../../common/widgets/toast_dialog.dart';
+import '../../../account_statement/data/models/currencies_response.dart';
+import '../../data/models/account_info_response.dart';
+import '../bloc/home_bloc.dart';
+import '../widgets/currency_balance_container.dart';
+import '../widgets/news_slider.dart';
+import '../widgets/quick_actions_grid.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:toastification/toastification.dart';
 

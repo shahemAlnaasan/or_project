@@ -4,8 +4,8 @@ import 'package:catcher_2/core/catcher_2.dart' show Catcher2;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/features/main/presentation/bloc/main_bloc.dart';
-import 'package:golder_octopus/features/main/presentation/pages/splash_screen.dart';
+import 'features/main/presentation/bloc/main_bloc.dart';
+import 'features/main/presentation/pages/splash_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

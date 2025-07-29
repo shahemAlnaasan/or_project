@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart' show StringTranslateExtension;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class OutgoingTransfersReport extends StatefulWidget {
   const OutgoingTransfersReport({super.key});

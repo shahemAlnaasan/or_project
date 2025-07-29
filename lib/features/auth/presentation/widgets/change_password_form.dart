@@ -1,18 +1,18 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
-import 'package:golder_octopus/common/state_managment/bloc_state.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
-import 'package:golder_octopus/common/widgets/custom_text_field.dart';
-import 'package:golder_octopus/common/widgets/large_button.dart';
-import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/core/di/injection.dart';
-import 'package:golder_octopus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:golder_octopus/features/auth/presentation/pages/verify_login_screen.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/navigation_extensions.dart';
+import '../../../../common/state_managment/bloc_state.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/custom_progress_indecator.dart';
+import '../../../../common/widgets/custom_text_field.dart';
+import '../../../../common/widgets/large_button.dart';
+import '../../../../common/widgets/toast_dialog.dart';
+import '../../../../core/di/injection.dart';
+import '../bloc/auth_bloc.dart';
+import '../pages/verify_login_screen.dart';
+import '../../../../generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
 class ChangePasswordForm extends StatefulWidget {

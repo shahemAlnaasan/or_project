@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/dotted_line.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/dotted_line.dart';
 
 class CreditReciept extends StatelessWidget {
   final GlobalKey globalKey;

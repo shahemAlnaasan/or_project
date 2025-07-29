@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/account_statement/presentation/pages/account_statement_screen.dart';
-import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
-import 'package:golder_octopus/generated/assets.gen.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/navigation_extensions.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../account_statement/presentation/pages/account_statement_screen.dart';
+import '../../data/models/account_info_response.dart';
+import '../../../../generated/assets.gen.dart';
 
 enum CurrencyType { turkish, dolar, euro, total }
 

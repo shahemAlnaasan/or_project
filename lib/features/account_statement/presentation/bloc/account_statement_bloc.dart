@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:golder_octopus/common/state_managment/bloc_state.dart';
-import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
-import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
-import 'package:golder_octopus/features/account_statement/domain/use_cases/account_statement_usecase.dart';
-import 'package:golder_octopus/features/home/domain/use_cases/currencies_usecase.dart';
+import '../../../../common/state_managment/bloc_state.dart';
+import '../../data/models/account_statement_response.dart';
+import '../../data/models/currencies_response.dart';
+import '../../domain/use_cases/account_statement_usecase.dart';
+import '../../../home/domain/use_cases/currencies_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 part 'account_statement_event.dart';

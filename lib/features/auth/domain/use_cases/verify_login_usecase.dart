@@ -1,6 +1,6 @@
-import 'package:golder_octopus/common/consts/typedef.dart';
-import 'package:golder_octopus/features/auth/data/models/verify_login_response.dart';
-import 'package:golder_octopus/features/auth/domain/repositories/auth_repository.dart';
+import '../../../../common/consts/typedef.dart';
+import '../../data/models/verify_login_response.dart';
+import '../repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

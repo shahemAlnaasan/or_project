@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:golder_octopus/core/network/exceptions.dart';
+import '../../core/network/exceptions.dart';
 
 typedef FromJson<T> = T Function(dynamic body);
 

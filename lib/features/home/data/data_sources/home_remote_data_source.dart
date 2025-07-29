@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:golder_octopus/core/config/endpoints.dart';
-import 'package:golder_octopus/core/network/api_handler.dart';
-import 'package:golder_octopus/core/network/exceptions.dart';
-import 'package:golder_octopus/core/network/http_client.dart';
-import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
-import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
+import '../../../../core/config/endpoints.dart';
+import '../../../../core/network/api_handler.dart';
+import '../../../../core/network/exceptions.dart';
+import '../../../../core/network/http_client.dart';
+import '../../../account_statement/data/models/currencies_response.dart';
+import '../models/account_info_response.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

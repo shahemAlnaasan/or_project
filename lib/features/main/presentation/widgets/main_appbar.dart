@@ -2,14 +2,14 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/consts/app_keys.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
-import 'package:golder_octopus/common/theme/app_theme.dart';
-import 'package:golder_octopus/core/datasources/hive_helper.dart';
-import 'package:golder_octopus/features/auth/presentation/pages/login_screen.dart';
-import 'package:golder_octopus/features/main/presentation/bloc/main_bloc.dart';
-import 'package:golder_octopus/generated/assets.gen.dart';
+import '../../../../common/consts/app_keys.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/navigation_extensions.dart';
+import '../../../../common/theme/app_theme.dart';
+import '../../../../core/datasources/hive_helper.dart';
+import '../../../auth/presentation/pages/login_screen.dart';
+import '../bloc/main_bloc.dart';
+import '../../../../generated/assets.gen.dart';
 
 AppBar mainAppbar(BuildContext context, {void Function()? onTap}) {
   return AppBar(

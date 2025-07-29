@@ -1,10 +1,10 @@
-import 'package:golder_octopus/common/consts/typedef.dart';
-import 'package:golder_octopus/features/auth/data/data_sources/auth_remote_data_source.dart';
-import 'package:golder_octopus/features/auth/data/models/login_response_model.dart';
-import 'package:golder_octopus/features/auth/data/models/verify_login_response.dart';
-import 'package:golder_octopus/features/auth/domain/repositories/auth_repository.dart';
-import 'package:golder_octopus/features/auth/domain/use_cases/login_usecase.dart';
-import 'package:golder_octopus/features/auth/domain/use_cases/verify_login_usecase.dart';
+import '../../../../common/consts/typedef.dart';
+import '../data_sources/auth_remote_data_source.dart';
+import '../models/login_response_model.dart';
+import '../models/verify_login_response.dart';
+import '../../domain/repositories/auth_repository.dart';
+import '../../domain/use_cases/login_usecase.dart';
+import '../../domain/use_cases/verify_login_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: AuthRepository)

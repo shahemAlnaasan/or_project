@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart' show StringTranslateExtension;
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/account_statement/presentation/widgets/incoming_transfer_report.dart';
-import 'package:golder_octopus/features/account_statement/presentation/widgets/outgoing_transfers_report.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../widgets/incoming_transfer_report.dart';
+import '../widgets/outgoing_transfers_report.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});

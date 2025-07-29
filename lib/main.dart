@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/app.dart';
-import 'package:golder_octopus/common/utils/init_main.dart';
+import 'app.dart';
+import 'common/utils/init_main.dart';
 
 void main() async {
   await Initialization.initMain();

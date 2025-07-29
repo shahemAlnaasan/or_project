@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
+import '../extentions/colors_extension.dart';
 import 'package:intl/intl.dart';
 
 class DateDropdownField extends StatelessWidget {

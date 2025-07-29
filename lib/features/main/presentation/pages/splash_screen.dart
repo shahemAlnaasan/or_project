@@ -2,13 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/consts/app_keys.dart';
-import 'package:golder_octopus/core/datasources/hive_helper.dart';
-import 'package:golder_octopus/core/di/injection.dart';
-import 'package:golder_octopus/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:golder_octopus/features/auth/presentation/pages/login_screen.dart';
-import 'package:golder_octopus/features/auth/presentation/pages/verify_login_screen.dart';
-import 'package:golder_octopus/features/main/presentation/pages/main_screen.dart';
+import '../../../../common/consts/app_keys.dart';
+import '../../../../core/datasources/hive_helper.dart';
+import '../../../../core/di/injection.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/pages/login_screen.dart';
+import '../../../auth/presentation/pages/verify_login_screen.dart';
+import 'main_screen.dart';
 
 Future<Widget> splashScreen(BuildContext context) async {
   final bool hasLogin = await HiveHelper.getFromHive(boxName: AppKeys.userBox, key: AppKeys.hasLogin) ?? false;

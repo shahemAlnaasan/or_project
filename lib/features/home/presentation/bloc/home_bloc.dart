@@ -1,14 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:golder_octopus/common/consts/app_keys.dart';
-import 'package:golder_octopus/common/state_managment/bloc_state.dart';
-import 'package:golder_octopus/core/datasources/hive_helper.dart';
-import 'package:golder_octopus/features/account_statement/data/models/currencies_response.dart';
-import 'package:golder_octopus/features/auth/data/models/login_response_model.dart';
-import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
-import 'package:golder_octopus/features/home/domain/use_cases/account_info_usecase.dart';
-import 'package:golder_octopus/features/transfer/data/models/get_trans_targets_response.dart';
-import 'package:golder_octopus/features/transfer/domain/use_cases/get_trans_targets_usecase.dart';
+import '../../../../common/consts/app_keys.dart';
+import '../../../../common/state_managment/bloc_state.dart';
+import '../../../../core/datasources/hive_helper.dart';
+import '../../../account_statement/data/models/currencies_response.dart';
+import '../../../auth/data/models/login_response_model.dart';
+import '../../data/models/account_info_response.dart';
+import '../../domain/use_cases/account_info_usecase.dart';
+import '../../../transfer/data/models/get_trans_targets_response.dart';
+import '../../../transfer/domain/use_cases/get_trans_targets_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 part 'home_event.dart';

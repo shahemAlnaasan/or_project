@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:golder_octopus/core/config/app_config.dart';
-import 'package:golder_octopus/core/network/interceptor.dart';
+import '../config/app_config.dart';
+import 'interceptor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
+import '../../../../../common/extentions/colors_extension.dart';
+import '../../../../../common/extentions/size_extension.dart';
 
 class SideActionPlaceholder extends StatefulWidget {
   const SideActionPlaceholder({super.key});

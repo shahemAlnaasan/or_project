@@ -1,6 +1,6 @@
-import 'package:golder_octopus/common/consts/typedef.dart';
-import 'package:golder_octopus/features/credit/data/models/new_credit_response.dart';
-import 'package:golder_octopus/features/credit/domain/repositories/credit_repository.dart';
+import '../../../../common/consts/typedef.dart';
+import '../../data/models/new_credit_response.dart';
+import '../repositories/credit_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

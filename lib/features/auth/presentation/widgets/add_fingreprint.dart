@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/utils/local_authentication.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/core/di/injection.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/utils/local_authentication.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class AddFingreprint extends StatelessWidget {
   const AddFingreprint({super.key});

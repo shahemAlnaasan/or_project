@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/custom_action_button.dart';
-import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
-import 'package:golder_octopus/features/credit/presentation/bloc/credit_bloc.dart';
-import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
-import 'package:golder_octopus/generated/assets.gen.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/custom_action_button.dart';
+import '../../data/models/incoming_credits_response.dart';
+import '../bloc/credit_bloc.dart';
+import '../../../transfer/domain/use_cases/trans_details_usecase.dart';
+import '../../../../generated/assets.gen.dart';
 
 class IncomingCreditContainer extends StatelessWidget {
   final IncomingCreditsResponse incomingCredit;

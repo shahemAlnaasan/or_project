@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/theme/text_theme.dart';
+import '../extentions/colors_extension.dart';
+import '../theme/text_theme.dart';
 
 class CustomDropdown<T> extends StatefulWidget {
   final bool enableSearch;

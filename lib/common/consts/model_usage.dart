@@ -1,5 +1,5 @@
-import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
-import 'package:golder_octopus/features/home/data/models/account_info_response.dart';
+import '../../features/account_statement/data/models/account_statement_response.dart';
+import '../../features/home/data/models/account_info_response.dart';
 
 class ModelUsage {
   final AccountStatementResponse accountStatementResponse = AccountStatementResponse(

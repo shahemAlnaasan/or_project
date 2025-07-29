@@ -1,6 +1,6 @@
-import 'package:golder_octopus/common/consts/typedef.dart';
-import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
-import 'package:golder_octopus/features/transfer/domain/repositories/transfer_repository.dart';
+import '../../../../common/consts/typedef.dart';
+import '../../data/models/trans_details_response.dart';
+import '../repositories/transfer_repository.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

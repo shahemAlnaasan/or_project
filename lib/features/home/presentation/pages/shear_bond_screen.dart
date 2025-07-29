@@ -1,11 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/exchange/presentation/widgets/exchange_container.dart';
-import 'package:golder_octopus/features/home/presentation/widgets/shear_bond_form.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../exchange/presentation/widgets/exchange_container.dart';
+import '../widgets/shear_bond_form.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class ShearBondScreen extends StatelessWidget {
   const ShearBondScreen({super.key});

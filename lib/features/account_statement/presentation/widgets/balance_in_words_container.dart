@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/utils/number_to_arabic_words.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
+import '../../../../common/utils/number_to_arabic_words.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../data/models/account_statement_response.dart';
 
 class BalanceInWordsContainer extends StatelessWidget {
   final AccountStatementResponse accountStatement;

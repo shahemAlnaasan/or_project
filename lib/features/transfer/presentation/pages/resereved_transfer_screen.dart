@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/forms/reserved_transfer_form.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../widgets/forms/reserved_transfer_form.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class ReserevedTransferScreen extends StatelessWidget {
   const ReserevedTransferScreen({super.key});

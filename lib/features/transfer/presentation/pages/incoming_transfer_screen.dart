@@ -1,21 +1,21 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/state_managment/bloc_state.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
-import 'package:golder_octopus/common/widgets/sort_header.dart';
-import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/core/di/injection.dart';
-import 'package:golder_octopus/features/auth/presentation/widgets/login_form.dart';
-import 'package:golder_octopus/features/transfer/data/models/incoming_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
-import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/dialogs/incoming_transfer_details_dialog.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/incoming_transfer_container.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../../../../common/state_managment/bloc_state.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/custom_progress_indecator.dart';
+import '../../../../common/widgets/sort_header.dart';
+import '../../../../common/widgets/toast_dialog.dart';
+import '../../../../core/di/injection.dart';
+import '../../../auth/presentation/widgets/login_form.dart';
+import '../../data/models/incoming_transfer_response.dart';
+import '../../data/models/trans_details_response.dart';
+import '../bloc/transfer_bloc.dart';
+import '../widgets/dialogs/incoming_transfer_details_dialog.dart';
+import '../widgets/incoming_transfer_container.dart';
+import '../../../../generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
 class IncomingTransferScreen extends StatefulWidget {

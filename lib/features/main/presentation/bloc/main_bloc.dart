@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/consts/app_keys.dart';
-import 'package:golder_octopus/common/theme/app_theme.dart';
-import 'package:golder_octopus/core/datasources/hive_helper.dart';
+import '../../../../common/consts/app_keys.dart';
+import '../../../../common/theme/app_theme.dart';
+import '../../../../core/datasources/hive_helper.dart';
 import 'package:injectable/injectable.dart';
 
 part 'main_event.dart';

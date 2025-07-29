@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/features/account_statement/data/models/account_statement_response.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../data/models/account_statement_response.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class StatementInfoCard extends StatelessWidget {
   final AccountStatementResponse accountStatement;

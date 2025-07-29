@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/utils/number_to_arabic_words.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/dotted_line.dart';
-import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
-import 'package:golder_octopus/generated/assets.gen.dart';
+import '../../../../common/utils/number_to_arabic_words.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/dotted_line.dart';
+import '../../data/models/trans_details_response.dart';
+import '../../../../generated/assets.gen.dart';
 
 class TransferReciept extends StatelessWidget {
   final GlobalKey globalKey;

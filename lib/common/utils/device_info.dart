@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceInfo {
   static Future<String> deviceType() async {

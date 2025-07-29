@@ -1,21 +1,21 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/state_managment/bloc_state.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/custom_progress_indecator.dart';
-import 'package:golder_octopus/common/widgets/custom_text_field.dart';
-import 'package:golder_octopus/common/widgets/date_dropdown_field.dart';
-import 'package:golder_octopus/common/widgets/large_button.dart';
-import 'package:golder_octopus/common/widgets/sort_header.dart';
-import 'package:golder_octopus/core/di/injection.dart';
-import 'package:golder_octopus/features/transfer/data/models/received_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/domain/use_cases/received_transfers_usecase.dart';
-import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
-import 'package:golder_octopus/features/transfer/presentation/widgets/received_transfer_container.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../../../../common/state_managment/bloc_state.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/custom_progress_indecator.dart';
+import '../../../../common/widgets/custom_text_field.dart';
+import '../../../../common/widgets/date_dropdown_field.dart';
+import '../../../../common/widgets/large_button.dart';
+import '../../../../common/widgets/sort_header.dart';
+import '../../../../core/di/injection.dart';
+import '../../data/models/received_transfer_response.dart';
+import '../../domain/use_cases/received_transfers_usecase.dart';
+import '../bloc/transfer_bloc.dart';
+import '../widgets/received_transfer_container.dart';
+import '../../../../generated/locale_keys.g.dart';
 
 class ReceivedTransferScreen extends StatefulWidget {
   const ReceivedTransferScreen({super.key});

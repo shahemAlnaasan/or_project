@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/features/auth/presentation/widgets/verify_Login_form.dart';
-import 'package:golder_octopus/generated/assets.gen.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/extentions/size_extension.dart';
+import '../widgets/verify_Login_form.dart';
+import '../../../../generated/assets.gen.dart';
 
 class VerifyLoginScreen extends StatelessWidget {
   const VerifyLoginScreen({super.key});

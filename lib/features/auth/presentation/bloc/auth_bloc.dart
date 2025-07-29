@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:golder_octopus/common/consts/app_keys.dart';
-import 'package:golder_octopus/common/state_managment/bloc_state.dart';
-import 'package:golder_octopus/common/utils/device_info.dart';
-import 'package:golder_octopus/core/datasources/hive_helper.dart';
-import 'package:golder_octopus/features/auth/data/models/login_response_model.dart';
-import 'package:golder_octopus/features/auth/domain/use_cases/login_usecase.dart';
-import 'package:golder_octopus/features/auth/domain/use_cases/verify_login_usecase.dart';
+import '../../../../common/consts/app_keys.dart';
+import '../../../../common/state_managment/bloc_state.dart';
+import '../../../../common/utils/device_info.dart';
+import '../../../../core/datasources/hive_helper.dart';
+import '../../data/models/login_response_model.dart';
+import '../../domain/use_cases/login_usecase.dart';
+import '../../domain/use_cases/verify_login_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 part 'auth_event.dart';

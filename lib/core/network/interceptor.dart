@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:golder_octopus/common/consts/app_keys.dart';
-import 'package:golder_octopus/core/datasources/hive_helper.dart';
+import '../../common/consts/app_keys.dart';
+import '../datasources/hive_helper.dart';
 
 import 'exceptions.dart';
 

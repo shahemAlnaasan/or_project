@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/custom_action_button.dart';
-import 'package:golder_octopus/features/transfer/data/models/incoming_transfer_response.dart';
-import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
-import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
-import 'package:golder_octopus/generated/assets.gen.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/custom_action_button.dart';
+import '../../data/models/incoming_transfer_response.dart';
+import '../../domain/use_cases/trans_details_usecase.dart';
+import '../bloc/transfer_bloc.dart';
+import '../../../../generated/assets.gen.dart';
 
 class IncomingTransferContainer extends StatelessWidget {
   final IncomingTransfers incomingTransfers;

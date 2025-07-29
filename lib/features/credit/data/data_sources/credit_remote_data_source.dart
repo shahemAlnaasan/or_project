@@ -1,19 +1,19 @@
 import 'package:dartz/dartz.dart';
-import 'package:golder_octopus/core/config/endpoints.dart';
-import 'package:golder_octopus/core/network/api_handler.dart';
-import 'package:golder_octopus/core/network/exceptions.dart';
-import 'package:golder_octopus/core/network/http_client.dart';
-import 'package:golder_octopus/features/credit/data/models/get_companies_response.dart';
-import 'package:golder_octopus/features/credit/data/models/get_credit_targets_response.dart';
-import 'package:golder_octopus/features/credit/data/models/get_credit_tax_response.dart';
-import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
-import 'package:golder_octopus/features/credit/data/models/new_credit_response.dart';
-import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
-import 'package:golder_octopus/features/credit/domain/use_cases/get_credit_targets_usecase.dart';
-import 'package:golder_octopus/features/credit/domain/use_cases/get_credit_tax_usecase.dart';
-import 'package:golder_octopus/features/credit/domain/use_cases/incoming_credit_usecase.dart';
-import 'package:golder_octopus/features/credit/domain/use_cases/new_credit_usecase.dart';
-import 'package:golder_octopus/features/credit/domain/use_cases/outgoing_credit_usecase.dart';
+import '../../../../core/config/endpoints.dart';
+import '../../../../core/network/api_handler.dart';
+import '../../../../core/network/exceptions.dart';
+import '../../../../core/network/http_client.dart';
+import '../models/get_companies_response.dart';
+import '../models/get_credit_targets_response.dart';
+import '../models/get_credit_tax_response.dart';
+import '../models/incoming_credits_response.dart';
+import '../models/new_credit_response.dart';
+import '../models/outgoing_credits_response.dart';
+import '../../domain/use_cases/get_credit_targets_usecase.dart';
+import '../../domain/use_cases/get_credit_tax_usecase.dart';
+import '../../domain/use_cases/incoming_credit_usecase.dart';
+import '../../domain/use_cases/new_credit_usecase.dart';
+import '../../domain/use_cases/outgoing_credit_usecase.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable

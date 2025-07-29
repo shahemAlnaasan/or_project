@@ -3,13 +3,13 @@ import 'dart:developer';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:golder_octopus/common/extentions/colors_extension.dart';
-import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
-import 'package:golder_octopus/common/extentions/size_extension.dart';
-import 'package:golder_octopus/common/widgets/app_text.dart';
-import 'package:golder_octopus/common/widgets/toast_dialog.dart';
-import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
-import 'package:golder_octopus/generated/locale_keys.g.dart';
+import '../../../../../common/extentions/colors_extension.dart';
+import '../../../../../common/extentions/navigation_extensions.dart';
+import '../../../../../common/extentions/size_extension.dart';
+import '../../../../../common/widgets/app_text.dart';
+import '../../../../../common/widgets/toast_dialog.dart';
+import '../../../../transfer/data/models/trans_details_response.dart';
+import '../../../../../generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
 class OutgoingCreditDetailsDialog extends StatelessWidget {
