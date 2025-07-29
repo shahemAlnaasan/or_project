@@ -3,9 +3,16 @@ import 'package:golder_octopus/core/config/endpoints.dart';
 import 'package:golder_octopus/core/network/api_handler.dart';
 import 'package:golder_octopus/core/network/exceptions.dart';
 import 'package:golder_octopus/core/network/http_client.dart';
+import 'package:golder_octopus/features/credit/data/models/get_companies_response.dart';
+import 'package:golder_octopus/features/credit/data/models/get_credit_targets_response.dart';
+import 'package:golder_octopus/features/credit/data/models/get_credit_tax_response.dart';
 import 'package:golder_octopus/features/credit/data/models/incoming_credits_response.dart';
+import 'package:golder_octopus/features/credit/data/models/new_credit_response.dart';
 import 'package:golder_octopus/features/credit/data/models/outgoing_credits_response.dart';
+import 'package:golder_octopus/features/credit/domain/use_cases/get_credit_targets_usecase.dart';
+import 'package:golder_octopus/features/credit/domain/use_cases/get_credit_tax_usecase.dart';
 import 'package:golder_octopus/features/credit/domain/use_cases/incoming_credit_usecase.dart';
+import 'package:golder_octopus/features/credit/domain/use_cases/new_credit_usecase.dart';
 import 'package:golder_octopus/features/credit/domain/use_cases/outgoing_credit_usecase.dart';
 import 'package:injectable/injectable.dart';
 
@@ -28,6 +35,42 @@ class CreditRemoteDataSource with ApiHandler {
     return handleApiCall(
       apiCall: () => httpClient.post(AppEndPoint.getIncomingCredits, data: params.getBody()),
       fromJson: (json) => (json as List).map((e) => IncomingCreditsResponse.fromJson(e)).toList(),
+
+      validateApi: false,
+    );
+  }
+
+  Future<Either<Failure, NewCreditResponse>> newCredit({required NewCreditParams params}) async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.newCredit, data: params.getBody()),
+      fromJson: (json) => NewCreditResponse.fromJson(json),
+
+      validateApi: false,
+    );
+  }
+
+  Future<Either<Failure, GetCreditTaxResponse>> getCreditTax({required GetCreditTaxParams params}) async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.getCreditTax, data: params.getBody()),
+      fromJson: (json) => GetCreditTaxResponse.fromJson(json),
+
+      validateApi: false,
+    );
+  }
+
+  Future<Either<Failure, GetCreditTargetsResponse>> getCreditTargets({required GetCreditTargetsParams params}) async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.getCreditTargets, data: params.getBody()),
+      fromJson: (json) => GetCreditTargetsResponse.fromJson(json),
+
+      validateApi: false,
+    );
+  }
+
+  Future<Either<Failure, GetCompaniesResponse>> getCompanies() async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.getCompanies),
+      fromJson: (json) => GetCompaniesResponse.fromJson(json),
 
       validateApi: false,
     );

@@ -38,8 +38,16 @@ import '../../features/credit/data/repositories/credit_repository_imp.dart'
     as _i497;
 import '../../features/credit/domain/repositories/credit_repository.dart'
     as _i473;
+import '../../features/credit/domain/use_cases/get_companies_usecase.dart'
+    as _i762;
+import '../../features/credit/domain/use_cases/get_credit_targets_usecase.dart'
+    as _i18;
+import '../../features/credit/domain/use_cases/get_credit_tax_usecase.dart'
+    as _i400;
 import '../../features/credit/domain/use_cases/incoming_credit_usecase.dart'
     as _i947;
+import '../../features/credit/domain/use_cases/new_credit_usecase.dart'
+    as _i315;
 import '../../features/credit/domain/use_cases/outgoing_credit_usecase.dart'
     as _i702;
 import '../../features/credit/presentation/bloc/credit_bloc.dart' as _i504;
@@ -128,6 +136,26 @@ extension GetItInjectableX on _i174.GetIt {
         creditRepository: gh<_i473.CreditRepository>(),
       ),
     );
+    gh.factory<_i762.GetCompaniesUsecase>(
+      () => _i762.GetCompaniesUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
+      ),
+    );
+    gh.factory<_i18.GetCreditTargetsUsecase>(
+      () => _i18.GetCreditTargetsUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
+      ),
+    );
+    gh.factory<_i400.GetCreditTaxUsecase>(
+      () => _i400.GetCreditTaxUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
+      ),
+    );
+    gh.factory<_i315.NewCreditUsecase>(
+      () => _i315.NewCreditUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
+      ),
+    );
     gh.factory<_i336.TransferRepository>(
       () => _i505.TransferRepositoryImp(
         transferRemoteDataSource: gh<_i1047.TransferRemoteDataSource>(),
@@ -195,13 +223,6 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i821.VerifyLoginUsecase(authRepository: gh<_i787.AuthRepository>()),
     );
-    gh.factory<_i504.CreditBloc>(
-      () => _i504.CreditBloc(
-        outgoingCreditUsecase: gh<_i702.OutgoingCreditUsecase>(),
-        incomingCreditUsecase: gh<_i947.IncomingCreditUsecase>(),
-        transDetailsUsecase: gh<_i154.TransDetailsUsecase>(),
-      ),
-    );
     gh.factory<_i797.AuthBloc>(
       () => _i797.AuthBloc(
         loginUsecase: gh<_i1012.LoginUsecase>(),
@@ -217,6 +238,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i128.AccountStatementBloc>(
       () => _i128.AccountStatementBloc(
         accountStatementUsecase: gh<_i14.AccountStatementUsecase>(),
+        currenciesUsecase: gh<_i573.CurrenciesUsecase>(),
+      ),
+    );
+    gh.factory<_i504.CreditBloc>(
+      () => _i504.CreditBloc(
+        outgoingCreditUsecase: gh<_i702.OutgoingCreditUsecase>(),
+        incomingCreditUsecase: gh<_i947.IncomingCreditUsecase>(),
+        transDetailsUsecase: gh<_i154.TransDetailsUsecase>(),
+        getCompaniesUsecase: gh<_i762.GetCompaniesUsecase>(),
+        getCreditTargetsUsecase: gh<_i18.GetCreditTargetsUsecase>(),
+        getCreditTaxUsecase: gh<_i400.GetCreditTaxUsecase>(),
+        newCreditUsecase: gh<_i315.NewCreditUsecase>(),
         currenciesUsecase: gh<_i573.CurrenciesUsecase>(),
       ),
     );

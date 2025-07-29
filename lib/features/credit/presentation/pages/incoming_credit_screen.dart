@@ -107,19 +107,19 @@ class _IncomingCreditScreenState extends State<IncomingCreditScreen> {
       create: (context) => getIt<CreditBloc>()..add(GetIncomingCreditsEvent(params: params)),
       child: BlocListener<CreditBloc, CreditState>(
         listener: (context, state) {
-          if (state.status == CreditStatus.failure) {
+          if (state.getIncomingCreditsStatus == Status.failure) {
             ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
           }
           if (state.incomingCreditDetailsStatus == Status.loading) {
             ToastificationDialog.showLoading(context: context);
           }
-          if (state.incomingCreditDetailsStatus == Status.success && state.incomingCreditDetailsResponse != null) {
+          if (state.incomingCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
             if (state.isForDialog) {
               ToastificationDialog.dismiss();
-              _showDetailsDialog(context, transDetailsResponse: state.incomingCreditDetailsResponse!);
+              _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
             } else {
               ToastificationDialog.dismiss();
-              context.push(ReceiveCreditScreen(transDetailsResponse: state.incomingCreditDetailsResponse!));
+              context.push(ReceiveCreditScreen(transDetailsResponse: state.creditDetailsResponse!));
             }
           }
         },
@@ -197,11 +197,11 @@ class _IncomingCreditScreenState extends State<IncomingCreditScreen> {
                           SizedBox(height: 10),
                           BlocBuilder<CreditBloc, CreditState>(
                             builder: (context, state) {
-                              if (state.status == CreditStatus.loading) {
+                              if (state.getIncomingCreditsStatus == Status.loading) {
                                 return Center(child: CustomProgressIndecator(color: context.onPrimaryColor));
                               }
 
-                              if (state.status == CreditStatus.success) {
+                              if (state.getIncomingCreditsStatus == Status.success) {
                                 if (state.incomingCredits == null || state.incomingCredits!.isEmpty) {
                                   return Center(child: AppText.bodyMedium("لا يوجد اعتمادات واردة"));
                                 }

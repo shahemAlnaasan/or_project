@@ -106,6 +106,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(newTransferStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(newTransferStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(newTransferStatus: Status.success, newTransResponse: right));
@@ -129,6 +130,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getTransTargetsStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(getTransTargetsStatus: Status.initial));
       },
       (right) {
         emit(
@@ -146,6 +148,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     await result.fold(
       (left) {
         emit(state.copyWith(getTargetInfoStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(getTargetInfoStatus: Status.initial));
       },
       (right) async {
         final currenciesResponse = await HiveHelper.getFromHive(
@@ -173,10 +176,11 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getTaxStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(getTaxStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getTaxStatus: Status.success, getTaxResponse: right));
-        emit(state.copyWith(getTaxStatus: Status.success));
+        emit(state.copyWith(getTaxStatus: Status.initial));
       },
     );
   }

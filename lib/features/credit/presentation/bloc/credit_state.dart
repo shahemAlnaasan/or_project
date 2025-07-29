@@ -1,17 +1,28 @@
 part of 'credit_bloc.dart';
 
-enum CreditStatus { initial, loading, success, failure }
-
 class CreditState extends Equatable {
-  final CreditStatus? status;
+  final Status? getOutgoingCreditsStatus;
+  final Status? getIncomingCreditsStatus;
   final Status? outgoingCreditDetailsStatus;
   final Status? incomingCreditDetailsStatus;
+  final Status? newCreditDetailsStatus;
+
+  final Status? getCompaniesStatus;
+  final Status? getCreditTargetsStatus;
+  final Status? getCreditTaxStatus;
+  final Status? newCreditStatus;
+  final Status? getCurreciesStatus;
 
   final String? errorMessage;
   final List<OutgoingCreditResponse>? outgoingCredits;
   final List<IncomingCreditsResponse>? incomingCredits;
-  final TransDetailsResponse? outgoingCreditDetailsResponse;
-  final TransDetailsResponse? incomingCreditDetailsResponse;
+  final TransDetailsResponse? creditDetailsResponse;
+  final CurrenciesResponse? currenciesResponse;
+
+  final GetCompaniesResponse? getCompaniesResponse;
+  final GetCreditTargetsResponse? getCreditTargetsResponse;
+  final GetCreditTaxResponse? getCreditTaxResponse;
+  final NewCreditResponse? newCreditResponse;
 
   final bool isForDialog;
 
@@ -20,40 +31,80 @@ class CreditState extends Equatable {
   const CreditState({
     this.fromDate,
     this.toDate,
-    this.status,
     this.outgoingCreditDetailsStatus,
     this.incomingCreditDetailsStatus,
+    this.newCreditDetailsStatus,
+    this.getOutgoingCreditsStatus,
+    this.getIncomingCreditsStatus,
+    this.currenciesResponse,
+    this.getCompaniesStatus,
+    this.getCreditTargetsStatus,
+    this.getCreditTaxStatus,
+    this.newCreditStatus,
+    this.getCurreciesStatus,
+
     this.isForDialog = true,
     this.errorMessage,
     this.outgoingCredits = const [],
     this.incomingCredits = const [],
-    this.outgoingCreditDetailsResponse,
-    this.incomingCreditDetailsResponse,
+    this.creditDetailsResponse,
+    this.getCompaniesResponse,
+    this.getCreditTargetsResponse,
+    this.getCreditTaxResponse,
+    this.newCreditResponse,
   });
 
   CreditState copyWith({
-    CreditStatus? status,
     String? errorMessage,
     Status? outgoingCreditDetailsStatus,
     Status? incomingCreditDetailsStatus,
+    Status? newCreditDetailsStatus,
+
+    Status? getOutgoingCreditsStatus,
+    Status? getIncomingCreditsStatus,
+
+    Status? getCompaniesStatus,
+    Status? getCreditTargetsStatus,
+    Status? getCreditTaxStatus,
+    Status? newCreditStatus,
+    Status? getCurreciesStatus,
+
     bool? isForDialog,
     List<OutgoingCreditResponse>? outgoingCredits,
     List<IncomingCreditsResponse>? incomingCredits,
-    TransDetailsResponse? outgoingCreditDetailsResponse,
-    TransDetailsResponse? incomingCreditDetailsResponse,
+    TransDetailsResponse? creditDetailsResponse,
+
+    GetCompaniesResponse? getCompaniesResponse,
+    GetCreditTargetsResponse? getCreditTargetsResponse,
+    GetCreditTaxResponse? getCreditTaxResponse,
+    NewCreditResponse? newCreditResponse,
+    CurrenciesResponse? currenciesResponse,
+
     String? fromDate,
     String? toDate,
   }) {
     return CreditState(
       outgoingCreditDetailsStatus: outgoingCreditDetailsStatus ?? this.outgoingCreditDetailsStatus,
       incomingCreditDetailsStatus: incomingCreditDetailsStatus ?? this.incomingCreditDetailsStatus,
+      newCreditDetailsStatus: newCreditDetailsStatus ?? this.newCreditDetailsStatus,
+      getOutgoingCreditsStatus: getOutgoingCreditsStatus ?? this.getOutgoingCreditsStatus,
+      getIncomingCreditsStatus: getIncomingCreditsStatus ?? this.getIncomingCreditsStatus,
+      getCompaniesStatus: getCompaniesStatus ?? this.getCompaniesStatus,
+      getCreditTargetsStatus: getCreditTargetsStatus ?? this.getCreditTargetsStatus,
+      getCreditTaxStatus: getCreditTaxStatus ?? this.getCreditTaxStatus,
+      newCreditStatus: newCreditStatus ?? this.newCreditStatus,
+      getCurreciesStatus: getCurreciesStatus ?? this.getCurreciesStatus,
+
       isForDialog: isForDialog ?? this.isForDialog,
-      status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
       outgoingCredits: outgoingCredits ?? this.outgoingCredits,
       incomingCredits: incomingCredits ?? this.incomingCredits,
-      outgoingCreditDetailsResponse: outgoingCreditDetailsResponse ?? this.outgoingCreditDetailsResponse,
-      incomingCreditDetailsResponse: incomingCreditDetailsResponse ?? this.incomingCreditDetailsResponse,
+      creditDetailsResponse: creditDetailsResponse ?? this.creditDetailsResponse,
+      getCompaniesResponse: getCompaniesResponse ?? this.getCompaniesResponse,
+      getCreditTargetsResponse: getCreditTargetsResponse ?? this.getCreditTargetsResponse,
+      getCreditTaxResponse: getCreditTaxResponse ?? this.getCreditTaxResponse,
+      newCreditResponse: newCreditResponse ?? this.newCreditResponse,
+      currenciesResponse: currenciesResponse ?? this.currenciesResponse,
       fromDate: fromDate ?? this.fromDate,
       toDate: toDate ?? this.toDate,
     );
@@ -61,15 +112,27 @@ class CreditState extends Equatable {
 
   @override
   List<Object?> get props => [
-    status,
     outgoingCreditDetailsStatus,
     incomingCreditDetailsStatus,
+    newCreditDetailsStatus,
+    getOutgoingCreditsStatus,
+    getIncomingCreditsStatus,
+    getCompaniesStatus,
+    getCreditTargetsStatus,
+    getCreditTaxStatus,
+    newCreditStatus,
+    getCurreciesStatus,
+
     isForDialog,
     errorMessage,
     outgoingCredits,
     incomingCredits,
-    outgoingCreditDetailsResponse,
-    incomingCreditDetailsResponse,
+    creditDetailsResponse,
+    getCompaniesResponse,
+    getCreditTargetsResponse,
+    getCreditTaxResponse,
+    newCreditResponse,
+    currenciesResponse,
     fromDate,
     toDate,
   ];

@@ -64,6 +64,14 @@ class NewTransferFormState extends State<NewTransferForm> {
   late TextEditingController notesController;
   late TextEditingController addressController;
 
+  FocusNode beneficiaryNameNode = FocusNode();
+  FocusNode beneficiaryPhoneNode = FocusNode();
+  FocusNode amountNode = FocusNode();
+  FocusNode senderNameNode = FocusNode();
+  FocusNode senderPhoneNode = FocusNode();
+  FocusNode notesNode = FocusNode();
+  FocusNode addressNode = FocusNode();
+
   String? selectedDestination;
   Map<String, Target> targetsMap = {};
   Target? selectedTarget;
@@ -156,7 +164,6 @@ class NewTransferFormState extends State<NewTransferForm> {
       filteredCurrencies.clear();
       currenciesResponse = null;
     });
-    context.read<TransferBloc>().add(GetTransTargetsEvent());
   }
 
   @override
@@ -222,12 +229,18 @@ class NewTransferFormState extends State<NewTransferForm> {
           spacing: 8,
           children: [
             buildFieldTitle(title: LocaleKeys.transfer_beneficiary_name.tr()),
-            buildTextField(hint: LocaleKeys.transfer_beneficiary_name.tr(), controller: beneficiaryNameController),
+            buildTextField(
+              hint: LocaleKeys.transfer_beneficiary_name.tr(),
+              controller: beneficiaryNameController,
+              focusNode: beneficiaryNameNode,
+              focusOn: beneficiaryPhoneNode,
+            ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_beneficiary_phone.tr()),
             buildTextField(
               hint: LocaleKeys.transfer_beneficiary_phone.tr(),
               controller: beneficiaryPhoneController,
+              focusNode: beneficiaryPhoneNode,
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 3),
@@ -288,6 +301,8 @@ class NewTransferFormState extends State<NewTransferForm> {
                 return buildTextField(
                   hint: LocaleKeys.transfer_money_amount.tr(),
                   controller: amountController,
+                  focusNode: amountNode,
+                  focusOn: senderNameNode,
                   keyboardType: TextInputType.number,
                   onChanged: (p0) => checkRequiredFieldsFilled(context),
                 );
@@ -295,12 +310,20 @@ class NewTransferFormState extends State<NewTransferForm> {
             ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_sender_name.tr()),
-            buildTextField(hint: LocaleKeys.transfer_sender_name.tr(), controller: senderNameController),
+            buildTextField(
+              hint: LocaleKeys.transfer_sender_name.tr(),
+              controller: senderNameController,
+              focusNode: senderNameNode,
+              focusOn: senderPhoneNode,
+            ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_sender_phone.tr()),
             buildTextField(
               hint: LocaleKeys.transfer_sender_phone.tr(),
               controller: senderPhoneController,
+              focusNode: senderPhoneNode,
+              focusOn: notesNode,
+
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 3),
@@ -311,6 +334,8 @@ class NewTransferFormState extends State<NewTransferForm> {
             buildTextField(
               hint: LocaleKeys.transfer_notes.tr(),
               controller: notesController,
+              focusNode: notesNode,
+              focusOn: addressNode,
               mxLine: 3,
               needValidation: false,
             ),
@@ -318,6 +343,7 @@ class NewTransferFormState extends State<NewTransferForm> {
             buildTextField(
               hint: LocaleKeys.transfer_address.tr(),
               controller: addressController,
+              focusNode: addressNode,
               mxLine: 3,
               readOnly: true,
             ),
@@ -401,6 +427,8 @@ Widget buildTextField({
   dynamic Function()? onTap,
   TextInputType? keyboardType,
   bool needValidation = true,
+  FocusNode? focusNode,
+  FocusNode? focusOn,
 }) {
   return CustomTextField(
     onTap: onTap,
@@ -410,6 +438,9 @@ Widget buildTextField({
     mxLine: mxLine,
     controller: controller,
     hint: hint,
+    focusNode: focusNode,
+    focusOn: focusOn,
+
     validator:
         needValidation
             ? (value) {

@@ -136,15 +136,15 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
               ),
       child: BlocListener<CreditBloc, CreditState>(
         listener: (context, state) {
-          if (state.status == CreditStatus.failure) {
+          if (state.getOutgoingCreditsStatus == Status.failure) {
             ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
           }
           if (state.outgoingCreditDetailsStatus == Status.loading) {
             ToastificationDialog.showLoading(context: context);
           }
-          if (state.outgoingCreditDetailsStatus == Status.success && state.outgoingCreditDetailsResponse != null) {
+          if (state.outgoingCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
             ToastificationDialog.dismiss();
-            _showDetailsDialog(context, transDetailsResponse: state.outgoingCreditDetailsResponse!);
+            _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
           }
         },
         child: Scaffold(
@@ -191,7 +191,7 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
                           return LargeButton(
                             width: 100,
                             onPressed:
-                                state.status == CreditStatus.loading
+                                state.getOutgoingCreditsStatus == Status.loading
                                     ? () {}
                                     : () {
                                       final params = OutgoingCreditParams(
@@ -206,7 +206,7 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
                             backgroundColor: context.primaryContainer,
                             textStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                             circularRadius: 12,
-                            child: state.status == CreditStatus.loading ? CustomProgressIndecator() : null,
+                            child: state.getOutgoingCreditsStatus == Status.loading ? CustomProgressIndecator() : null,
                           );
                         },
                       ),
@@ -231,7 +231,7 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
                   SizedBox(height: 10),
                   BlocBuilder<CreditBloc, CreditState>(
                     builder: (context, state) {
-                      if (state.status == CreditStatus.success) {
+                      if (state.getOutgoingCreditsStatus == Status.success) {
                         if (state.outgoingCredits == null || state.outgoingCredits!.isEmpty) {
                           return Center(child: AppText.bodyMedium("لا يوجد اعتمادات صادرة"));
                         }

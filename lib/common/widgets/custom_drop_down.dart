@@ -3,7 +3,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:golder_octopus/common/extentions/colors_extension.dart';
 import 'package:golder_octopus/common/theme/text_theme.dart';
 
-class CustomDropdown<T> extends StatelessWidget {
+class CustomDropdown<T> extends StatefulWidget {
   final bool enableSearch;
   final List<T> menuList;
   final String labelText;
@@ -11,6 +11,7 @@ class CustomDropdown<T> extends StatelessWidget {
   final T? initaValue;
   final String? Function(T?)? singleSelectValidator;
   final Function(T?)? onChanged;
+  final Function(String)? onChangedSearch;
   final double menuMaxHeight;
   final String Function(T)? itemAsString;
   final bool Function(T, T)? compareFn;
@@ -24,11 +25,17 @@ class CustomDropdown<T> extends StatelessWidget {
     this.singleSelectValidator,
     this.enableSearch = false,
     this.onChanged,
+    this.onChangedSearch,
     this.menuMaxHeight = 200,
     this.itemAsString,
     this.compareFn,
   });
 
+  @override
+  State<CustomDropdown<T>> createState() => _CustomDropdownState<T>();
+}
+
+class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(width: 380, child: _buildSingleSelectDropdown(context));
@@ -36,12 +43,12 @@ class CustomDropdown<T> extends StatelessWidget {
 
   Widget _buildSingleSelectDropdown(BuildContext context) {
     return DropdownSearch<T>(
-      compareFn: compareFn,
-      validator: singleSelectValidator,
-      items: (filter, loadProps) => menuList,
-      selectedItem: initaValue,
-      itemAsString: itemAsString,
-      onChanged: onChanged,
+      compareFn: widget.compareFn,
+      validator: widget.singleSelectValidator,
+      items: (filter, loadProps) => widget.menuList,
+      selectedItem: widget.initaValue,
+      itemAsString: widget.itemAsString,
+      onChanged: widget.onChanged,
       suffixProps: DropdownSuffixProps(
         dropdownButtonProps: DropdownButtonProps(
           iconClosed: Icon(Icons.keyboard_arrow_down, color: context.onPrimaryColor),
@@ -63,17 +70,17 @@ class CustomDropdown<T> extends StatelessWidget {
             borderSide: BorderSide(color: context.error),
           ),
           errorStyle: textTheme.labelSmall!.copyWith(color: context.error, height: 0.8),
-          labelText: labelText,
+          labelText: widget.labelText,
           floatingLabelBehavior: FloatingLabelBehavior.never,
           floatingLabelStyle: textTheme.titleSmall!.copyWith(color: context.colorScheme.onSurface.withAlpha(200)),
-          hintText: hintText,
+          hintText: widget.hintText,
           hintStyle: textTheme.titleSmall!.copyWith(color: context.colorScheme.onSurface.withAlpha(200), fontSize: 14),
           labelStyle: textTheme.titleSmall!.copyWith(color: context.colorScheme.onSurface.withAlpha(200), fontSize: 14),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
       popupProps: PopupProps.menu(
-        constraints: BoxConstraints(maxHeight: menuMaxHeight),
+        constraints: BoxConstraints(maxHeight: widget.menuMaxHeight),
         containerBuilder: (context, child) {
           return Container(
             decoration: BoxDecoration(
@@ -90,8 +97,9 @@ class CustomDropdown<T> extends StatelessWidget {
             side: const BorderSide(color: Colors.black, width: 1.2),
           ),
         ),
-        showSearchBox: enableSearch,
+        showSearchBox: widget.enableSearch,
         searchFieldProps: TextFieldProps(
+          onChanged: widget.onChangedSearch,
           cursorColor: context.onPrimaryColor,
           decoration: InputDecoration(
             focusColor: context.onPrimaryColor,
@@ -103,7 +111,7 @@ class CustomDropdown<T> extends StatelessWidget {
           ),
         ),
         itemBuilder: (context, item, isDisabled, isSelected) {
-          final display = itemAsString != null ? itemAsString!(item) : item.toString();
+          final display = widget.itemAsString != null ? widget.itemAsString!(item) : item.toString();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

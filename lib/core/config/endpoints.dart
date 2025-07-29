@@ -7,6 +7,10 @@ class AppEndPoint {
   static const accountStatement = 'account_stmt';
   static const getOutgoingCredits = 'get_out_itimad';
   static const getIncomingCredits = 'get_in_itimad';
+  static const newCredit = 'new_itimad';
+  static const getCompanies = 'get_companies';
+  static const getCreditTargets = 'get_itimad_targets';
+  static const getCreditTax = 'get_itimad_tax';
   static const getIncomingTransfer = 'get_in_trans';
   static const getReceivedTransfer = 'get_rcv_trans';
   static const getOutgoingTransfer = 'get_out_trans';
