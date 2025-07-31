@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../common/extentions/colors_extension.dart';
-import '../../../../common/widgets/app_text.dart';
-import '../../../../common/widgets/custom_action_button.dart';
-import '../../data/models/outgoing_transfer_response.dart';
-import '../../domain/use_cases/trans_details_usecase.dart';
-import '../bloc/transfer_bloc.dart';
-import '../../../../generated/assets.gen.dart';
+import '../../../../../common/extentions/colors_extension.dart';
+import '../../../../../common/widgets/app_text.dart';
+import '../../../../../common/widgets/custom_action_button.dart';
+import '../../../data/models/outgoing_transfer_response.dart';
+import '../../../domain/use_cases/trans_details_usecase.dart';
+import '../../bloc/transfer_bloc.dart';
+import '../../../../../generated/assets.gen.dart';
 
 class OutgoingTransferContainer extends StatelessWidget {
   final OutgoingTransfers outgoingTransfers;

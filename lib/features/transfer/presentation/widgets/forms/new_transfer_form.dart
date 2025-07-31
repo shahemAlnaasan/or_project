@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -173,6 +175,8 @@ class NewTransferFormState extends State<NewTransferForm> {
   Widget build(BuildContext context) {
     return BlocListener<TransferBloc, TransferState>(
       listener: (context, state) async {
+        final blocContext = context;
+
         if (state.newTransferStatus == Status.success) {
           TransDetailsParams params = TransDetailsParams(transNum: state.newTransResponse!.transnum);
           context.read<TransferBloc>().add(GetTransDetailsEvent(params: params));
@@ -180,7 +184,7 @@ class NewTransferFormState extends State<NewTransferForm> {
             msg: "تم ارسال الحوالة",
             context: context,
             type: ToastificationType.success,
-            autoCloseDuration: Duration(seconds: 10),
+            autoCloseDuration: Duration(seconds: 15),
           );
           Navigator.of(
             rootNavigator: true,
@@ -190,7 +194,7 @@ class NewTransferFormState extends State<NewTransferForm> {
         if (state.transDetailsStatus == Status.success && state.transDetailsResponse != null) {
           await Future.delayed(Duration(seconds: 2));
           ToastificationDialog.dismiss();
-          Navigator.of(context, rootNavigator: true).push(
+          Navigator.of(blocContext, rootNavigator: true).push(
             MaterialPageRoute(
               fullscreenDialog: false,
               builder: (context) => OutgoingTransferReceiptScreen(transDetailsResponse: state.transDetailsResponse!),
@@ -393,7 +397,6 @@ class NewTransferFormState extends State<NewTransferForm> {
                                       api: selectedTarget!.api,
                                       apiInfo: isTargetGlobal ? selectedTarget!.cid : "",
                                     );
-                                    // ignore: use_build_context_synchronously
                                     blocContext.read<TransferBloc>().add(NewTransferEvent(params: params));
                                   },
                                 );
@@ -415,6 +418,10 @@ class NewTransferFormState extends State<NewTransferForm> {
                   type: ToastificationType.success,
                   autoCloseDuration: Duration(seconds: 10),
                 );
+                Navigator.of(
+                  rootNavigator: true,
+                  context,
+                ).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const MainScreen()), (route) => false);
 
                 log("triggerd");
               },

@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../../../../common/extentions/colors_extension.dart';
-import '../../../../common/widgets/app_text.dart';
-import '../../../../common/widgets/custom_action_button.dart';
-import '../../data/models/received_transfer_response.dart';
-import 'dialogs/received_transfer_details_dialog.dart';
-import '../../../../generated/assets.gen.dart';
-import '../../../../generated/locale_keys.g.dart';
+import '../../../../../common/extentions/colors_extension.dart';
+import '../../../../../common/widgets/app_text.dart';
+import '../../../../../common/widgets/custom_action_button.dart';
+import '../../../data/models/received_transfer_response.dart';
+import '../dialogs/received_transfer_details_dialog.dart';
+import '../../../../../generated/assets.gen.dart';
+import '../../../../../generated/locale_keys.g.dart';
 
 class ReceivedTransferContainer extends StatelessWidget {
   final ReceivedTransfers receivedTransfers;

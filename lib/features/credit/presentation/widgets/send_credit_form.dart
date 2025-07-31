@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:golder_octopus/features/main/presentation/pages/main_screen.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/state_managment/bloc_state.dart';
 import '../../../../common/utils/device_info.dart';
@@ -166,8 +167,12 @@ class SendCreditFormState extends State<SendCreditForm> {
             msg: "تم ارسال الحوالة",
             context: context,
             type: ToastificationType.success,
-            autoCloseDuration: Duration(seconds: 10),
+            autoCloseDuration: Duration(seconds: 15),
           );
+          Navigator.of(
+            rootNavigator: true,
+            context,
+          ).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const MainScreen()), (route) => false);
         }
         if (state.newCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
           await Future.delayed(Duration(seconds: 2));

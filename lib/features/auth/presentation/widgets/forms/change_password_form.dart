@@ -1,39 +1,42 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../common/extentions/colors_extension.dart';
-import '../../../../common/extentions/navigation_extensions.dart';
-import '../../../../common/state_managment/bloc_state.dart';
-import '../../../../common/widgets/custom_progress_indecator.dart';
-import '../../../../common/widgets/custom_text_field.dart';
-import '../../../../common/widgets/large_button.dart';
-import '../../../../common/widgets/toast_dialog.dart';
-import '../../../../core/di/injection.dart';
-import '../../domain/use_cases/login_usecase.dart';
-import '../bloc/auth_bloc.dart';
-import '../pages/verify_login_screen.dart';
-import '../../../../generated/locale_keys.g.dart';
+import '../../../../../common/extentions/colors_extension.dart';
+import '../../../../../common/extentions/navigation_extensions.dart';
+import '../../../../../common/state_managment/bloc_state.dart';
+import '../../../../../common/widgets/app_text.dart';
+import '../../../../../common/widgets/custom_progress_indecator.dart';
+import '../../../../../common/widgets/custom_text_field.dart';
+import '../../../../../common/widgets/large_button.dart';
+import '../../../../../common/widgets/toast_dialog.dart';
+import '../../../../../core/di/injection.dart';
+import '../../bloc/auth_bloc.dart';
+import '../../pages/verify_login_screen.dart';
+import '../../../../../generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class ChangePasswordForm extends StatefulWidget {
+  const ChangePasswordForm({super.key});
 
   @override
-  State<LoginForm> createState() => _NewTransferFormState();
+  State<ChangePasswordForm> createState() => _NewTransferFormState();
 }
 
-class _NewTransferFormState extends State<LoginForm> {
+class _NewTransferFormState extends State<ChangePasswordForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController oldPasswordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController newPasswordAgainController = TextEditingController();
 
-  final FocusNode usernameNode = FocusNode();
-  final FocusNode passwardNode = FocusNode();
+  final FocusNode oldPasswordNode = FocusNode();
+  final FocusNode newPasswordNode = FocusNode();
+  final FocusNode newPasswordAgainNode = FocusNode();
   @override
   void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    newPasswordAgainController.dispose();
     super.dispose();
   }
 
@@ -57,21 +60,28 @@ class _NewTransferFormState extends State<LoginForm> {
             spacing: 8,
             children: [
               buildTextField(
-                hint: LocaleKeys.auth_username.tr(),
-                preIcon: Icon(Icons.person_outline_outlined, color: context.onPrimaryColor.withAlpha(170)),
-                controller: usernameController,
-                focusNode: usernameNode,
-                focusOn: passwardNode,
+                hint: LocaleKeys.auth_old_password.tr(),
+                controller: oldPasswordController,
+                focusNode: oldPasswordNode,
+                focusOn: newPasswordNode,
               ),
-
+              SizedBox(height: 10),
+              buildTextField(
+                hint: LocaleKeys.auth_new_password.tr(),
+                controller: newPasswordController,
+                obSecure: true,
+                focusNode: newPasswordNode,
+                focusOn: newPasswordAgainNode,
+              ),
+              buildFieldTitle(title: "- ثمانية احرف على الاقل"),
               SizedBox(height: 5),
               buildTextField(
-                hint: LocaleKeys.auth_password.tr(),
-                preIcon: Icon(Icons.lock_outline, color: context.onPrimaryColor.withAlpha(170)),
+                hint: LocaleKeys.auth_new_password_again.tr(),
                 obSecure: true,
-                controller: passwordController,
-                focusNode: passwardNode,
+                controller: newPasswordAgainController,
+                focusNode: newPasswordAgainNode,
               ),
+              buildFieldTitle(title: "- يجب ان تكون الكلمتين متطابقتين"),
               SizedBox(height: 10),
               BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {
@@ -83,18 +93,9 @@ class _NewTransferFormState extends State<LoginForm> {
                               state.status == Status.loading
                                   ? () {}
                                   : () {
-                                    if (_formKey.currentState!.validate()) {
-                                      final LoginParams params = LoginParams(
-                                        username: usernameController.text,
-                                        password: passwordController.text,
-                                        ipInfo: "",
-                                        deviceInfo: "",
-                                      );
-
-                                      context.read<AuthBloc>().add(LoginEvent(params: params));
-                                    }
+                                    if (_formKey.currentState!.validate()) {}
                                   },
-                          text: LocaleKeys.auth_login.tr(),
+                          text: LocaleKeys.auth_change_password.tr(),
                           backgroundColor: context.primaryContainer,
                           circularRadius: 12,
                           child: state.status == Status.loading ? CustomProgressIndecator() : null,
@@ -108,6 +109,15 @@ class _NewTransferFormState extends State<LoginForm> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildFieldTitle({required String title}) {
+    return AppText.bodyMedium(
+      title,
+      textAlign: TextAlign.right,
+      color: context.onPrimaryColor,
+      fontWeight: FontWeight.w300,
     );
   }
 }
