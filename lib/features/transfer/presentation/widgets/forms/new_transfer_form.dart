@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:golder_octopus/features/main/presentation/pages/main_screen.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/state_managment/bloc_state.dart';
 import '../../../../../common/utils/device_info.dart';
@@ -179,6 +182,10 @@ class NewTransferFormState extends State<NewTransferForm> {
             type: ToastificationType.success,
             autoCloseDuration: Duration(seconds: 10),
           );
+          Navigator.of(
+            rootNavigator: true,
+            context,
+          ).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const MainScreen()), (route) => false);
         }
         if (state.transDetailsStatus == Status.success && state.transDetailsResponse != null) {
           await Future.delayed(Duration(seconds: 2));
@@ -399,6 +406,20 @@ class NewTransferFormState extends State<NewTransferForm> {
                   child: state.newTransferStatus == Status.loading ? CustomProgressIndecator() : null,
                 );
               },
+            ),
+            LargeButton(
+              onPressed: () {
+                ToastificationDialog.showToast(
+                  msg: "تم ارسال الحوالة",
+                  context: context,
+                  type: ToastificationType.success,
+                  autoCloseDuration: Duration(seconds: 10),
+                );
+
+                log("triggerd");
+              },
+              text: "text",
+              backgroundColor: Colors.amber,
             ),
           ],
         ),

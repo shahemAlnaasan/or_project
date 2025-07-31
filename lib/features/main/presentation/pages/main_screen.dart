@@ -1,11 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
-import '../../../../core/di/injection.dart';
 import '../../../account_statement/presentation/pages/account_statement_screen.dart';
 import '../../../account_statement/presentation/pages/centers_posts_screen.dart';
 import '../../../account_statement/presentation/pages/reports_screen.dart';
@@ -13,7 +11,6 @@ import '../../../auth/presentation/pages/change_password_screen.dart';
 import '../../../credit/presentation/pages/incoming_credit_screen.dart';
 import '../../../credit/presentation/pages/outgoing_credit_screen.dart';
 import '../../../exchange/presentation/pages/exchange_screen.dart';
-import '../../../home/presentation/bloc/home_bloc.dart';
 import '../../../home/presentation/pages/home_screen.dart';
 import '../widgets/main_appbar.dart';
 import '../widgets/side_actions/scan_qr_action.dart';
@@ -81,11 +78,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _rootScreens = [
     const NewTransferScreen(),
     const OutgoingTransferScreen(),
-    BlocProvider(
-      lazy: false,
-      create: (context) => getIt<HomeBloc>()..add(GetAccountInfoEvent()),
-      child: const HomeScreen(),
-    ),
+    const HomeScreen(),
     const IncomingTransferScreen(),
     const ExchangeScreen(),
   ];

@@ -60,7 +60,8 @@ dependencies:
   data_table_2: ^2.6.0
   mobile_scanner: ^7.0.1
   google_mlkit_barcode_scanning: ^0.14.1
-  # awesome_dialog: ^3.2.1
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
   
 
 
