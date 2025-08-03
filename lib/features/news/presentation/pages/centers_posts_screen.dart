@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
-import '../widgets/forms/centers_posts_form.dart';
+import '../widgets/centers_posts_form.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class CentersPostsScreen extends StatelessWidget {

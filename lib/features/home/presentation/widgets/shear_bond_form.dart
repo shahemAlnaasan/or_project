@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/features/exchange/data/models/get_preices_model.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/widgets/app_text.dart';
 import '../../../../common/widgets/custom_drop_down.dart';
@@ -8,30 +9,8 @@ import '../../../../common/widgets/large_button.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class ShearBondForm extends StatefulWidget {
-  final String? beneficiaryName;
-  final String? beneficiaryPhone;
-  final String? destination;
-  final String? currency;
-  final String? amount;
-  final String? senderName;
-  final String? senderPhone;
-  final String? fees;
-  final String? notes;
-  final String? address;
-
-  const ShearBondForm({
-    super.key,
-    this.beneficiaryName,
-    this.beneficiaryPhone,
-    this.destination,
-    this.currency,
-    this.amount,
-    this.senderName,
-    this.senderPhone,
-    this.fees,
-    this.notes,
-    this.address,
-  });
+  final GetPricesResponse? getPricesResponse;
+  const ShearBondForm({super.key, required this.getPricesResponse});
 
   @override
   State<ShearBondForm> createState() => _NewTransferFormState();
@@ -40,29 +19,40 @@ class ShearBondForm extends StatefulWidget {
 class _NewTransferFormState extends State<ShearBondForm> {
   final _formKey = GlobalKey<FormState>();
 
-  late TextEditingController sellAmountController;
-  late TextEditingController buyAmountController;
-  late TextEditingController sellPriceController;
+  late TextEditingController fromAmountController;
+  late TextEditingController toAmountController;
+  late TextEditingController cutPriceController;
 
-  String? sellSelectedCurrency;
-  String? buySelectedCurrency;
+  List<Currency> filteredFromCurrencies = [];
+  Currency? selectedFromCurrency;
+  List<Currency> filteredToCurrencies = [];
+  Currency? selectedToCurrency;
 
   @override
   void initState() {
     super.initState();
-    sellAmountController = TextEditingController(text: widget.amount ?? '0');
-    buyAmountController = TextEditingController(text: widget.amount ?? '0');
-    sellPriceController = TextEditingController(text: widget.amount ?? '0');
+    fromAmountController = TextEditingController(text: '0');
+    toAmountController = TextEditingController(text: '0');
+    cutPriceController = TextEditingController(text: '0');
 
-    sellSelectedCurrency = widget.currency;
-    buySelectedCurrency = widget.currency;
+    filteredFromCurrencies = widget.getPricesResponse?.curs ?? [];
+    filteredToCurrencies = widget.getPricesResponse?.curs ?? [];
   }
 
   @override
   void dispose() {
-    sellAmountController.dispose();
-    buyAmountController.dispose();
+    fromAmountController.dispose();
+    toAmountController.dispose();
+    cutPriceController.dispose();
+
     super.dispose();
+  }
+
+  String? singleSelectValidator(value) {
+    if (value == null) {
+      return LocaleKeys.transfer_this_field_cant_be_empty.tr();
+    }
+    return null;
   }
 
   @override
@@ -77,37 +67,47 @@ class _NewTransferFormState extends State<ShearBondForm> {
           children: [
             Center(child: buildFieldTitle(title: "عليكم / بيغ", color: Colors.blueAccent)),
             buildFieldTitle(title: LocaleKeys.credits_currency.tr()),
-            CustomDropdown(
-              menuList: ['USD', 'EUR', 'SYP'],
-              initaValue: sellSelectedCurrency,
-              labelText: LocaleKeys.credits_currency.tr(),
-              hintText: LocaleKeys.credits_currency.tr(),
-              onChanged: (value) {
-                setState(() => sellSelectedCurrency = value);
+            CustomDropdown<Currency>(
+              menuList: filteredFromCurrencies,
+              singleSelectValidator: (value) => singleSelectValidator(value),
+              initaValue: selectedFromCurrency,
+              compareFn: (a, b) => a.id == b.id,
+              labelText: "--من--",
+              hintText: "--من--",
+              itemAsString: (cur) => cur.name,
+              onChanged: (cur) {
+                setState(() {
+                  selectedFromCurrency = cur;
+                });
               },
             ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.credits_amount.tr()),
-            buildTextField(hint: LocaleKeys.credits_amount.tr(), controller: sellAmountController),
+            buildTextField(hint: LocaleKeys.credits_amount.tr(), controller: fromAmountController),
             SizedBox(height: 3),
             buildFieldTitle(title: "--من--"),
             buildFieldTitle(title: LocaleKeys.exchange_price.tr()),
-            buildTextField(hint: LocaleKeys.exchange_price.tr(), controller: sellPriceController, readOnly: true),
+            buildTextField(hint: LocaleKeys.exchange_price.tr(), controller: cutPriceController, readOnly: true),
             SizedBox(height: 3),
             Center(child: buildFieldTitle(title: "لكم / شراء", color: Colors.blueAccent)),
             buildFieldTitle(title: LocaleKeys.credits_currency.tr()),
-            CustomDropdown(
-              menuList: ['USD', 'EUR', 'SYP'],
-              initaValue: buySelectedCurrency,
-              labelText: LocaleKeys.credits_currency.tr(),
-              hintText: LocaleKeys.credits_currency.tr(),
-              onChanged: (value) {
-                setState(() => buySelectedCurrency = value);
+            CustomDropdown<Currency>(
+              menuList: filteredToCurrencies,
+              singleSelectValidator: (value) => singleSelectValidator(value),
+              initaValue: selectedToCurrency,
+              compareFn: (a, b) => a.id == b.id,
+              labelText: "--الى--",
+              hintText: "--الى--",
+              itemAsString: (cur) => cur.name,
+              onChanged: (cur) {
+                setState(() {
+                  selectedFromCurrency = cur;
+                });
               },
             ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.credits_amount.tr()),
-            buildTextField(hint: LocaleKeys.credits_amount.tr(), controller: buyAmountController),
+            buildTextField(hint: LocaleKeys.credits_amount.tr(), controller: toAmountController),
             Center(child: buildFieldTitle(title: "--الى--")),
             SizedBox(height: 3),
             LargeButton(

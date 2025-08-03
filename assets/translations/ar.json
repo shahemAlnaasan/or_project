@@ -58,7 +58,19 @@
   "destination_address" : "عنوان الوجهة",
   "destination_phone" : "هاتف الوجهة",
   "recived_amount" : "المبلغ المستلم",
-  "excange" : "الصرف"
+  "transaction_number": "رقم الحركة",
+  "send_date": "تاريخ الارسال",
+  "received_to": "واردة الى",
+  "enter_info": "كتابة المعلومات",
+  "capture_image": "التقاط صورة",
+  "image_type": "نوع الصورة",
+  "id_type": "هوية الشخصية",
+  "upload_image": "تحميل صورة",
+  "secret_code": "الرقم السري",
+  "confirm_delivery": "تسليم الحوالة",
+  "excange" : "الصرف",
+  "notification_number" : "رقم الاشعار",
+  "withdrawl_transaction" : "سحب حركة"
 },
   "credits" : {
     "outgoing_credits": "اعتمادات صادرة",
@@ -109,6 +121,7 @@
 
   },
   "posts": {
+    "news" : "الاخبار",
     "posts": "المنشورات",
     "new_post": "منشور جديد",
     "post_context": "نص المنشور",

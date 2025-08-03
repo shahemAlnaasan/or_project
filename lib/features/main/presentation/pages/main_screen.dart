@@ -1,11 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:golder_octopus/features/news/presentation/pages/company_news_screen.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
 import '../../../account_statement/presentation/pages/account_statement_screen.dart';
-import '../../../account_statement/presentation/pages/centers_posts_screen.dart';
+import '../../../news/presentation/pages/centers_posts_screen.dart';
 import '../../../account_statement/presentation/pages/reports_screen.dart';
 import '../../../auth/presentation/pages/change_password_screen.dart';
 import '../../../credit/presentation/pages/incoming_credit_screen.dart';
@@ -17,7 +18,7 @@ import '../widgets/side_actions/scan_qr_action.dart';
 import '../widgets/side_actions/side_action_placeholder.dart';
 import '../widgets/side_actions/user_info_action.dart';
 import '../../../transfer/presentation/pages/incoming_transfer_screen.dart';
-import '../../../transfer/presentation/pages/new_transfer_screen.dart';
+import '../../../transfer/presentation/pages/forms_screens/new_transfer_screen.dart';
 import '../../../transfer/presentation/pages/outgoing_transfer_screen.dart';
 import '../../../transfer/presentation/pages/received_transfer_screen.dart';
 import '../../../transfer/presentation/pages/resereved_transfer_screen.dart';
@@ -323,7 +324,7 @@ class _MainScreenState extends State<MainScreen> {
                             icon: Icons.message_outlined,
                             expandable: false,
                             isSubItem: true,
-                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                            onTap: () => _pushInCurrentTab(CompanyNewsScreen()),
                           ),
                           _buildMenuItem(
                             label: "منشورات المراكز",

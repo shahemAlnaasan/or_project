@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/forms_screens/withdrawl_transfer_screen.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/navigation_extensions.dart';
 import '../../../../common/widgets/app_text.dart';
@@ -8,13 +9,13 @@ import '../../../account_statement/presentation/pages/account_statement_screen.d
 import '../../../credit/presentation/pages/incoming_credit_screen.dart';
 import '../../../credit/presentation/pages/outgoing_credit_screen.dart';
 import '../../../credit/presentation/pages/send_credit_screen.dart';
-import '../pages/shear_bond_screen.dart';
+import '../../../exchange/presentation/pages/shear_bond_screen.dart';
 import '../../../transfer/presentation/pages/incoming_transfer_screen.dart';
-import '../../../transfer/presentation/pages/international_transfer_screen.dart';
-import '../../../transfer/presentation/pages/new_transfer_screen.dart';
+import '../../../transfer/presentation/pages/forms_screens/international_transfer_screen.dart';
+import '../../../transfer/presentation/pages/forms_screens/new_transfer_screen.dart';
 import '../../../transfer/presentation/pages/outgoing_transfer_screen.dart';
 import '../../../transfer/presentation/pages/received_transfer_screen.dart';
-import '../../../transfer/presentation/pages/syrian_transfer_screen.dart';
+import '../../../transfer/presentation/pages/forms_screens/syrian_transfer_screen.dart';
 import '../../../../generated/assets.gen.dart';
 import '../../../../generated/locale_keys.g.dart';
 
@@ -89,7 +90,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
       GridItem(
         icon: Assets.images.quickActions.moneyWithdraw.path,
         label: LocaleKeys.home_withdrawl_transfer.tr(),
-        onTap: () => print('Settings tapped'),
+        onTap: () => context.push(WithdrawlTransferScreen()),
       ),
     ];
     return Padding(

@@ -113,6 +113,10 @@ class $AssetsImagesFlagsGen {
 class $AssetsImagesLogoGen {
   const $AssetsImagesLogoGen();
 
+  /// File path: assets/images/logo/android_12_splash.png
+  AssetGenImage get android12Splash =>
+      const AssetGenImage('assets/images/logo/android_12_splash.png');
+
   /// File path: assets/images/logo/app_store_logo.png
   AssetGenImage get appStoreLogo =>
       const AssetGenImage('assets/images/logo/app_store_logo.png');
@@ -125,8 +129,18 @@ class $AssetsImagesLogoGen {
   AssetGenImage get googlePlayLogo =>
       const AssetGenImage('assets/images/logo/google_play_logo.png');
 
+  /// File path: assets/images/logo/splash_logo.png
+  AssetGenImage get splashLogo =>
+      const AssetGenImage('assets/images/logo/splash_logo.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [appStoreLogo, companyLogo, googlePlayLogo];
+  List<AssetGenImage> get values => [
+    android12Splash,
+    appStoreLogo,
+    companyLogo,
+    googlePlayLogo,
+    splashLogo,
+  ];
 }
 
 class $AssetsImagesNavbarGen {

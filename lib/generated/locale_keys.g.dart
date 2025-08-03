@@ -60,7 +60,19 @@ abstract class  LocaleKeys {
   static const transfer_destination_address = 'transfer.destination_address';
   static const transfer_destination_phone = 'transfer.destination_phone';
   static const transfer_recived_amount = 'transfer.recived_amount';
+  static const transfer_transaction_number = 'transfer.transaction_number';
+  static const transfer_send_date = 'transfer.send_date';
+  static const transfer_received_to = 'transfer.received_to';
+  static const transfer_enter_info = 'transfer.enter_info';
+  static const transfer_capture_image = 'transfer.capture_image';
+  static const transfer_image_type = 'transfer.image_type';
+  static const transfer_id_type = 'transfer.id_type';
+  static const transfer_upload_image = 'transfer.upload_image';
+  static const transfer_secret_code = 'transfer.secret_code';
+  static const transfer_confirm_delivery = 'transfer.confirm_delivery';
   static const transfer_excange = 'transfer.excange';
+  static const transfer_notification_number = 'transfer.notification_number';
+  static const transfer_withdrawl_transaction = 'transfer.withdrawl_transaction';
   static const transfer = 'transfer';
   static const credits_outgoing_credits = 'credits.outgoing_credits';
   static const credits_incoming_credits = 'credits.incoming_credits';
@@ -107,6 +119,7 @@ abstract class  LocaleKeys {
   static const account_statement_only_this_year = 'account_statement.only_this_year';
   static const account_statement_all = 'account_statement.all';
   static const account_statement = 'account_statement';
+  static const posts_news = 'posts.news';
   static const posts_posts = 'posts.posts';
   static const posts_new_post = 'posts.new_post';
   static const posts_post_context = 'posts.post_context';

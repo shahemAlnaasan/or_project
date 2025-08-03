@@ -20,4 +20,5 @@ class AppEndPoint {
   static const getTargetInfo = 'get_target_info';
   static const getTax = 'get_tax';
   static const getTransDetails = 'trans_search';
+  static const getPrices = 'get_all_prices';
 }

@@ -14,7 +14,7 @@ import '../../../../core/di/injection.dart';
 import '../../data/models/received_transfer_response.dart';
 import '../../domain/use_cases/received_transfers_usecase.dart';
 import '../bloc/transfer_bloc.dart';
-import '../widgets/received_transfer_container.dart';
+import '../widgets/containers/received_transfer_container.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class ReceivedTransferScreen extends StatefulWidget {

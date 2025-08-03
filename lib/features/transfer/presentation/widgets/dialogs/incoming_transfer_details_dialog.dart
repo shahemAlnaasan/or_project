@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/pay_incoming_transfer_screen.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/extentions/navigation_extensions.dart';
 import '../../../../../common/extentions/size_extension.dart';
@@ -10,10 +11,12 @@ import '../../../data/models/trans_details_response.dart';
 import '../../../../../generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 
+enum TransStatus { unReceived, receievd, deleted, reserved, frozen }
+
 class IncomingTransferDetailsDialog extends StatelessWidget {
   final TransDetailsResponse transDetailsResponse;
   const IncomingTransferDetailsDialog({super.key, required this.transDetailsResponse});
-  String getTransStatus(int status) {
+  String getTransStatusName(int status) {
     switch (status) {
       case 1:
         return "غير مسلم";
@@ -27,6 +30,23 @@ class IncomingTransferDetailsDialog extends StatelessWidget {
         return "مجمد";
       default:
         return "غير مسلم";
+    }
+  }
+
+  TransStatus getTransStatus(int status) {
+    switch (status) {
+      case 1:
+        return TransStatus.unReceived;
+      case 2:
+        return TransStatus.receievd;
+      case 3:
+        return TransStatus.deleted;
+      case 4:
+        return TransStatus.reserved;
+      case 5:
+        return TransStatus.frozen;
+      default:
+        return TransStatus.unReceived;
     }
   }
 
@@ -101,10 +121,22 @@ class IncomingTransferDetailsDialog extends StatelessWidget {
               _infoRow(label: LocaleKeys.transfer_notes.tr(), value: transDetails.notes, context: context),
               _infoRow(
                 label: LocaleKeys.transfer_status.tr(),
-                value: getTransStatus(int.parse(transDetails.status)),
+                value: getTransStatusName(int.parse(transDetails.status)),
                 context: context,
               ),
               const SizedBox(height: 16),
+              if (getTransStatus(int.parse(transDetails.status)) == TransStatus.unReceived)
+                Align(
+                  alignment: Alignment.center,
+                  child: _dialogButton(
+                    context,
+                    "تسليم الحوالة",
+                    Icons.check,
+                    Color(0xffa992e8),
+                    onPressed:
+                        () => context.push(PayIncomingTransferScreen(transDetailsResponse: transDetailsResponse)),
+                  ),
+                ),
 
               // Buttons
               Align(
@@ -132,7 +164,7 @@ $companyName
 اسم المستفيد   :${transDetails.benifName}
 هاتف المستفيد   :${transDetails.benifPhone}
 الملاحظات    :${transDetails.notes}
-الحالة  :  ${getTransStatus(int.parse(transDetails.status))}
+الحالة  :  ${getTransStatusName(int.parse(transDetails.status))}
 ''';
                         Clipboard.setData(ClipboardData(text: data));
                         ToastificationDialog.showToast(

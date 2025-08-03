@@ -9,12 +9,12 @@ import '../../../../common/widgets/custom_progress_indecator.dart';
 import '../../../../common/widgets/sort_header.dart';
 import '../../../../common/widgets/toast_dialog.dart';
 import '../../../../core/di/injection.dart';
-import '../../../auth/presentation/widgets/login_form.dart';
+import '../../../auth/presentation/widgets/forms/login_form.dart';
 import '../../data/models/incoming_transfer_response.dart';
 import '../../data/models/trans_details_response.dart';
 import '../bloc/transfer_bloc.dart';
 import '../widgets/dialogs/incoming_transfer_details_dialog.dart';
-import '../widgets/incoming_transfer_container.dart';
+import '../widgets/containers/incoming_transfer_container.dart';
 import '../../../../generated/locale_keys.g.dart';
 import 'package:toastification/toastification.dart';
 

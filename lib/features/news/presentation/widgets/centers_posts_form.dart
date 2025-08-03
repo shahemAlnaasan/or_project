@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../../../../../common/extentions/colors_extension.dart';
-import '../../../../../common/widgets/app_text.dart';
-import '../../../../../common/widgets/custom_text_field.dart';
-import '../../../../../common/widgets/large_button.dart';
-import '../../../../../generated/assets.gen.dart';
-import '../../../../../generated/locale_keys.g.dart';
+import '../../../../common/extentions/colors_extension.dart';
+import '../../../../common/widgets/app_text.dart';
+import '../../../../common/widgets/custom_text_field.dart';
+import '../../../../common/widgets/large_button.dart';
+import '../../../../generated/assets.gen.dart';
+import '../../../../generated/locale_keys.g.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 

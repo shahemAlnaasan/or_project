@@ -1,43 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/features/exchange/data/models/get_preices_model.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/widgets/app_text.dart';
-import '../../data/models/exchange_model.dart';
 import '../../../../generated/assets.gen.dart';
 import '../../../../generated/locale_keys.g.dart';
 
-enum ExchangeType { euroDolar, goldDolar, silverDolar }
+class ExchangeContainer extends StatefulWidget {
+  final GetPricesResponse? getPricesResponse;
+  const ExchangeContainer({super.key, required this.getPricesResponse});
 
-class ExchangeContainer extends StatelessWidget {
-  ExchangeContainer({super.key});
+  @override
+  State<ExchangeContainer> createState() => _ExchangeContainerState();
+}
 
-  final List<ExchangeModel> exchangeList = [
-    ExchangeModel(
-      label: "يورو",
-      subLabel: "دولار",
-      value1: "0.0",
-      value2: "1.1688",
-      iconPath1: Assets.images.flags.unitedStates.path,
-      iconPath2: Assets.images.flags.europe.path,
-    ),
-    ExchangeModel(
-      label: "أونصة ذهب",
-      subLabel: "دولار",
-      value1: "3,324.3",
-      value2: "3,324.7",
-      iconPath1: Assets.images.flags.unitedStates.path,
-      iconPath2: Assets.images.flags.gold.path,
-    ),
-    ExchangeModel(
-      label: "أونصة فضة",
-      subLabel: "دولار",
-      value1: "0",
-      value2: "0",
-      iconPath1: Assets.images.flags.unitedStates.path,
-      iconPath2: Assets.images.flags.silver.path,
-    ),
-  ];
-
+class _ExchangeContainerState extends State<ExchangeContainer> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -62,13 +39,85 @@ class ExchangeContainer extends StatelessWidget {
             ),
           ),
         ),
-
-        ...exchangeList.map((e) => buildExchangeRow(e, context)),
+        ...buildExchangeRows(context),
       ],
     );
   }
 
-  Widget buildExchangeRow(ExchangeModel exchange, BuildContext context) {
+  String getImagePath(String? img) {
+    if (img == null || img.isEmpty) {
+      return Assets.images.flags.unitedStates.path;
+    }
+    return Assets.images.flags.unitedStates.path;
+  }
+
+  Currency? getCurrencyObject(String id) {
+    final currency = widget.getPricesResponse?.curs.firstWhere(
+      (cur) => cur.id == id,
+      orElse: () => Currency(id: '', name: '', op: '', price: '', img: ''),
+    );
+    return currency;
+  }
+
+  List<Widget> buildExchangeRows(BuildContext context) {
+    final prices = widget.getPricesResponse?.prices.values.toList() ?? [];
+
+    final Map<String, Map<String, PriceValue>> grouped = {};
+
+    for (final price in prices) {
+      final ids = [price.curfrom, price.curto]..sort();
+      final key = '${ids[0]}-${ids[1]}';
+
+      grouped.putIfAbsent(key, () => {});
+      grouped[key]![price.catagory] = price;
+    }
+
+    List<Widget> rows = [];
+
+    for (var entry in grouped.entries) {
+      final buy = entry.value['buy'];
+      final sell = entry.value['sell'];
+
+      final from = buy?.curfrom ?? sell?.curto ?? "";
+      final to = buy?.curto ?? sell?.curfrom ?? "";
+
+      final fromCurrency = getCurrencyObject(from);
+      final toCurrency = getCurrencyObject(to);
+
+      final label1 = toCurrency?.name ?? to;
+      final label2 = fromCurrency?.name ?? from;
+
+      final iconPath1 = getImagePath(toCurrency?.img);
+      final iconPath2 = getImagePath(fromCurrency?.img);
+
+      final value1 = double.tryParse(buy?.price ?? "")?.toStringAsFixed(4) ?? "0.0000";
+      final value2 = double.tryParse(sell?.price ?? "")?.toStringAsFixed(4) ?? "0.0000";
+
+      rows.add(
+        buildExchangeRow(
+          label1: label1,
+          label2: label2,
+          value1: value1,
+          value2: value2,
+          iconPath1: iconPath1,
+          iconPath2: iconPath2,
+          context: context,
+        ),
+      );
+    }
+
+    return rows;
+  }
+
+  Widget buildExchangeRow({
+    required String label1,
+    required String label2,
+    required String value1,
+    required String value2,
+    required String iconPath1,
+    required String iconPath2,
+    required BuildContext context,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
       decoration: BoxDecoration(
@@ -82,9 +131,9 @@ class ExchangeContainer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Image.asset(exchange.iconPath2, width: 24),
+                Image.asset(iconPath2, width: 24),
                 const SizedBox(width: 4),
-                Image.asset(exchange.iconPath1, width: 24),
+                Image.asset(iconPath1, width: 24),
                 const SizedBox(width: 8),
               ],
             ),
@@ -93,22 +142,22 @@ class ExchangeContainer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(exchange.label, style: const TextStyle(fontSize: 16)),
-                Text(exchange.subLabel, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(label1, style: const TextStyle(fontSize: 16)),
+                Text(label2, style: const TextStyle(fontSize: 12, color: Colors.grey)),
               ],
             ),
           ),
           Expanded(
             child: Align(
               alignment: Alignment.center,
-              child: Text(exchange.value1, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+              child: Text(value1, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Align(
               alignment: Alignment.center,
-              child: Text(exchange.value2, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+              child: Text(value2, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             ),
           ),
         ],

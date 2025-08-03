@@ -1,13 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/features/news/presentation/widgets/news_container.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
-import '../widgets/forms/change_password_form.dart';
 import '../../../../generated/locale_keys.g.dart';
 
-class ChangePasswordScreen extends StatelessWidget {
-  const ChangePasswordScreen({super.key});
+class CompanyNewsScreen extends StatelessWidget {
+  const CompanyNewsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +22,12 @@ class ChangePasswordScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppText.headlineMedium(
-                  LocaleKeys.auth_change_password.tr(),
+                  LocaleKeys.posts_news.tr(),
                   textAlign: TextAlign.start,
                   fontWeight: FontWeight.w500,
                 ),
                 SizedBox(height: 20),
-                ChangePasswordForm(),
+                NewsContainer(),
               ],
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
-import '../widgets/verify_Login_form.dart';
+import '../widgets/forms/verify_Login_form.dart';
 import '../../../../generated/assets.gen.dart';
 
 class VerifyLoginScreen extends StatelessWidget {

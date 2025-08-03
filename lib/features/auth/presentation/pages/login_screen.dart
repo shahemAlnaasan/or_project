@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
-import '../widgets/login_form.dart';
+import '../widgets/forms/login_form.dart';
 import '../../../../generated/assets.gen.dart';
 import '../../../../generated/locale_keys.g.dart';
 

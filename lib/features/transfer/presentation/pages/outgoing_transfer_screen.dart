@@ -18,7 +18,7 @@ import '../../domain/use_cases/outgoing_transfers_usecase.dart';
 import '../bloc/transfer_bloc.dart';
 import 'outgoing_transfer_receipt_screen.dart';
 import '../widgets/dialogs/outgoing_transfer_details_dialog.dart';
-import '../widgets/outgoing_transfer_container.dart';
+import '../widgets/containers/outgoing_transfer_container.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class OutgoingTransferScreen extends StatefulWidget {

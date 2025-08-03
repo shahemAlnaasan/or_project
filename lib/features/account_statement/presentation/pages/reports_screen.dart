@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
-import '../widgets/incoming_transfer_report.dart';
-import '../widgets/outgoing_transfers_report.dart';
+import '../widgets/reports/incoming_transfer_report.dart';
+import '../widgets/reports/outgoing_transfers_report.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class ReportsScreen extends StatefulWidget {
