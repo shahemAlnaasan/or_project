@@ -20,6 +20,13 @@ class CutExchangeScreen extends StatefulWidget {
 }
 
 class _CutExchangeScreenState extends State<CutExchangeScreen> {
+  final GlobalKey<CutExchangeFormState> _formKey = GlobalKey();
+
+  Future<void> _onRefresh(BuildContext context) async {
+    _formKey.currentState?.resetForm();
+    context.read<ExchangeBloc>().add(GetPricesEvent());
+  }
+
   GetPricesResponse? getPricesResponse;
   @override
   Widget build(BuildContext context) {
@@ -42,36 +49,39 @@ class _CutExchangeScreenState extends State<CutExchangeScreen> {
 
         child: Scaffold(
           backgroundColor: context.background,
-          body: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
-              width: context.screenWidth,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText.displaySmall(
-                    LocaleKeys.home_shear_bond.tr(),
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  SizedBox(height: 20),
-                  CutExchangeForm(getPricesResponse: getPricesResponse),
-                  SizedBox(height: 10),
-                  AppText.titleLarge(
-                    LocaleKeys.exchange_exchange_prices.tr(),
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  AppText.bodyLarge(
-                    "${LocaleKeys.exchange_last_update.tr()} ${getPricesResponse?.time ?? "00:00:00"}",
-                    textAlign: TextAlign.start,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  SizedBox(height: 10),
+          body: RefreshIndicator(
+            onRefresh: () => _onRefresh(context),
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
+                width: context.screenWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText.displaySmall(
+                      LocaleKeys.home_shear_bond.tr(),
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(height: 20),
+                    CutExchangeForm(getPricesResponse: getPricesResponse),
+                    SizedBox(height: 10),
+                    AppText.titleLarge(
+                      LocaleKeys.exchange_exchange_prices.tr(),
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    AppText.bodyLarge(
+                      "${LocaleKeys.exchange_last_update.tr()} ${getPricesResponse?.time ?? "00:00:00"}",
+                      textAlign: TextAlign.start,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    SizedBox(height: 10),
 
-                  ExchangeContainer(getPricesResponse: getPricesResponse),
-                  SizedBox(height: 20),
-                ],
+                    ExchangeContainer(getPricesResponse: getPricesResponse),
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
           ),

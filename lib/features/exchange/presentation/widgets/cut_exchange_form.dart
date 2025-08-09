@@ -22,11 +22,12 @@ class CutExchangeForm extends StatefulWidget {
   const CutExchangeForm({super.key, required this.getPricesResponse});
 
   @override
-  State<CutExchangeForm> createState() => _NewTransferFormState();
+  CutExchangeFormState createState() => CutExchangeFormState();
 }
 
-class _NewTransferFormState extends State<CutExchangeForm> {
+class CutExchangeFormState extends State<CutExchangeForm> {
   final _formKey = GlobalKey<FormState>();
+
   final PriceValue fallBackPriceValue = PriceValue(curfrom: '', curto: '', price: '10', op: '', img: '', catagory: '');
 
   late TextEditingController fromAmountController;
@@ -37,6 +38,18 @@ class _NewTransferFormState extends State<CutExchangeForm> {
   Currency? selectedFromCurrency;
   List<Currency> filteredToCurrencies = [];
   Currency? selectedToCurrency;
+
+  void resetForm() {
+    setState(() {
+      fromAmountController.clear();
+      toAmountController.clear();
+      cutPriceController.clear();
+      filteredFromCurrencies.clear();
+      selectedFromCurrency = null;
+      filteredToCurrencies.clear();
+      selectedToCurrency = null;
+    });
+  }
 
   String getFinalBalance(String amount) {
     String balanceInWords = NumberToArabicWords.convertToWords(double.parse(amount).toInt());
