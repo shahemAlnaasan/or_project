@@ -9,17 +9,17 @@ import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
 import '../widgets/exchange_container.dart';
-import '../../../home/presentation/widgets/shear_bond_form.dart';
+import '../widgets/cut_exchange_form.dart';
 import '../../../../generated/locale_keys.g.dart';
 
-class ShearBondScreen extends StatefulWidget {
-  const ShearBondScreen({super.key});
+class CutExchangeScreen extends StatefulWidget {
+  const CutExchangeScreen({super.key});
 
   @override
-  State<ShearBondScreen> createState() => _ShearBondScreenState();
+  State<CutExchangeScreen> createState() => _CutExchangeScreenState();
 }
 
-class _ShearBondScreenState extends State<ShearBondScreen> {
+class _CutExchangeScreenState extends State<CutExchangeScreen> {
   GetPricesResponse? getPricesResponse;
   @override
   Widget build(BuildContext context) {
@@ -55,15 +55,22 @@ class _ShearBondScreenState extends State<ShearBondScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                   SizedBox(height: 20),
-                  ShearBondForm(getPricesResponse: getPricesResponse),
-                  SizedBox(height: 20),
-                  AppText.displaySmall(
-                    LocaleKeys.home_shear_bond.tr(),
+                  CutExchangeForm(getPricesResponse: getPricesResponse),
+                  SizedBox(height: 10),
+                  AppText.titleLarge(
+                    LocaleKeys.exchange_exchange_prices.tr(),
                     textAlign: TextAlign.start,
                     fontWeight: FontWeight.bold,
                   ),
+                  AppText.bodyLarge(
+                    "${LocaleKeys.exchange_last_update.tr()} ${getPricesResponse?.time ?? "00:00:00"}",
+                    textAlign: TextAlign.start,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  SizedBox(height: 10),
 
                   ExchangeContainer(getPricesResponse: getPricesResponse),
+                  SizedBox(height: 20),
                 ],
               ),
             ),

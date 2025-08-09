@@ -8,3 +8,9 @@ sealed class ExchangeEvent extends Equatable {
 }
 
 class GetPricesEvent extends ExchangeEvent {}
+
+class NewExchangeEvent extends ExchangeEvent {
+  final NewExchangeParams params;
+
+  const NewExchangeEvent({required this.params});
+}

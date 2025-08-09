@@ -21,4 +21,5 @@ class AppEndPoint {
   static const getTax = 'get_tax';
   static const getTransDetails = 'trans_search';
   static const getPrices = 'get_all_prices';
+  static const newExchange = 'new_exchange';
 }

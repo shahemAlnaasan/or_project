@@ -59,6 +59,8 @@ import '../../features/exchange/domain/repositories/exchange_repository.dart'
     as _i709;
 import '../../features/exchange/domain/use_cases/get_prices_usecase.dart'
     as _i495;
+import '../../features/exchange/domain/use_cases/new_exchange_usecase.dart'
+    as _i118;
 import '../../features/exchange/presentation/bloc/exchange_bloc.dart' as _i703;
 import '../../features/home/data/data_sources/home_remote_data_source.dart'
     as _i350;
@@ -239,6 +241,11 @@ extension GetItInjectableX on _i174.GetIt {
         exchangeRepository: gh<_i709.ExchangeRepository>(),
       ),
     );
+    gh.factory<_i118.NewExchangeUsecase>(
+      () => _i118.NewExchangeUsecase(
+        exchangeRepository: gh<_i709.ExchangeRepository>(),
+      ),
+    );
     gh.factory<_i1012.LoginUsecase>(
       () => _i1012.LoginUsecase(authRepository: gh<_i787.AuthRepository>()),
     );
@@ -259,7 +266,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i573.CurrenciesUsecase(homeRepository: gh<_i0.HomeRepository>()),
     );
     gh.factory<_i703.ExchangeBloc>(
-      () => _i703.ExchangeBloc(getPricesUsecase: gh<_i495.GetPricesUsecase>()),
+      () => _i703.ExchangeBloc(
+        getPricesUsecase: gh<_i495.GetPricesUsecase>(),
+        newExchangeUsecase: gh<_i118.NewExchangeUsecase>(),
+      ),
     );
     gh.factory<_i128.AccountStatementBloc>(
       () => _i128.AccountStatementBloc(

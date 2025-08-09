@@ -9,7 +9,7 @@ import '../../../account_statement/presentation/pages/account_statement_screen.d
 import '../../../credit/presentation/pages/incoming_credit_screen.dart';
 import '../../../credit/presentation/pages/outgoing_credit_screen.dart';
 import '../../../credit/presentation/pages/send_credit_screen.dart';
-import '../../../exchange/presentation/pages/shear_bond_screen.dart';
+import '../../../exchange/presentation/pages/cut_exchange_screen.dart';
 import '../../../transfer/presentation/pages/incoming_transfer_screen.dart';
 import '../../../transfer/presentation/pages/forms_screens/international_transfer_screen.dart';
 import '../../../transfer/presentation/pages/forms_screens/new_transfer_screen.dart';
@@ -85,7 +85,7 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
       GridItem(
         icon: Assets.images.quickActions.shearBone.path,
         label: LocaleKeys.home_shear_bond.tr(),
-        onTap: () => context.push(ShearBondScreen()),
+        onTap: () => context.push(CutExchangeScreen()),
       ),
       GridItem(
         icon: Assets.images.quickActions.moneyWithdraw.path,
