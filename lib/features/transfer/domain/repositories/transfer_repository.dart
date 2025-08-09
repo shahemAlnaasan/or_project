@@ -1,3 +1,8 @@
+import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_targets_response.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/get_sy_targets_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/new_sy_transfer_usecase.dart';
+
 import '../../../../common/consts/typedef.dart';
 import '../../data/models/get_target_info_response.dart';
 import '../../data/models/get_tax_response.dart';
@@ -24,4 +29,9 @@ abstract class TransferRepository {
   DataResponse<GetTargetInfoResponse> getTargetInfo({required GetTargetInfoParams params});
   DataResponse<GetTaxResponse> getTax({required GetTaxParams params});
   DataResponse<TransDetailsResponse> transDetails({required TransDetailsParams params});
+  DataResponse<GetSyPricesResponse> getSyPrices();
+  DataResponse<GetSyTargetsResponse> getSyTargets({required GetSyTargetsParams params});
+  DataResponse<NewTransResponse
+  
+  > newSyTransfer({required NewSyTransferParams params});
 }

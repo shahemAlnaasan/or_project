@@ -1,3 +1,8 @@
+import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_targets_response.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/get_sy_targets_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/new_sy_transfer_usecase.dart';
+
 import '../../../../common/consts/typedef.dart';
 import '../data_sources/transfer_remote_data_source.dart';
 import '../models/get_target_info_response.dart';
@@ -62,5 +67,20 @@ class TransferRepositoryImp implements TransferRepository {
   @override
   DataResponse<TransDetailsResponse> transDetails({required TransDetailsParams params}) {
     return transferRemoteDataSource.transDetails(params: params);
+  }
+
+  @override
+  DataResponse<GetSyPricesResponse> getSyPrices() {
+    return transferRemoteDataSource.getSyPrices();
+  }
+
+  @override
+  DataResponse<GetSyTargetsResponse> getSyTargets({required GetSyTargetsParams params}) {
+    return transferRemoteDataSource.getSyTargets(params: params);
+  }
+
+  @override
+  DataResponse<NewTransResponse> newSyTransfer({required NewSyTransferParams params}) {
+    return transferRemoteDataSource.newSyTransfer(params: params);
   }
 }

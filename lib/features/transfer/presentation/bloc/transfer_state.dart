@@ -5,6 +5,10 @@ class TransferState extends Equatable {
   final Status? outgoingTransferStatus;
   final Status? receivedTransferStatus;
 
+  final Status? getSyPricesStatus;
+  final Status? getSyTargetsStatus;
+  final Status? newSyTransferStatus;
+
   final Status? newTransferStatus;
   final Status? getTransTargetsStatus;
   final Status? getTargetInfoStatus;
@@ -28,6 +32,10 @@ class TransferState extends Equatable {
   final GetTransTargetsResponse? getTransTargetsResponse;
   final GetTargetInfoResponse? getTargetInfoResponse;
 
+  final GetSyPricesResponse? getSyPricesResponse;
+  final GetSyTargetsResponse? getSyTargetsResponse;
+  final NewTransResponse? newSyTransferResponse;
+
   final String? fromDate;
   final String? toDate;
   const TransferState({
@@ -37,6 +45,12 @@ class TransferState extends Equatable {
     this.outgoingTransferStatus,
     this.receivedTransferStatus,
     this.incomingTransDetailsStatus,
+    this.getSyPricesStatus,
+    this.getSyTargetsStatus,
+    this.newSyTransferStatus,
+    this.getSyPricesResponse,
+    this.getSyTargetsResponse,
+    this.newSyTransferResponse,
     this.transDetailsStatus,
     this.getTaxStatus,
     this.newTransferStatus,
@@ -61,6 +75,10 @@ class TransferState extends Equatable {
     Status? outgoingTransferStatus,
     Status? receivedTransferStatus,
 
+    Status? getSyPricesStatus,
+    Status? getSyTargetsStatus,
+    Status? newSyTransferStatus,
+
     Status? newTransferStatus,
     Status? getTransTargetsStatus,
     Status? getTargetInfoStatus,
@@ -80,6 +98,10 @@ class TransferState extends Equatable {
     TransDetailsResponse? transDetailsResponse,
     TransDetailsResponse? incomingTransDetailsResponse,
 
+    GetSyPricesResponse? getSyPricesResponse,
+    GetSyTargetsResponse? getSyTargetsResponse,
+    NewTransResponse? newSyTransferResponse,
+
     NewTransResponse? newTransResponse,
     GetTransTargetsResponse? getTransTargetsResponse,
     GetTargetInfoResponse? getTargetInfoResponse,
@@ -95,6 +117,10 @@ class TransferState extends Equatable {
       transDetailsStatus: transDetailsStatus ?? this.transDetailsStatus,
       incomingTransDetailsStatus: incomingTransDetailsStatus ?? this.incomingTransDetailsStatus,
 
+      getSyPricesStatus: getSyPricesStatus ?? this.getSyPricesStatus,
+      getSyTargetsStatus: getSyTargetsStatus ?? this.getSyTargetsStatus,
+      newSyTransferStatus: newSyTransferStatus ?? this.newSyTransferStatus,
+
       isForDialog: isForDialog ?? this.isForDialog,
 
       newTransferStatus: newTransferStatus ?? this.newTransferStatus,
@@ -107,6 +133,10 @@ class TransferState extends Equatable {
       incomingTransferResponse: incomingTransferResponse ?? this.incomingTransferResponse,
       outgoingTransferResponse: outgoingTransferResponse ?? this.outgoingTransferResponse,
       currenciesResponse: currenciesResponse ?? this.currenciesResponse,
+
+      getSyPricesResponse: getSyPricesResponse ?? this.getSyPricesResponse,
+      getSyTargetsResponse: getSyTargetsResponse ?? this.getSyTargetsResponse,
+      newSyTransferResponse: newSyTransferResponse ?? this.newSyTransferResponse,
 
       newTransResponse: newTransResponse ?? this.newTransResponse,
       getTransTargetsResponse: getTransTargetsResponse ?? this.getTransTargetsResponse,
@@ -125,6 +155,9 @@ class TransferState extends Equatable {
     incomingTransferStatus,
     outgoingTransferStatus,
     receivedTransferStatus,
+    getSyPricesStatus,
+    getSyTargetsStatus,
+    newSyTransferStatus,
     transDetailsStatus,
     incomingTransDetailsStatus,
     getTaxStatus,
@@ -139,6 +172,9 @@ class TransferState extends Equatable {
     currenciesResponse,
     transDetailsResponse,
     incomingTransDetailsResponse,
+    getSyPricesResponse,
+    getSyTargetsResponse,
+    newSyTransferResponse,
     fromDate,
     toDate,
   ];

@@ -1,5 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_targets_response.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/get_sy_prices_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/get_sy_targets_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/new_sy_transfer_usecase.dart';
 import '../../../../common/consts/app_keys.dart';
 import '../../../../common/state_managment/bloc_state.dart';
 import '../../../../core/datasources/hive_helper.dart';
@@ -36,6 +41,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   final GetTargetInfoUsecase getTargetInfoUsecase;
   final GetTaxUsecase getTaxUsecase;
   final TransDetailsUsecase transDetailsUsecase;
+  final GetSyPricesUsecase getSyPricesUsecase;
+  final GetSyTargetsUsecase getSyTargetsUsecase;
+  final NewSyTransferUsecase newSyTransferUsecase;
   TransferBloc({
     required this.incomingTransferUsecase,
     required this.getTaxUsecase,
@@ -45,6 +53,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     required this.getTransTargetsUsecase,
     required this.getTargetInfoUsecase,
     required this.transDetailsUsecase,
+    required this.getSyPricesUsecase,
+    required this.getSyTargetsUsecase,
+    required this.newSyTransferUsecase,
   }) : super(TransferState()) {
     on<GetIncomingTransfersEvent>(_onGetIncomingTransfersEvent);
     on<GetOutgoingTransfersEvent>(_onGetOutgoingTransfersEvent);
@@ -55,6 +66,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     on<GetTaxEvent>(_onGetTaxEvent);
     on<GetTransDetailsEvent>(_onGetTransDetailsEvent);
     on<GetIncomingTransDetailsEvent>(_onGetIncomingTransDetailsEvent);
+    on<GetSyPricesEvent>(_onGetSyPricesEvent);
+    on<GetSyTargetsEvent>(_onGetSyTargetsEvent);
+    on<NewSyTransferEvent>(_onNewSyTransferEvent);
   }
 
   Future<void> _onGetIncomingTransfersEvent(GetIncomingTransfersEvent event, Emitter<TransferState> emit) async {
@@ -215,6 +229,48 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       },
       (right) {
         emit(state.copyWith(incomingTransDetailsStatus: Status.success, incomingTransDetailsResponse: right));
+      },
+    );
+  }
+
+  Future<void> _onGetSyPricesEvent(GetSyPricesEvent event, Emitter<TransferState> emit) async {
+    emit(state.copyWith(getSyPricesStatus: Status.loading));
+    final result = await getSyPricesUsecase();
+
+    result.fold(
+      (left) {
+        emit(state.copyWith(getSyPricesStatus: Status.failure, errorMessage: left.message));
+      },
+      (right) {
+        emit(state.copyWith(getSyPricesStatus: Status.success, getSyPricesResponse: right));
+      },
+    );
+  }
+
+  Future<void> _onGetSyTargetsEvent(GetSyTargetsEvent event, Emitter<TransferState> emit) async {
+    emit(state.copyWith(getSyTargetsStatus: Status.loading));
+    final result = await getSyTargetsUsecase(params: event.params);
+
+    result.fold(
+      (left) {
+        emit(state.copyWith(getSyTargetsStatus: Status.failure, errorMessage: left.message));
+      },
+      (right) {
+        emit(state.copyWith(getSyTargetsStatus: Status.success, getSyTargetsResponse: right));
+      },
+    );
+  }
+
+  Future<void> _onNewSyTransferEvent(NewSyTransferEvent event, Emitter<TransferState> emit) async {
+    emit(state.copyWith(newSyTransferStatus: Status.loading));
+    final result = await newSyTransferUsecase(params: event.params);
+
+    result.fold(
+      (left) {
+        emit(state.copyWith(newSyTransferStatus: Status.failure, errorMessage: left.message));
+      },
+      (right) {
+        emit(state.copyWith(newSyTransferStatus: Status.success, newSyTransferResponse: right));
       },
     );
   }

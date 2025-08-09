@@ -78,6 +78,10 @@ import '../../features/transfer/data/repositories/transfer_repository_imp.dart'
     as _i505;
 import '../../features/transfer/domain/repositories/transfer_repository.dart'
     as _i336;
+import '../../features/transfer/domain/use_cases/get_sy_prices_usecase.dart'
+    as _i309;
+import '../../features/transfer/domain/use_cases/get_sy_targets_usecase.dart'
+    as _i98;
 import '../../features/transfer/domain/use_cases/get_target_info_usecase.dart'
     as _i226;
 import '../../features/transfer/domain/use_cases/get_tax_usecase.dart' as _i469;
@@ -85,6 +89,8 @@ import '../../features/transfer/domain/use_cases/get_trans_targets_usecase.dart'
     as _i292;
 import '../../features/transfer/domain/use_cases/incoming_transfer_usecase.dart'
     as _i597;
+import '../../features/transfer/domain/use_cases/new_sy_transfer_usecase.dart'
+    as _i151;
 import '../../features/transfer/domain/use_cases/new_transfer_usecase.dart'
     as _i59;
 import '../../features/transfer/domain/use_cases/outgoing_transfers_usecase.dart'
@@ -231,6 +237,21 @@ extension GetItInjectableX on _i174.GetIt {
         transferRepository: gh<_i336.TransferRepository>(),
       ),
     );
+    gh.factory<_i309.GetSyPricesUsecase>(
+      () => _i309.GetSyPricesUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
+    gh.factory<_i98.GetSyTargetsUsecase>(
+      () => _i98.GetSyTargetsUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
+    gh.factory<_i151.NewSyTransferUsecase>(
+      () => _i151.NewSyTransferUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
     gh.factory<_i14.AccountStatementUsecase>(
       () => _i14.AccountStatementUsecase(
         accountStatementRepository: gh<_i854.AccountStatementRepository>(),
@@ -299,6 +320,9 @@ extension GetItInjectableX on _i174.GetIt {
         getTransTargetsUsecase: gh<_i292.GetTransTargetsUsecase>(),
         getTargetInfoUsecase: gh<_i226.GetTargetInfoUsecase>(),
         transDetailsUsecase: gh<_i154.TransDetailsUsecase>(),
+        getSyPricesUsecase: gh<_i309.GetSyPricesUsecase>(),
+        getSyTargetsUsecase: gh<_i98.GetSyTargetsUsecase>(),
+        newSyTransferUsecase: gh<_i151.NewSyTransferUsecase>(),
       ),
     );
     gh.factory<_i202.HomeBloc>(

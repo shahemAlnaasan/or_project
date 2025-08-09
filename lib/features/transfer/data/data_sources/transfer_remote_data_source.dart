@@ -1,4 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_targets_response.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/get_sy_targets_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/new_sy_transfer_usecase.dart';
 import '../../../../core/config/endpoints.dart';
 import '../../../../core/network/api_handler.dart';
 import '../../../../core/network/exceptions.dart';
@@ -56,6 +60,13 @@ class TransferRemoteDataSource with ApiHandler {
     );
   }
 
+  Future<Either<Failure, NewTransResponse>> newSyTransfer({required NewSyTransferParams params}) async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.newTransfer, data: params.getBody()),
+      fromJson: (json) => NewTransResponse.fromJson(json),
+    );
+  }
+
   Future<Either<Failure, GetTransTargetsResponse>> getTransTargets({required GetTransTargetsParams params}) async {
     return handleApiCall(
       apiCall: () => httpClient.post(AppEndPoint.getTransTargets, data: params.getBody()),
@@ -81,6 +92,20 @@ class TransferRemoteDataSource with ApiHandler {
     return handleApiCall(
       apiCall: () => httpClient.post(AppEndPoint.getTransDetails, data: params.getBody()),
       fromJson: (json) => TransDetailsResponse.fromJson(json),
+    );
+  }
+
+  Future<Either<Failure, GetSyPricesResponse>> getSyPrices() async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.getSyPrices),
+      fromJson: (json) => GetSyPricesResponse.fromJson(json),
+    );
+  }
+
+  Future<Either<Failure, GetSyTargetsResponse>> getSyTargets({required GetSyTargetsParams params}) async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.getSyTargets, data: params.getBody()),
+      fromJson: (json) => GetSyTargetsResponse.fromJson(json),
     );
   }
 }
