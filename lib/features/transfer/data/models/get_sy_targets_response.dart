@@ -10,13 +10,13 @@ String getSyTargetsResponseToJson(GetSyTargetsResponse data) => json.encode(data
 
 class GetSyTargetsResponse {
   int status;
-  Map<String, Datum> targets;
+  Map<String, Target> targets;
 
   GetSyTargetsResponse({required this.status, required this.targets});
 
   factory GetSyTargetsResponse.fromJson(Map<String, dynamic> json) => GetSyTargetsResponse(
     status: json["status"],
-    targets: Map.from(json["data"]).map((k, v) => MapEntry<String, Datum>(k, Datum.fromJson(v))),
+    targets: Map.from(json["data"]).map((k, v) => MapEntry<String, Target>(k, Target.fromJson(v))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -25,13 +25,13 @@ class GetSyTargetsResponse {
   };
 }
 
-class Datum {
+class Target {
   String cid;
   String cn;
 
-  Datum({required this.cid, required this.cn});
+  Target({required this.cid, required this.cn});
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(cid: json["CID"], cn: json["CN"]);
+  factory Target.fromJson(Map<String, dynamic> json) => Target(cid: json["CID"], cn: json["CN"]);
 
   Map<String, dynamic> toJson() => {"CID": cid, "CN": cn};
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/extentions/size_extension.dart';
 import '../../../../../common/widgets/app_text.dart';
-import '../../widgets/exchange_table.dart';
+
 import '../../widgets/forms/international_transfer_form.dart';
 import '../../../../../generated/locale_keys.g.dart';
 
@@ -28,7 +28,7 @@ class InternationalTransferScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               InternationalTransferForm(),
-              ExchangeTable(),
+              // ExchangeTable(getSyPricesResponse: ,),
               SizedBox(height: 10),
             ],
           ),

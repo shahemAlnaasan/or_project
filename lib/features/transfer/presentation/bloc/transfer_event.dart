@@ -56,11 +56,7 @@ class GetIncomingTransDetailsEvent extends TransferEvent {
 
 class GetSyPricesEvent extends TransferEvent {}
 
-class GetSyTargetsEvent extends TransferEvent {
-  final GetSyTargetsParams params;
-
-  const GetSyTargetsEvent({required this.params});
-}
+class GetSyTargetsEvent extends TransferEvent {}
 
 class NewSyTransferEvent extends TransferEvent {
   final NewSyTransferParams params;

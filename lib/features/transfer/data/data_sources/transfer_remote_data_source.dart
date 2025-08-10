@@ -99,6 +99,7 @@ class TransferRemoteDataSource with ApiHandler {
     return handleApiCall(
       apiCall: () => httpClient.post(AppEndPoint.getSyPrices),
       fromJson: (json) => GetSyPricesResponse.fromJson(json),
+      validateApi: false,
     );
   }
 

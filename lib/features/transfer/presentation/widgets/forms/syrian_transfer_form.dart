@@ -1,5 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:golder_octopus/common/state_managment/bloc_state.dart';
+import 'package:golder_octopus/common/widgets/toast_dialog.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_targets_response.dart';
+import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
+import 'package:toastification/toastification.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/widgets/app_text.dart';
 import '../../../../../common/widgets/custom_drop_down.dart';
@@ -34,10 +41,10 @@ class SyrianTransferForm extends StatefulWidget {
   });
 
   @override
-  State<SyrianTransferForm> createState() => _NewTransferFormState();
+  SyrianTransferFormState createState() => SyrianTransferFormState();
 }
 
-class _NewTransferFormState extends State<SyrianTransferForm> {
+class SyrianTransferFormState extends State<SyrianTransferForm> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController beneficiaryNameController;
@@ -49,8 +56,18 @@ class _NewTransferFormState extends State<SyrianTransferForm> {
   late TextEditingController notesController;
   late TextEditingController addressController;
 
-  String? selectedDestination;
-  String? selectedCurrency;
+  GetSyPricesResponse? getSyPricesResponse;
+  GetSyTargetsResponse? getSyTargetsResponse;
+
+  List<Target> targets = [];
+  Target? selectedTarget;
+
+  String? singleSelectValidator(value) {
+    if (value == null) {
+      return LocaleKeys.transfer_this_field_cant_be_empty.tr();
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -63,9 +80,6 @@ class _NewTransferFormState extends State<SyrianTransferForm> {
     feesController = TextEditingController(text: widget.fees ?? '');
     notesController = TextEditingController(text: widget.notes ?? '');
     addressController = TextEditingController(text: widget.address ?? '');
-
-    selectedDestination = widget.destination;
-    selectedCurrency = widget.currency;
   }
 
   @override
@@ -79,76 +93,133 @@ class _NewTransferFormState extends State<SyrianTransferForm> {
     super.dispose();
   }
 
+  void resetForm() {
+    setState(() {
+      beneficiaryNameController.clear();
+      beneficiaryPhoneController.clear();
+      amountController.clear();
+      feesController.text = "0";
+      notesController.clear();
+      addressController.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 8,
-          children: [
-            buildFieldTitle(title: LocaleKeys.transfer_beneficiary_name.tr()),
-            buildTextField(hint: LocaleKeys.transfer_beneficiary_name.tr(), controller: beneficiaryNameController),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_beneficiary_phone.tr()),
-            buildTextField(hint: LocaleKeys.transfer_beneficiary_phone.tr(), controller: beneficiaryPhoneController),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_destination.tr()),
-            CustomDropdown(
-              menuList: ['Syria', 'Lebanon', 'Iraq'],
-              initaValue: selectedDestination,
-              labelText: LocaleKeys.transfer_destination.tr(),
-              hintText: LocaleKeys.transfer_destination.tr(),
-              onChanged: (value) {
-                setState(() => selectedDestination = value);
-              },
-            ),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_transfer_currency.tr()),
-            CustomDropdown(
-              menuList: ['USD', 'EUR', 'SYP'],
-              initaValue: selectedCurrency,
-              labelText: LocaleKeys.transfer_transfer_currency.tr(),
-              hintText: LocaleKeys.transfer_transfer_currency.tr(),
-              onChanged: (value) {
-                setState(() => selectedCurrency = value);
-              },
-            ),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_money_amount.tr()),
-            buildTextField(hint: LocaleKeys.transfer_money_amount.tr(), controller: amountController),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_recived_amount.tr()),
-            buildTextField(hint: LocaleKeys.transfer_recived_amount.tr(), controller: receivedAmountController),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_excange.tr()),
-            buildTextField(hint: LocaleKeys.transfer_excange.tr(), controller: exchangeController),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_fees.tr()),
-            buildTextField(hint: LocaleKeys.transfer_fees.tr(), controller: feesController),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_address.tr()),
-            buildTextField(hint: LocaleKeys.transfer_address.tr(), controller: addressController),
-            SizedBox(height: 3),
-            buildFieldTitle(title: LocaleKeys.transfer_notes.tr()),
-            buildTextField(
-              hint: LocaleKeys.transfer_notes.tr(),
-              controller: notesController,
-              mxLine: 3,
-              needValidation: false,
-            ),
-            SizedBox(height: 3),
-            LargeButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {}
-              },
-              text: LocaleKeys.transfer_send.tr(),
-              backgroundColor: context.primaryContainer,
-              circularRadius: 12,
-            ),
-          ],
+    return BlocListener<TransferBloc, TransferState>(
+      listener: (context, state) {
+        if (state.getSyPricesStatus == Status.failure) {
+          ToastificationDialog.showToast(
+            msg: state.errorMessage ?? "error",
+            context: context,
+            type: ToastificationType.error,
+          );
+        }
+        if (state.getSyPricesStatus == Status.success && state.getSyPricesResponse != null) {
+          setState(() {
+            getSyPricesResponse = state.getSyPricesResponse;
+          });
+        }
+        if (state.getSyTargetsStatus == Status.success && state.getSyTargetsResponse != null) {
+          setState(() {
+            getSyTargetsResponse = state.getSyTargetsResponse;
+            targets = getSyTargetsResponse?.targets.values.toList() ?? [];
+          });
+        }
+        if (state.newSyTransferStatus == Status.success && state.newSyTransferResponse != null) {}
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              buildFieldTitle(title: LocaleKeys.transfer_beneficiary_name.tr()),
+              buildTextField(hint: LocaleKeys.transfer_beneficiary_name.tr(), controller: beneficiaryNameController),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_beneficiary_phone.tr()),
+              buildTextField(hint: LocaleKeys.transfer_beneficiary_phone.tr(), controller: beneficiaryPhoneController),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_destination.tr()),
+              CustomDropdown<Target>(
+                menuList: targets,
+                singleSelectValidator: (value) => singleSelectValidator(value),
+                enableSearch: true,
+                menuMaxHeight: 250,
+                initaValue: selectedTarget,
+                compareFn: (a, b) => a.cid == b.cid,
+                labelText: LocaleKeys.transfer_destination.tr(),
+                hintText: LocaleKeys.transfer_destination.tr(),
+                itemAsString: (target) => target.cn,
+                onChanged: (value) {
+                  setState(() {
+                    selectedTarget = value!;
+                  });
+                },
+              ),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_transfer_currency.tr()),
+              // CustomDropdown<Price>(
+              //   menuList: prices,
+              //   singleSelectValidator: (value) => singleSelectValidator(value),
+              //   enableSearch: true,
+              //   menuMaxHeight: 250,
+              //   initaValue: selectedTarget,
+              //   compareFn: (a, b) => a.name == b.name,
+              //   labelText: LocaleKeys.transfer_destination.tr(),
+              //   hintText: LocaleKeys.transfer_destination.tr(),
+              //   itemAsString: (price) => price.name,
+              //   onChanged: (value) {
+              //     setState(() {
+              //       selectedTarget = value!;
+              //     });
+              //   },
+              // ),
+              // // CustomDropdown(
+              // //   menuList: ['USD', 'EUR', 'SYP'],
+              // //   initaValue: selectedCurrency,
+              // //   labelText: LocaleKeys.transfer_transfer_currency.tr(),
+              // //   hintText: LocaleKeys.transfer_transfer_currency.tr(),
+              // //   onChanged: (value) {
+              // //     setState(() => selectedCurrency = value);
+              // //   },
+              // // ),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_money_amount.tr()),
+              buildTextField(hint: LocaleKeys.transfer_money_amount.tr(), controller: amountController),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_recived_amount.tr()),
+              buildTextField(hint: LocaleKeys.transfer_recived_amount.tr(), controller: receivedAmountController),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_excange.tr()),
+              buildTextField(hint: LocaleKeys.transfer_excange.tr(), controller: exchangeController),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_fees.tr()),
+              buildTextField(hint: LocaleKeys.transfer_fees.tr(), controller: feesController),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_address.tr()),
+              buildTextField(hint: LocaleKeys.transfer_address.tr(), controller: addressController),
+              SizedBox(height: 3),
+              buildFieldTitle(title: LocaleKeys.transfer_notes.tr()),
+              buildTextField(
+                hint: LocaleKeys.transfer_notes.tr(),
+                controller: notesController,
+                mxLine: 3,
+                needValidation: false,
+              ),
+              SizedBox(height: 3),
+              LargeButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {}
+                },
+                text: LocaleKeys.transfer_send.tr(),
+                backgroundColor: context.primaryContainer,
+                circularRadius: 12,
+              ),
+            ],
+          ),
         ),
       ),
     );

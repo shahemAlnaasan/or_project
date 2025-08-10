@@ -249,7 +249,16 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
 
   Future<void> _onGetSyTargetsEvent(GetSyTargetsEvent event, Emitter<TransferState> emit) async {
     emit(state.copyWith(getSyTargetsStatus: Status.loading));
-    final result = await getSyTargetsUsecase(params: event.params);
+
+    final LoginResponseModel loginResponseModel = await HiveHelper.getFromHive(
+      boxName: AppKeys.userBox,
+      key: AppKeys.loginResponse,
+    );
+
+    final String userId = loginResponseModel.id;
+    GetSyTargetsParams params = GetSyTargetsParams(id: userId);
+
+    final result = await getSyTargetsUsecase(params: params);
 
     result.fold(
       (left) {

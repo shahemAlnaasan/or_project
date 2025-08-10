@@ -1,38 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/widgets/app_text.dart';
 
 class ExchangeTable extends StatefulWidget {
-  const ExchangeTable({super.key});
+  final GetSyPricesResponse? getSyPricesResponse;
+  const ExchangeTable({super.key, required this.getSyPricesResponse});
+
   @override
   State<ExchangeTable> createState() => _ExchangeTableState();
 }
 
 class _ExchangeTableState extends State<ExchangeTable> {
-  final List<Map<String, String>> data = [
-    {'destination': 'حلب يد فوق ال 300 الف - (ليرة سورية)', 'usd': '10,000', 'euro': '0', 'try': '0'},
-    {'destination': 'حوالات دولية - (ليرة سورية)', 'usd': '66', 'euro': '0', 'try': '0'},
-    {'destination': 'دمشق فوق ال ٣٠٠ الف - (ليرة سورية)', 'usd': '10,200', 'euro': '0', 'try': '0'},
-    {'destination': 'فودافون كاش - (جنيه مصري)', 'usd': '50', 'euro': '0', 'try': '0'},
-    {'destination': 'محمد كفر سوسة LL - (ليرة سورية)', 'usd': '9,323', 'euro': '0', 'try': '0'},
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final pricesMap = widget.getSyPricesResponse?.prices ?? {};
+
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: Column(children: [_buildHeaderRow(), ...data.map(_buildDataRow)]),
+      child: Column(
+        children: [
+          _buildHeaderRow(),
+          ...pricesMap.entries.map((entry) {
+            return _buildDataRow(entry.value);
+          }),
+        ],
+      ),
     );
   }
 
   Widget _buildHeaderRow() {
     return Container(
       color: Colors.green[800],
-      padding: EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
+          const Expanded(
             flex: 1,
             child: Text(
               'الجهة',
@@ -40,7 +44,7 @@ class _ExchangeTableState extends State<ExchangeTable> {
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(
+          const Expanded(
             child: Text(
               'العملات',
               textAlign: TextAlign.center,
@@ -52,20 +56,19 @@ class _ExchangeTableState extends State<ExchangeTable> {
     );
   }
 
-  Widget _buildDataRow(Map<String, String> row) {
+  Widget _buildDataRow(Price price) {
     return Container(
       decoration: BoxDecoration(border: Border(bottom: BorderSide(color: context.onPrimaryColor))),
-      // padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Expanded(flex: 1, child: Text(row['destination']!, style: TextStyle(fontSize: 14))),
+          Expanded(flex: 1, child: Text(price.name, style: const TextStyle(fontSize: 14))),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildCurrencyCell(row['usd']!, Colors.red, "دولار"),
-                _buildCurrencyCell(row['euro']!, Colors.blue, "يورو"),
-                _buildCurrencyCell(row['try']!, Colors.blue, "تركي"),
+                _buildCurrencyCell(price.priceUsd, Colors.red, "دولار"),
+                _buildCurrencyCell(price.priceEur, Colors.blue, "يورو"),
+                _buildCurrencyCell(price.priceTl, Colors.blue, "تركي"),
               ],
             ),
           ),
@@ -79,7 +82,7 @@ class _ExchangeTableState extends State<ExchangeTable> {
       child: Container(
         decoration: BoxDecoration(border: Border(right: BorderSide(color: context.onPrimaryColor))),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
