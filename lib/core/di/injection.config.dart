@@ -310,6 +310,12 @@ extension GetItInjectableX on _i174.GetIt {
         currenciesUsecase: gh<_i573.CurrenciesUsecase>(),
       ),
     );
+    gh.factory<_i202.HomeBloc>(
+      () => _i202.HomeBloc(
+        accountInfoUsecase: gh<_i822.AccountInfoUsecase>(),
+        getTransTargetsUsecase: gh<_i292.GetTransTargetsUsecase>(),
+      ),
+    );
     gh.factory<_i279.TransferBloc>(
       () => _i279.TransferBloc(
         incomingTransferUsecase: gh<_i597.IncomingTransferUsecase>(),
@@ -323,12 +329,7 @@ extension GetItInjectableX on _i174.GetIt {
         getSyPricesUsecase: gh<_i309.GetSyPricesUsecase>(),
         getSyTargetsUsecase: gh<_i98.GetSyTargetsUsecase>(),
         newSyTransferUsecase: gh<_i151.NewSyTransferUsecase>(),
-      ),
-    );
-    gh.factory<_i202.HomeBloc>(
-      () => _i202.HomeBloc(
-        accountInfoUsecase: gh<_i822.AccountInfoUsecase>(),
-        getTransTargetsUsecase: gh<_i292.GetTransTargetsUsecase>(),
+        currenciesUsecase: gh<_i573.CurrenciesUsecase>(),
       ),
     );
     return this;

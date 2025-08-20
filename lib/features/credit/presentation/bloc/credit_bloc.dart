@@ -104,7 +104,7 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
   }
 
   Future<void> _onGetNewCreditDetailsEvent(GetNewCreditDetailsEvent event, Emitter<CreditState> emit) async {
-    emit(state.copyWith(newCreditDetailsStatus: Status.loading));
+    emit(state.copyWith(newCreditDetailsStatus: Status.loading, newCreditStatus: Status.initial));
     final result = await transDetailsUsecase(params: event.params);
 
     result.fold(
@@ -166,7 +166,7 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
   }
 
   Future<void> _onNewCreditEvent(NewCreditEvent event, Emitter<CreditState> emit) async {
-    emit(state.copyWith(newCreditStatus: Status.loading));
+    emit(state.copyWith(newCreditStatus: Status.loading, newCreditDetailsStatus: Status.initial));
     final result = await newCreditUsecase(params: event.params);
 
     result.fold(

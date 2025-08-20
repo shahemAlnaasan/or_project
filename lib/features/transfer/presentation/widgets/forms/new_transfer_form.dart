@@ -175,7 +175,7 @@ class NewTransferFormState extends State<NewTransferForm> {
       listener: (context, state) async {
         final blocContext = context;
 
-        if (state.newTransferStatus == Status.success) {
+        if (state.newTransferStatus == Status.success && state.newTransResponse != null) {
           TransDetailsParams params = TransDetailsParams(transNum: state.newTransResponse!.transnum);
           context.read<TransferBloc>().add(GetTransDetailsEvent(params: params));
           ToastificationDialog.showToast(
@@ -190,11 +190,10 @@ class NewTransferFormState extends State<NewTransferForm> {
           ).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const MainScreen()), (route) => false);
         }
         if (state.transDetailsStatus == Status.success && state.transDetailsResponse != null) {
-          await Future.delayed(Duration(seconds: 2));
+          await Future.delayed(Duration(seconds: 1));
           ToastificationDialog.dismiss();
           Navigator.of(blocContext, rootNavigator: true).push(
             MaterialPageRoute(
-              fullscreenDialog: false,
               builder: (context) => OutgoingTransferReceiptScreen(transDetailsResponse: state.transDetailsResponse!),
             ),
           );
@@ -212,7 +211,7 @@ class NewTransferFormState extends State<NewTransferForm> {
             feesController.text = state.getTaxResponse!.data.tax.toString();
           });
         }
-        if (state.getTargetInfoStatus == Status.success && state.getTargetInfoResponse != null) {
+        if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
           final rawCurs = state.getTargetInfoResponse!.data.curs;
           final allowedSymbols = rawCurs.split(',').where((e) => e.isNotEmpty).map((e) => e.toLowerCase()).toSet();
 
@@ -367,7 +366,7 @@ class NewTransferFormState extends State<NewTransferForm> {
                             final blocContext = context;
 
                             if (_formKey.currentState!.validate()) {
-                              if (feesController.text.trim().isEmpty || feesController.text == "0") {
+                              if (feesController.text.trim().isEmpty || int.tryParse(feesController.text) == 0) {
                                 ToastificationDialog.showToast(
                                   msg: "لايمكن ان تكون الاجور 0",
                                   context: context,

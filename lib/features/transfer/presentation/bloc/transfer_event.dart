@@ -41,6 +41,12 @@ class GetTaxEvent extends TransferEvent {
   const GetTaxEvent({required this.params});
 }
 
+class GetSyTaxEvent extends TransferEvent {
+  final GetTaxParams params;
+
+  const GetSyTaxEvent({required this.params});
+}
+
 class GetTransDetailsEvent extends TransferEvent {
   final TransDetailsParams params;
   final bool isForDialog;
@@ -55,6 +61,8 @@ class GetIncomingTransDetailsEvent extends TransferEvent {
 }
 
 class GetSyPricesEvent extends TransferEvent {}
+
+class GetCurrenciesEvent extends TransferEvent {}
 
 class GetSyTargetsEvent extends TransferEvent {}
 

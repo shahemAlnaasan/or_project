@@ -10,6 +10,8 @@ import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
 import 'package:golder_octopus/common/extentions/size_extension.dart';
 import 'package:golder_octopus/common/widgets/app_text.dart';
 import 'package:golder_octopus/common/widgets/toast_dialog.dart';
+import 'package:golder_octopus/features/credit/presentation/widgets/credit_reciept.dart' show CreditReciept;
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import 'package:golder_octopus/generated/locale_keys.g.dart';
 import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,9 +19,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:toastification/toastification.dart';
 
 class CreditReceiptScreen extends StatefulWidget {
-  final Map<String, String> data;
+  final TransDetailsResponse transDetailsResponse;
 
-  const CreditReceiptScreen({super.key, required this.data});
+  const CreditReceiptScreen({super.key, required this.transDetailsResponse});
 
   @override
   State<CreditReceiptScreen> createState() => _CreditReceiptScreenState();
@@ -71,6 +73,9 @@ class _CreditReceiptScreenState extends State<CreditReceiptScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Data transDetails = widget.transDetailsResponse.data;
+    final companyName = "شركة الأخطبـــــوط الذهــبــي";
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
@@ -78,8 +83,7 @@ class _CreditReceiptScreenState extends State<CreditReceiptScreen> {
         width: context.screenWidth,
         child: Column(
           children: [
-            // TransferReciept(globalKey: _globalKey, data: widget.data),
-            // const SizedBox(height: 10),
+            CreditReciept(globalKey: _globalKey, transDetailsResponse: widget.transDetailsResponse),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -94,7 +98,16 @@ class _CreditReceiptScreenState extends State<CreditReceiptScreen> {
                 _buildButton(
                   label: "نسخ المعلومات",
                   onTap: () {
-                    final data = '''''';
+                    final data = '''
+$companyName  
+المبلغ  :${transDetails.amount}
+رقم الحركة   :${transDetails.transnum}
+الرقم السري    :${transDetails.password}
+المبلغ    :${transDetails.amount}
+المستفيد   :${transDetails.benifName}-${transDetails.benifPhone}
+الوجهة   :${transDetails.targetName}-${transDetails.targetAddress}-${transDetails.targetBox}
+تاريخ الارسال   :${transDetails.transdate}
+''';
                     Clipboard.setData(ClipboardData(text: data));
                     ToastificationDialog.showToast(
                       msg: LocaleKeys.transfer_copied_to_clipboard.tr(),

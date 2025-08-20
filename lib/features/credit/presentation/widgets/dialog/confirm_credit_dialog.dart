@@ -55,7 +55,7 @@ class ConfirmCreditDialog extends StatelessWidget {
                     ),
                     onPressed: () async {
                       Navigator.of(context).pop();
-                      onPressed;
+                      onPressed?.call();
                     },
                     child: const Text("تأكيد"),
                   ),

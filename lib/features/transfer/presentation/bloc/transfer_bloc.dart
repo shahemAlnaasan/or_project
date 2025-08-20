@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:golder_octopus/features/home/domain/use_cases/currencies_usecase.dart';
 import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
 import 'package:golder_octopus/features/transfer/data/models/get_sy_targets_response.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_sy_prices_usecase.dart';
@@ -44,6 +45,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   final GetSyPricesUsecase getSyPricesUsecase;
   final GetSyTargetsUsecase getSyTargetsUsecase;
   final NewSyTransferUsecase newSyTransferUsecase;
+  final CurrenciesUsecase currenciesUsecase;
   TransferBloc({
     required this.incomingTransferUsecase,
     required this.getTaxUsecase,
@@ -56,6 +58,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     required this.getSyPricesUsecase,
     required this.getSyTargetsUsecase,
     required this.newSyTransferUsecase,
+    required this.currenciesUsecase,
   }) : super(TransferState()) {
     on<GetIncomingTransfersEvent>(_onGetIncomingTransfersEvent);
     on<GetOutgoingTransfersEvent>(_onGetOutgoingTransfersEvent);
@@ -64,11 +67,13 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     on<GetTransTargetsEvent>(_onGetTransTargetsEvent);
     on<GetTargetInfoEvent>(_onGetTargetInfoEvent);
     on<GetTaxEvent>(_onGetTaxEvent);
+    on<GetSyTaxEvent>(_onGetSyTaxEvent);
     on<GetTransDetailsEvent>(_onGetTransDetailsEvent);
     on<GetIncomingTransDetailsEvent>(_onGetIncomingTransDetailsEvent);
     on<GetSyPricesEvent>(_onGetSyPricesEvent);
     on<GetSyTargetsEvent>(_onGetSyTargetsEvent);
     on<NewSyTransferEvent>(_onNewSyTransferEvent);
+    on<GetCurrenciesEvent>(_onGetCurrenciesEvent);
   }
 
   Future<void> _onGetIncomingTransfersEvent(GetIncomingTransfersEvent event, Emitter<TransferState> emit) async {
@@ -114,19 +119,18 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   }
 
   Future<void> _onNewTransferEvent(NewTransferEvent event, Emitter<TransferState> emit) async {
-    emit(state.copyWith(newTransferStatus: Status.loading));
+    emit(state.copyWith(newTransferStatus: Status.loading, transDetailsStatus: Status.initial));
     final result = await newTransferUsecase(params: event.params);
 
     result.fold(
       (left) {
         emit(state.copyWith(newTransferStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(newTransferStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(newTransferStatus: Status.success, newTransResponse: right));
-        emit(state.copyWith(newTransferStatus: Status.initial));
       },
     );
+    emit(state.copyWith(newTransferStatus: Status.initial));
   }
 
   Future<void> _onGetTransTargetsEvent(GetTransTargetsEvent event, Emitter<TransferState> emit) async {
@@ -165,20 +169,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
         emit(state.copyWith(getTargetInfoStatus: Status.initial));
       },
       (right) async {
-        final currenciesResponse = await HiveHelper.getFromHive(
-          boxName: AppKeys.userBox,
-          key: AppKeys.currenciesResponse,
-        );
-        emit(
-          state.copyWith(
-            getTargetInfoStatus: Status.success,
-            getTaxStatus: Status.initial,
-            getTargetInfoResponse: right,
-            currenciesResponse: currenciesResponse,
-            getTaxResponse: null,
-          ),
-        );
-        emit(state.copyWith(getTargetInfoStatus: Status.initial));
+        emit(state.copyWith(getTargetInfoStatus: Status.success, getTargetInfoResponse: right));
+        emit(state.copyWith(getTargetInfoStatus: Status.initial, getTargetInfoResponse: null));
+        add(GetCurrenciesEvent());
       },
     );
   }
@@ -194,23 +187,32 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
       },
       (right) {
         emit(state.copyWith(getTaxStatus: Status.success, getTaxResponse: right));
-        emit(state.copyWith(getTaxStatus: Status.initial));
+        emit(state.copyWith(getTaxStatus: Status.initial, getTaxResponse: null));
       },
     );
   }
 
   Future<void> _onGetTransDetailsEvent(GetTransDetailsEvent event, Emitter<TransferState> emit) async {
-    emit(state.copyWith(transDetailsStatus: Status.loading, transDetailsResponse: null));
+    emit(
+      state.copyWith(transDetailsStatus: Status.loading, transDetailsResponse: null, newTransferStatus: Status.initial),
+    );
     final result = await transDetailsUsecase(params: event.params);
 
     result.fold(
       (left) {
-        emit(state.copyWith(transDetailsStatus: Status.failure, errorMessage: left.message));
+        emit(
+          state.copyWith(
+            newTransferStatus: Status.initial,
+            transDetailsStatus: Status.failure,
+            errorMessage: left.message,
+          ),
+        );
       },
       (right) {
         emit(
           state.copyWith(
             transDetailsStatus: Status.success,
+            newTransferStatus: Status.initial,
             transDetailsResponse: right,
             isForDialog: event.isForDialog ? true : false,
           ),
@@ -240,9 +242,11 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getSyPricesStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(getSyPricesStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getSyPricesStatus: Status.success, getSyPricesResponse: right));
+        emit(state.copyWith(getSyPricesStatus: Status.initial));
       },
     );
   }
@@ -263,9 +267,11 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getSyTargetsStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(getSyTargetsStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getSyTargetsStatus: Status.success, getSyTargetsResponse: right));
+        emit(state.copyWith(getSyTargetsStatus: Status.initial));
       },
     );
   }
@@ -277,9 +283,42 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(newSyTransferStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(newSyTransferStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(newSyTransferStatus: Status.success, newSyTransferResponse: right));
+        emit(state.copyWith(newSyTransferStatus: Status.initial));
+      },
+    );
+  }
+
+  Future<void> _onGetCurrenciesEvent(GetCurrenciesEvent event, Emitter<TransferState> emit) async {
+    emit(state.copyWith(getCurreciesStatus: Status.loading));
+    final result = await currenciesUsecase();
+    result.fold(
+      (left) {
+        emit(state.copyWith(getCurreciesStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(getCurreciesStatus: Status.initial));
+      },
+      (right) {
+        emit(state.copyWith(getCurreciesStatus: Status.success, currenciesResponse: right));
+        emit(state.copyWith(getCurreciesStatus: Status.initial, currenciesResponse: null));
+      },
+    );
+  }
+
+  Future<void> _onGetSyTaxEvent(GetSyTaxEvent event, Emitter<TransferState> emit) async {
+    emit(state.copyWith(getSyTaxStatus: Status.loading));
+    final result = await getTaxUsecase(params: event.params);
+
+    result.fold(
+      (left) {
+        emit(state.copyWith(getSyTaxStatus: Status.failure, errorMessage: left.message));
+        emit(state.copyWith(getSyTaxStatus: Status.initial));
+      },
+      (right) {
+        emit(state.copyWith(getSyTaxStatus: Status.success, getSyTaxResponse: right));
+        emit(state.copyWith(getSyTaxStatus: Status.initial));
       },
     );
   }

@@ -1,3 +1,6 @@
+import 'package:golder_octopus/features/transfer/data/models/new_trans_response.dart';
+import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
+
 import '../../features/account_statement/data/models/account_statement_response.dart';
 import '../../features/home/data/models/account_info_response.dart';
 
@@ -33,4 +36,40 @@ class ModelUsage {
     Acc(amount: 0, currency: "tl", currencyName: "ليرة تركية", currencyImg: "currencyImg"),
     Acc(amount: 0, currency: "", currencyName: "مقوم", currencyImg: "currencyImg"),
   ];
+
+  NewTransResponse newTransResponse = NewTransResponse(
+    status: 1,
+    transnum: "transnum",
+    password: "password",
+    tax: "tax",
+    taxcurrency: "taxcurrency",
+  );
+
+  TransDetailsResponse transDetailsResponse = TransDetailsResponse(
+    status: 1,
+    data: Data(
+      transnum: "transnum",
+      password: "password",
+      transdate: DateTime.now(),
+      rcvdate: DateTime.now(),
+      srcName: "srcName",
+      srcBox: "srcBox",
+      targetName: "targetName",
+      targetAddress: "targetAddress",
+      targetBox: "targetBox",
+      currencyId: "currencyId",
+      currencyName: "currencyName",
+      amount: "100",
+      status: "status",
+      notes: "notes",
+      benifName: "benifName",
+      benifPhone: "benifPhone",
+      api: "api",
+      apiTransnum: "apiTransnum",
+      apiInfo: "apiInfo",
+      fee: "fee",
+      company: "company",
+      header: "header",
+    ),
+  );
 }

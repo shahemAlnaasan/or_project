@@ -11,8 +11,8 @@ String newTransResponseToJson(NewTransResponse data) => json.encode(data.toJson(
 class NewTransResponse {
   int status;
   String transnum;
-  int password;
-  int tax;
+  String password;
+  String tax;
   String taxcurrency;
 
   NewTransResponse({
@@ -25,10 +25,10 @@ class NewTransResponse {
 
   factory NewTransResponse.fromJson(Map<String, dynamic> json) => NewTransResponse(
     status: json["status"],
-    transnum: json["transnum"],
-    password: json["password"],
-    tax: json["tax"],
-    taxcurrency: json["taxcurrency"],
+    transnum: json["transnum"].toString(),
+    password: json["password"].toString(),
+    tax: json["tax"].toString(),
+    taxcurrency: json["taxcurrency"].toString(),
   );
 
   Map<String, dynamic> toJson() => {
