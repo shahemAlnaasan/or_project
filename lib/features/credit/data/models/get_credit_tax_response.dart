@@ -10,13 +10,13 @@ String getCreditTaxResponseToJson(GetCreditTaxResponse data) => json.encode(data
 
 class GetCreditTaxResponse {
   int status;
-  int tax;
+  String tax;
   String error;
 
   GetCreditTaxResponse({required this.status, required this.tax, required this.error});
 
   factory GetCreditTaxResponse.fromJson(Map<String, dynamic> json) =>
-      GetCreditTaxResponse(status: json["status"], tax: json["tax"], error: json["error"]);
+      GetCreditTaxResponse(status: json["status"], tax: json["tax"].toString(), error: json["error"]);
 
   Map<String, dynamic> toJson() => {"status": status, "tax": tax, "error": error};
 }

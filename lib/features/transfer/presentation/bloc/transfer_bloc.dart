@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:golder_octopus/features/home/domain/use_cases/currencies_usecase.dart';
 import 'package:golder_octopus/features/transfer/data/models/get_sy_prices_response.dart';
@@ -66,7 +67,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     on<NewTransferEvent>(_onNewTransferEvent);
     on<GetTransTargetsEvent>(_onGetTransTargetsEvent);
     on<GetTargetInfoEvent>(_onGetTargetInfoEvent);
-    on<GetTaxEvent>(_onGetTaxEvent);
+    on<GetTaxEvent>(_onGetTaxEvent, transformer: restartable());
     on<GetSyTaxEvent>(_onGetSyTaxEvent);
     on<GetTransDetailsEvent>(_onGetTransDetailsEvent);
     on<GetIncomingTransDetailsEvent>(_onGetIncomingTransDetailsEvent);
@@ -119,7 +120,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   }
 
   Future<void> _onNewTransferEvent(NewTransferEvent event, Emitter<TransferState> emit) async {
-    emit(state.copyWith(newTransferStatus: Status.loading, transDetailsStatus: Status.initial));
+    emit(state.copyWith(newTransferStatus: Status.loading));
     final result = await newTransferUsecase(params: event.params);
 
     result.fold(
@@ -130,7 +131,6 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
         emit(state.copyWith(newTransferStatus: Status.success, newTransResponse: right));
       },
     );
-    emit(state.copyWith(newTransferStatus: Status.initial));
   }
 
   Future<void> _onGetTransTargetsEvent(GetTransTargetsEvent event, Emitter<TransferState> emit) async {
@@ -148,13 +148,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getTransTargetsStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getTransTargetsStatus: Status.initial));
       },
       (right) {
-        emit(
-          state.copyWith(getTransTargetsStatus: Status.success, getTransTargetsResponse: right, getTaxResponse: null),
-        );
-        emit(state.copyWith(getTransTargetsStatus: Status.initial));
+        emit(state.copyWith(getTransTargetsStatus: Status.success, getTransTargetsResponse: right));
       },
     );
   }
@@ -166,11 +162,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     await result.fold(
       (left) {
         emit(state.copyWith(getTargetInfoStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getTargetInfoStatus: Status.initial));
       },
       (right) async {
         emit(state.copyWith(getTargetInfoStatus: Status.success, getTargetInfoResponse: right));
-        emit(state.copyWith(getTargetInfoStatus: Status.initial, getTargetInfoResponse: null));
         add(GetCurrenciesEvent());
       },
     );
@@ -183,36 +177,25 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getTaxStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getTaxStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getTaxStatus: Status.success, getTaxResponse: right));
-        emit(state.copyWith(getTaxStatus: Status.initial, getTaxResponse: null));
       },
     );
   }
 
   Future<void> _onGetTransDetailsEvent(GetTransDetailsEvent event, Emitter<TransferState> emit) async {
-    emit(
-      state.copyWith(transDetailsStatus: Status.loading, transDetailsResponse: null, newTransferStatus: Status.initial),
-    );
+    emit(state.copyWith(transDetailsStatus: Status.loading));
     final result = await transDetailsUsecase(params: event.params);
 
     result.fold(
       (left) {
-        emit(
-          state.copyWith(
-            newTransferStatus: Status.initial,
-            transDetailsStatus: Status.failure,
-            errorMessage: left.message,
-          ),
-        );
+        emit(state.copyWith(transDetailsStatus: Status.failure, errorMessage: left.message));
       },
       (right) {
         emit(
           state.copyWith(
             transDetailsStatus: Status.success,
-            newTransferStatus: Status.initial,
             transDetailsResponse: right,
             isForDialog: event.isForDialog ? true : false,
           ),
@@ -242,11 +225,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getSyPricesStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getSyPricesStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getSyPricesStatus: Status.success, getSyPricesResponse: right));
-        emit(state.copyWith(getSyPricesStatus: Status.initial));
       },
     );
   }
@@ -267,11 +248,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getSyTargetsStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getSyTargetsStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getSyTargetsStatus: Status.success, getSyTargetsResponse: right));
-        emit(state.copyWith(getSyTargetsStatus: Status.initial));
       },
     );
   }
@@ -283,11 +262,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(newSyTransferStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(newSyTransferStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(newSyTransferStatus: Status.success, newSyTransferResponse: right));
-        emit(state.copyWith(newSyTransferStatus: Status.initial));
       },
     );
   }
@@ -298,11 +275,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getCurreciesStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getCurreciesStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getCurreciesStatus: Status.success, currenciesResponse: right));
-        emit(state.copyWith(getCurreciesStatus: Status.initial, currenciesResponse: null));
       },
     );
   }
@@ -314,11 +289,9 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     result.fold(
       (left) {
         emit(state.copyWith(getSyTaxStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getSyTaxStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getSyTaxStatus: Status.success, getSyTaxResponse: right));
-        emit(state.copyWith(getSyTaxStatus: Status.initial));
       },
     );
   }

@@ -24,4 +24,5 @@ class AppEndPoint {
   static const newExchange = 'new_exchange';
   static const getSyPrices = 'get_nizam_prices';
   static const getSyTargets = 'get_nizam_targets';
+  static const getSenderCurs = 'get_sender_info';
 }

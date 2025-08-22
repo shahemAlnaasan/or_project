@@ -59,3 +59,5 @@ class NewCreditEvent extends CreditEvent {
 }
 
 class GetCurrenciesEvent extends CreditEvent {}
+
+class GetSenderCursEvent extends CreditEvent {}

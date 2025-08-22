@@ -33,6 +33,13 @@ class TransferReciept extends StatelessWidget {
     }
   }
 
+  String _formatNumber(double value) {
+    if (value % 1 == 0) {
+      return value.toInt().toString();
+    }
+    return value.toStringAsFixed(3).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final Data transDetails = transDetailsResponse.data;
@@ -50,12 +57,12 @@ class TransferReciept extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(Assets.images.logo.companyLogo.path, scale: 14),
+                    Image.asset(Assets.images.logo.companyLogo.path, scale: 16),
                     if (transDetails.api != "false")
                       Image.network(
                         transDetails.header,
-                        width: 50,
-                        height: 50,
+                        width: 70,
+                        height: 70,
                         fit: BoxFit.cover,
                         filterQuality: FilterQuality.high,
                         errorBuilder: (context, error, stackTrace) {
@@ -83,7 +90,10 @@ class TransferReciept extends StatelessWidget {
                     Expanded(child: _buildColumn("المصدر", transDetails.srcName)),
                     Expanded(child: _buildColumn("الوجهة", transDetails.targetBox)),
                     Expanded(
-                      child: _buildColumn("التاريخ", DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate)),
+                      child: _buildColumn(
+                        "التاريخ",
+                        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.tryParse(transDetails.transdate)!),
+                      ),
                     ),
                   ],
                 ),
@@ -99,7 +109,7 @@ class TransferReciept extends StatelessWidget {
 
                 const SizedBox(height: 5),
                 AppText.bodyMedium(
-                  '${transDetails.amount} ${transDetails.currencyName}',
+                  '${_formatNumber(double.tryParse(transDetails.amount) ?? 0)} ${transDetails.currencyName}',
                   style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 2),
@@ -115,6 +125,7 @@ class TransferReciept extends StatelessWidget {
                     setDerliverAddress(transDetails),
                     crossAxisAlignment: CrossAxisAlignment.start,
                     lableFontWeight: FontWeight.bold,
+                    textAlign: TextAlign.start,
                   ),
                 ),
                 DottedLine(),

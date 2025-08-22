@@ -10,8 +10,8 @@ mixin ApiHandler {
   bool _isApiSuccess(dynamic data) {
     try {
       final status = data is String ? jsonDecode(data)["status"] : data["status"];
-      final id = data is String ? jsonDecode(data)["id"] : data["id"];
-      final result = status.toString() == "1" && id.toString() != "0";
+      // final id = data is String ? jsonDecode(data)["id"] : data["id"];
+      final result = status.toString() == "1";
       return result;
     } catch (e) {
       return false;

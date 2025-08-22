@@ -40,6 +40,13 @@ class CreditReciept extends StatelessWidget {
     return '$hidden $visible';
   }
 
+  String _formatNumber(double value) {
+    if (value % 1 == 0) {
+      return value.toInt().toString();
+    }
+    return value.toStringAsFixed(3).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
+  }
+
   @override
   Widget build(BuildContext context) {
     final Data transDetails = transDetailsResponse.data;
@@ -66,7 +73,7 @@ class CreditReciept extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
 
-                _buildColumn("الاشعار", transDetails.transnum),
+                _buildColumn("الاشعار", "${transDetails.transnum} / ${transDetails.password}"),
                 const SizedBox(height: 2),
                 _buildColumn("المصدر", maskNumber(transDetails.srcBox)),
                 const SizedBox(height: 2),
@@ -75,7 +82,7 @@ class CreditReciept extends StatelessWidget {
 
                 _buildColumn(
                   "المبلغ رقما",
-                  "${transDetails.amount} ${transDetails.currencyName}",
+                  "${_formatNumber(double.tryParse(transDetails.amount) ?? 0)} ${transDetails.currencyName}",
                   color: const Color.fromARGB(255, 46, 131, 49),
                 ),
                 const SizedBox(height: 2),
@@ -87,7 +94,10 @@ class CreditReciept extends StatelessWidget {
                 const SizedBox(height: 2),
                 _buildColumn("البيان", ""),
                 const SizedBox(height: 2),
-                _buildColumn("التاريخ", DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate)),
+                _buildColumn(
+                  "التاريخ",
+                  DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.tryParse(transDetails.transdate)!),
+                ),
 
                 const SizedBox(height: 5),
 

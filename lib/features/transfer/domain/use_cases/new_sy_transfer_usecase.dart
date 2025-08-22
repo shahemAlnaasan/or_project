@@ -19,9 +19,9 @@ class NewSyTransferParams with Params {
   final String rcvname;
   final String rcvphone;
   final String currency;
-  final int amount;
+  final double amount;
   final String api;
-  final int amountSy;
+  final double amountSy;
   final String isSy;
   final int cut;
 

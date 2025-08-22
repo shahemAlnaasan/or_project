@@ -23,8 +23,7 @@ class _CutExchangeScreenState extends State<CutExchangeScreen> {
   final GlobalKey<CutExchangeFormState> _formKey = GlobalKey();
 
   Future<void> _onRefresh(BuildContext context) async {
-    _formKey.currentState?.resetForm();
-    context.read<ExchangeBloc>().add(GetPricesEvent());
+    _formKey.currentState?.resetForm(context);
   }
 
   GetPricesResponse? getPricesResponse;
@@ -33,57 +32,59 @@ class _CutExchangeScreenState extends State<CutExchangeScreen> {
     return BlocProvider(
       create: (context) => getIt<ExchangeBloc>()..add(GetPricesEvent()),
       child: BlocListener<ExchangeBloc, ExchangeState>(
+        listenWhen: (prev, curr) => prev.getPricesStatus != curr.getPricesStatus,
         listener: (context, state) async {
           if (state.getPricesStatus == Status.success && state.getPricesResponse != null) {
             if (!mounted) return;
             setState(() {
               getPricesResponse = state.getPricesResponse;
             });
-
-            await Future.delayed(const Duration(seconds: 2));
-
-            if (!mounted) return;
-            // context.read<ExchangeBloc>().add(GetPricesEvent());
+            context.read<ExchangeBloc>().add(GetSenderCursEvent());
           }
         },
 
         child: Scaffold(
           backgroundColor: context.background,
-          body: RefreshIndicator(
-            onRefresh: () => _onRefresh(context),
-            child: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
-                width: context.screenWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText.displaySmall(
-                      LocaleKeys.home_shear_bond.tr(),
-                      textAlign: TextAlign.start,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    SizedBox(height: 20),
-                    CutExchangeForm(getPricesResponse: getPricesResponse),
-                    SizedBox(height: 10),
-                    AppText.titleLarge(
-                      LocaleKeys.exchange_exchange_prices.tr(),
-                      textAlign: TextAlign.start,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    AppText.bodyLarge(
-                      "${LocaleKeys.exchange_last_update.tr()} ${getPricesResponse?.time ?? "00:00:00"}",
-                      textAlign: TextAlign.start,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    SizedBox(height: 10),
+          body: Builder(
+            builder: (context) {
+              return RefreshIndicator(
+                onRefresh: () => _onRefresh(context),
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 75),
+                    width: context.screenWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppText.displaySmall(
+                          LocaleKeys.home_shear_bond.tr(),
+                          textAlign: TextAlign.start,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        SizedBox(height: 20),
+                        CutExchangeForm(getPricesResponse: getPricesResponse, key: _formKey),
+                        SizedBox(height: 10),
+                        AppText.titleLarge(
+                          LocaleKeys.exchange_exchange_prices.tr(),
+                          textAlign: TextAlign.start,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        AppText.bodyLarge(
+                          "${LocaleKeys.exchange_last_update.tr()} ${getPricesResponse?.time ?? "00:00:00"}",
+                          textAlign: TextAlign.start,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        SizedBox(height: 10),
 
-                    ExchangeContainer(getPricesResponse: getPricesResponse),
-                    SizedBox(height: 20),
-                  ],
+                        SizedBox(height: 20),
+                        ExchangeContainer(getPricesResponse: getPricesResponse),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),

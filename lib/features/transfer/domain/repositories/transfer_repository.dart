@@ -31,7 +31,5 @@ abstract class TransferRepository {
   DataResponse<TransDetailsResponse> transDetails({required TransDetailsParams params});
   DataResponse<GetSyPricesResponse> getSyPrices();
   DataResponse<GetSyTargetsResponse> getSyTargets({required GetSyTargetsParams params});
-  DataResponse<NewTransResponse
-  
-  > newSyTransfer({required NewSyTransferParams params});
+  DataResponse<NewTransResponse> newSyTransfer({required NewSyTransferParams params});
 }

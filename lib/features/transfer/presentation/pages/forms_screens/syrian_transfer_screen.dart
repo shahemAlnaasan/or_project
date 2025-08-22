@@ -25,8 +25,7 @@ class _SyrianTransferScreenState extends State<SyrianTransferScreen> {
   GetSyPricesResponse? getSyPricesResponse;
 
   Future<void> _onRefresh(BuildContext context) async {
-    _formKey.currentState?.resetForm();
-    context.read<TransferBloc>().add(GetSyPricesEvent());
+    _formKey.currentState?.resetForm(context);
   }
 
   @override
@@ -37,7 +36,8 @@ class _SyrianTransferScreenState extends State<SyrianTransferScreen> {
           (context) =>
               getIt<TransferBloc>()
                 ..add(GetSyTargetsEvent())
-                ..add(GetSyPricesEvent()),
+                ..add(GetSyPricesEvent())
+                ..add(GetCurrenciesEvent()),
       child: BlocListener<TransferBloc, TransferState>(
         listener: (context, state) {
           if (state.getSyPricesStatus == Status.success && state.getSyPricesResponse != null) {
@@ -67,7 +67,8 @@ class _SyrianTransferScreenState extends State<SyrianTransferScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                         SizedBox(height: 20),
-                        SyrianTransferForm(),
+                        SyrianTransferForm(key: _formKey),
+                        SizedBox(height: 20),
                         ExchangeTable(getSyPricesResponse: getSyPricesResponse),
                         SizedBox(height: 10),
                       ],

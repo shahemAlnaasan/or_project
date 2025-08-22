@@ -1,3 +1,5 @@
+import 'package:golder_octopus/features/credit/data/models/get_sender_curs_response.dart';
+
 import '../../../../common/consts/typedef.dart';
 import '../data_sources/credit_remote_data_source.dart';
 import '../models/get_companies_response.dart';
@@ -48,5 +50,10 @@ class CreditRepositoryImp implements CreditRepository {
   @override
   DataResponse<NewCreditResponse> newCredit({required NewCreditParams params}) {
     return creditRemoteDataSource.newCredit(params: params);
+  }
+
+  @override
+  DataResponse<GetSenderCursResponse> getSenderCurs() {
+    return creditRemoteDataSource.getSenderCurs();
   }
 }

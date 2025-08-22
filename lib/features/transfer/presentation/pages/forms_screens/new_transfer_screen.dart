@@ -20,8 +20,7 @@ class _NewTransferScreenState extends State<NewTransferScreen> {
   final GlobalKey<NewTransferFormState> _formKey = GlobalKey();
 
   Future<void> _onRefresh(BuildContext context) async {
-    _formKey.currentState?.resetForm();
-    context.read<TransferBloc>().add(GetTransTargetsEvent());
+    _formKey.currentState?.resetForm(context);
   }
 
   @override

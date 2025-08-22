@@ -44,6 +44,8 @@ import '../../features/credit/domain/use_cases/get_credit_targets_usecase.dart'
     as _i18;
 import '../../features/credit/domain/use_cases/get_credit_tax_usecase.dart'
     as _i400;
+import '../../features/credit/domain/use_cases/get_sender_curs_usecase.dart'
+    as _i517;
 import '../../features/credit/domain/use_cases/incoming_credit_usecase.dart'
     as _i947;
 import '../../features/credit/domain/use_cases/new_credit_usecase.dart'
@@ -162,6 +164,11 @@ extension GetItInjectableX on _i174.GetIt {
         creditRepository: gh<_i473.CreditRepository>(),
       ),
     );
+    gh.factory<_i517.GetSenderCursUsecase>(
+      () => _i517.GetSenderCursUsecase(
+        creditRepository: gh<_i473.CreditRepository>(),
+      ),
+    );
     gh.factory<_i947.IncomingCreditUsecase>(
       () => _i947.IncomingCreditUsecase(
         creditRepository: gh<_i473.CreditRepository>(),
@@ -197,6 +204,16 @@ extension GetItInjectableX on _i174.GetIt {
         remoteDataSource: gh<_i350.HomeRemoteDataSource>(),
       ),
     );
+    gh.factory<_i309.GetSyPricesUsecase>(
+      () => _i309.GetSyPricesUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
+    gh.factory<_i98.GetSyTargetsUsecase>(
+      () => _i98.GetSyTargetsUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
     gh.factory<_i226.GetTargetInfoUsecase>(
       () => _i226.GetTargetInfoUsecase(
         transferRepository: gh<_i336.TransferRepository>(),
@@ -217,6 +234,11 @@ extension GetItInjectableX on _i174.GetIt {
         transferRepository: gh<_i336.TransferRepository>(),
       ),
     );
+    gh.factory<_i151.NewSyTransferUsecase>(
+      () => _i151.NewSyTransferUsecase(
+        transferRepository: gh<_i336.TransferRepository>(),
+      ),
+    );
     gh.factory<_i59.NewTransferUsecase>(
       () => _i59.NewTransferUsecase(
         transferRepository: gh<_i336.TransferRepository>(),
@@ -234,21 +256,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i154.TransDetailsUsecase>(
       () => _i154.TransDetailsUsecase(
-        transferRepository: gh<_i336.TransferRepository>(),
-      ),
-    );
-    gh.factory<_i309.GetSyPricesUsecase>(
-      () => _i309.GetSyPricesUsecase(
-        transferRepository: gh<_i336.TransferRepository>(),
-      ),
-    );
-    gh.factory<_i98.GetSyTargetsUsecase>(
-      () => _i98.GetSyTargetsUsecase(
-        transferRepository: gh<_i336.TransferRepository>(),
-      ),
-    );
-    gh.factory<_i151.NewSyTransferUsecase>(
-      () => _i151.NewSyTransferUsecase(
         transferRepository: gh<_i336.TransferRepository>(),
       ),
     );
@@ -290,6 +297,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i703.ExchangeBloc(
         getPricesUsecase: gh<_i495.GetPricesUsecase>(),
         newExchangeUsecase: gh<_i118.NewExchangeUsecase>(),
+        getSenderCursUsecase: gh<_i517.GetSenderCursUsecase>(),
       ),
     );
     gh.factory<_i128.AccountStatementBloc>(
@@ -308,6 +316,7 @@ extension GetItInjectableX on _i174.GetIt {
         getCreditTaxUsecase: gh<_i400.GetCreditTaxUsecase>(),
         newCreditUsecase: gh<_i315.NewCreditUsecase>(),
         currenciesUsecase: gh<_i573.CurrenciesUsecase>(),
+        getSenderCursUsecase: gh<_i517.GetSenderCursUsecase>(),
       ),
     );
     gh.factory<_i202.HomeBloc>(

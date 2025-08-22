@@ -7,10 +7,16 @@ sealed class ExchangeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetPricesEvent extends ExchangeEvent {}
+class GetPricesEvent extends ExchangeEvent {
+  final bool isUpdateData;
+
+  const GetPricesEvent({this.isUpdateData = false});
+}
 
 class NewExchangeEvent extends ExchangeEvent {
   final NewExchangeParams params;
 
   const NewExchangeEvent({required this.params});
 }
+
+class GetSenderCursEvent extends ExchangeEvent {}

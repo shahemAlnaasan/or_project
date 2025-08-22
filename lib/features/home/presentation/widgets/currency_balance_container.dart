@@ -69,7 +69,16 @@ class CurrencyBalanceContainer extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(getIcon(acc.currencyName), scale: 3.2),
+              Image.network(
+                "https://rykv3340.com/procds/img/${acc.currencyImg}",
+                width: 45,
+                height: 45,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (context, error, stackTrace) {
+                  return SizedBox.shrink();
+                },
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [

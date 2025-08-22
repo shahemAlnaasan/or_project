@@ -23,8 +23,8 @@ class TransDetailsResponse {
 class Data {
   String transnum;
   String password;
-  DateTime transdate;
-  DateTime? rcvdate;
+  String transdate;
+  String? rcvdate;
   String srcName;
   String srcBox;
   String targetName;
@@ -72,8 +72,8 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     transnum: json["transnum"] ?? "",
     password: json["password"] ?? "",
-    transdate: DateTime.parse(json["transdate"] ?? ""),
-    rcvdate: json["rcvdate"],
+    transdate: json["transdate"] ?? "",
+    rcvdate: json["rcvdate"] ?? "",
     srcName: json["src_name"] ?? "",
     srcBox: json["src_box"] ?? "",
     targetName: json["target_name"] ?? "",
@@ -97,7 +97,7 @@ class Data {
   Map<String, dynamic> toJson() => {
     "transnum": transnum,
     "password": password,
-    "transdate": transdate.toIso8601String(),
+    "transdate": transdate.toString(),
     "rcvdate": rcvdate,
     "src_name": srcName,
     "src_box": srcBox,

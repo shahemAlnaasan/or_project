@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:golder_octopus/features/credit/presentation/pages/credit_receipt_screen.dart';
-import 'package:golder_octopus/features/main/presentation/pages/main_screen.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/state_managment/bloc_state.dart';
 import '../../../../common/utils/device_info.dart';
@@ -121,7 +122,7 @@ class SendCreditFormState extends State<SendCreditForm> {
     );
   }
 
-  void resetForm() {
+  void resetForm(BuildContext context) {
     setState(() {
       companies = [];
       selectedCompany = null;
@@ -129,66 +130,119 @@ class SendCreditFormState extends State<SendCreditForm> {
       currencies = [];
       selectedCurrency = null;
       amountController.clear();
-      boxes = [];
-      selectedBox = null;
       feesController.text = "0";
       notesController.clear();
+      boxes = [];
+      selectedBox = null;
       selectedCurrency = null;
     });
+    context.read<CreditBloc>()
+      ..add(GetCompaniesEvent())
+      ..add(GetCurrenciesEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CreditBloc, CreditState>(
-      listener: (context, state) async {
-        if (state.newCreditStatus == Status.failure) {
-          ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
-        }
-        if (state.getCompaniesStatus == Status.success && state.getCompaniesResponse != null) {
-          setState(() {
-            companies = state.getCompaniesResponse!.companies;
-          });
-        }
-        if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
-          setState(() {
-            currencies = state.currenciesResponse!.curs;
-          });
-        }
-        if (state.getCreditTaxStatus == Status.success && state.getCreditTaxResponse != null) {
-          setState(() {
-            feesController.text = state.getCreditTaxResponse!.tax.toString();
-          });
-        }
-        if (state.getCreditTargetsStatus == Status.success && state.getCreditTargetsResponse != null) {
-          setState(() {
-            boxes = state.getCreditTargetsResponse!.targets;
-          });
-        }
-        if (state.newCreditStatus == Status.success && state.newCreditResponse != null) {
-          TransDetailsParams params = TransDetailsParams(transNum: state.newCreditResponse!.transnum);
-          context.read<CreditBloc>().add(GetNewCreditDetailsEvent(params: params));
-          ToastificationDialog.showToast(
-            msg: "تم ارسال الحوالة",
-            context: context,
-            type: ToastificationType.success,
-            autoCloseDuration: Duration(seconds: 15),
-          );
-          Navigator.of(
-            rootNavigator: true,
-            context,
-          ).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const MainScreen()), (route) => false);
-        }
-        if (state.newCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
-          await Future.delayed(Duration(seconds: 2));
-          ToastificationDialog.dismiss();
-          Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute(
-              fullscreenDialog: false,
-              builder: (context) => CreditReceiptScreen(transDetailsResponse: state.creditDetailsResponse!),
-            ),
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CreditBloc, CreditState>(
+          listenWhen: (prev, curr) => prev.newCreditStatus != curr.newCreditStatus,
+          listener: (context, state) async {
+            if (state.newCreditStatus == Status.failure) {
+              ToastificationDialog.showToast(
+                msg: state.errorMessage!,
+                context: context,
+                type: ToastificationType.error,
+              );
+            }
+            if (state.newCreditStatus == Status.success && state.newCreditResponse != null) {
+              ToastificationDialog.showToast(
+                msg: "تم ارسال الحوالة",
+                context: context,
+                type: ToastificationType.success,
+                autoCloseDuration: Duration(seconds: 15),
+              );
+              TransDetailsParams params = TransDetailsParams(transNum: state.newCreditResponse!.transnum);
+              context.read<CreditBloc>().add(GetNewCreditDetailsEvent(params: params));
+            }
+          },
+        ),
+        BlocListener<CreditBloc, CreditState>(
+          listenWhen: (prev, curr) => prev.getCompaniesStatus != curr.getCompaniesStatus,
+          listener: (context, state) async {
+            if (state.getCompaniesStatus == Status.success && state.getCompaniesResponse != null) {
+              setState(() {
+                companies = state.getCompaniesResponse!.companies;
+                selectedCompany = state.getCompaniesResponse!.companies.firstWhere(
+                  (company) => company.name == "الايهم داخلي",
+                );
+              });
+            }
+          },
+        ),
+        BlocListener<CreditBloc, CreditState>(
+          listenWhen: (prev, curr) => prev.getCurreciesStatus != curr.getCurreciesStatus,
+          listener: (context, state) async {
+            if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
+              context.read<CreditBloc>().add(GetSenderCursEvent());
+            }
+          },
+        ),
+        BlocListener<CreditBloc, CreditState>(
+          listenWhen: (prev, curr) => prev.getSenderCursStatus != curr.getSenderCursStatus,
+          listener: (context, state) async {
+            if (state.getSenderCursStatus == Status.success && state.getSenderCursResponse != null) {
+              final rawCurs = state.getSenderCursResponse!.data.curs;
+              final allowedSymbols = rawCurs.split(',').where((e) => e.isNotEmpty).map((e) => e.toLowerCase()).toSet();
+
+              final allCurrencies = state.currenciesResponse?.curs ?? [];
+
+              final matchingCurrencies =
+                  allCurrencies.where((cur) => allowedSymbols.contains(cur.currency.toLowerCase())).toList();
+
+              setState(() {
+                currencies = matchingCurrencies;
+              });
+            }
+          },
+        ),
+        BlocListener<CreditBloc, CreditState>(
+          listenWhen: (prev, curr) => prev.getCreditTaxStatus != curr.getCreditTaxStatus,
+          listener: (context, state) async {
+            if (state.getCreditTaxStatus == Status.success && state.getCreditTaxResponse != null) {
+              setState(() {
+                feesController.text = state.getCreditTaxResponse!.tax.toString();
+              });
+            }
+          },
+        ),
+        BlocListener<CreditBloc, CreditState>(
+          listenWhen: (prev, curr) => prev.getCreditTargetsStatus != curr.getCreditTargetsStatus,
+          listener: (context, state) async {
+            if (state.getCreditTargetsStatus == Status.success && state.getCreditTargetsResponse != null) {
+              setState(() {
+                boxes = state.getCreditTargetsResponse!.targets;
+              });
+            }
+          },
+        ),
+        BlocListener<CreditBloc, CreditState>(
+          listenWhen: (prev, curr) => prev.newCreditDetailsStatus != curr.newCreditDetailsStatus,
+          listener: (context, state) async {
+            if (state.newCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
+              log("newCreditDetailsStatus workes");
+              await Future.delayed(Duration(seconds: 2));
+              ToastificationDialog.dismiss();
+              Navigator.of(context, rootNavigator: true).push(
+                MaterialPageRoute(
+                  fullscreenDialog: false,
+                  builder: (context) => CreditReceiptScreen(transDetailsResponse: state.creditDetailsResponse!),
+                ),
+              );
+            }
+          },
+        ),
+      ],
       child: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 20),
         child: Form(
@@ -219,7 +273,7 @@ class SendCreditFormState extends State<SendCreditForm> {
               buildFieldTitle(title: LocaleKeys.credits_credit_type.tr()),
               CustomDropdown(
                 menuList: ['مباشر', 'اعتماد محجوز لحين التنفيذ'],
-                initaValue: selectedCreditType,
+                initaValue: "مباشر",
                 labelText: LocaleKeys.credits_credit_type.tr(),
                 hintText: LocaleKeys.credits_credit_type.tr(),
                 onChanged: (value) {
@@ -304,27 +358,38 @@ class SendCreditFormState extends State<SendCreditForm> {
                               final blocContext = context;
 
                               if (_formKey.currentState!.validate()) {
-                                _showDetailsDialog(
-                                  blocContext,
-                                  senderName: "${selectedBox!.cn} ${selectedCurrency!.currencyName}",
-                                  amount: amountController.text,
-                                  onPressed: () async {
-                                    final String deviceType = await DeviceInfo.deviceType();
-                                    final String? deviceIp = await DeviceInfo.getDeviceIp();
-                                    // ignore: unused_local_variable
-                                    final NewCreditParams params = NewCreditParams(
-                                      company: selectedCompany!.id,
-                                      amount: amountController.text.trim(),
-                                      currency: selectedCurrency!.currency,
-                                      targetId: selectedBox!.cid,
-                                      targetName: selectedBox!.cn,
-                                      ipInfo: deviceIp ?? "",
-                                      deviceInfo: deviceType,
-                                    );
-                                    // ignore: use_build_context_synchronously
-                                    blocContext.read<CreditBloc>().add(NewCreditEvent(params: params));
-                                  },
-                                );
+                                if (feesController.text.trim().isEmpty || int.tryParse(feesController.text) == 0) {
+                                  ToastificationDialog.showToast(
+                                    msg: "لايمكن ان تكون الاجور 0",
+                                    context: context,
+                                    type: ToastificationType.error,
+                                  );
+                                } else {
+                                  _showDetailsDialog(
+                                    blocContext,
+                                    senderName: "${selectedBox!.cn} ${selectedCurrency!.currencyName}",
+                                    amount: amountController.text,
+                                    onPressed: () async {
+                                      final String deviceType = await DeviceInfo.deviceType();
+                                      final String? deviceIp = await DeviceInfo.getDeviceIp();
+                                      // ignore: unused_local_variable
+                                      final NewCreditParams params = NewCreditParams(
+                                        company: selectedCompany!.id,
+                                        amount: amountController.text.trim(),
+                                        currency: selectedCurrency!.currency,
+                                        targetId: selectedBox!.cid,
+                                        targetName: selectedBox!.cn,
+                                        ipInfo: deviceIp ?? "",
+                                        deviceInfo: deviceType,
+                                      );
+                                      // ignore: use_build_context_synchronously
+                                      blocContext.read<CreditBloc>().add(NewCreditEvent(params: params));
+                                      await Future.delayed(Duration(seconds: 1));
+                                      // ignore: use_build_context_synchronously
+                                      resetForm(blocContext);
+                                    },
+                                  );
+                                }
                               }
                             },
                     text: LocaleKeys.transfer_send.tr(),

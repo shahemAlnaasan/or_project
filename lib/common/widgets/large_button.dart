@@ -44,34 +44,36 @@ class LargeButton extends StatelessWidget {
                   // border: Border.all(color: context.primaryColor, width: 1.5),
                   borderRadius: BorderRadius.circular(circularRadius),
                 ),
-        child:
-            child ??
-            (icon == null
-                ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      text,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                )
-                : Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    spacing: 5,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(icon!, scale: 7),
-                      Text(
+        child: Center(
+          child:
+              child ??
+              (icon == null
+                  ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
                         text,
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                       ),
-                    ],
-                  ),
-                )),
+                    ),
+                  )
+                  : Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      spacing: 5,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(icon!, scale: 7),
+                        Text(
+                          text,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  )),
+        ),
       ),
     );
   }

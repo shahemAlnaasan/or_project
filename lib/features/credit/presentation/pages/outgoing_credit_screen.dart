@@ -126,14 +126,8 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
     return BlocProvider(
       create:
           (context) =>
-              getIt<CreditBloc>()..add(
-                GetOutgoingCreditsEvent(
-                  params: OutgoingCreditParams(
-                    startDate: _formatDateTime(fromDate!),
-                    endDate: _formatDateTime(toDate!),
-                  ),
-                ),
-              ),
+              getIt<CreditBloc>()
+                ..add(GetOutgoingCreditsEvent(params: OutgoingCreditParams(startDate: "", endDate: ""))),
       child: BlocListener<CreditBloc, CreditState>(
         listener: (context, state) {
           if (state.getOutgoingCreditsStatus == Status.failure) {

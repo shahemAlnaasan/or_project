@@ -87,8 +87,8 @@ class _ExchangeContainerState extends State<ExchangeContainer> {
       final label1 = toCurrency?.name ?? to;
       final label2 = fromCurrency?.name ?? from;
 
-      final iconPath1 = getImagePath(toCurrency?.img);
-      final iconPath2 = getImagePath(fromCurrency?.img);
+      final iconPath1 = toCurrency!.img ?? "";
+      final iconPath2 = fromCurrency!.img ?? "";
 
       final value1 = double.tryParse(buy?.price ?? "")?.toStringAsFixed(4) ?? "0.0000";
       final value2 = double.tryParse(sell?.price ?? "")?.toStringAsFixed(4) ?? "0.0000";
@@ -131,9 +131,28 @@ class _ExchangeContainerState extends State<ExchangeContainer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Image.asset(iconPath2, width: 24),
+                Image.network(
+                  "https://rykv3340.com/procds/img/$iconPath1",
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SizedBox.shrink();
+                  },
+                ),
+
                 const SizedBox(width: 4),
-                Image.asset(iconPath1, width: 24),
+                Image.network(
+                  "https://rykv3340.com/procds/img/$iconPath2",
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SizedBox.shrink();
+                  },
+                ),
                 const SizedBox(width: 8),
               ],
             ),

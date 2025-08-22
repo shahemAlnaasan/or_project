@@ -153,19 +153,30 @@ class _MainScreenState extends State<MainScreen> {
                 children: [
                   IndexedStack(
                     index: _selectedIndex,
-                    children: List.generate(_rootScreens.length, (i) => _buildTabNavigator(i)),
+                    children: List.generate(_rootScreens.length, (i) {
+                      // Remove HomeScreen from IndexedStack
+                      if (i == 2) return const SizedBox.shrink();
+                      return _buildTabNavigator(i);
+                    }),
                   ),
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                    top: 100,
-                    left: _showUserInfo ? -20 : -(context.screenWidth / 1.2) - sideIconShowed,
-                    child: _buildSideAction(
-                      icon: Assets.images.sideActions.user.path,
-                      actionWidget: UserInfoAction(),
-                      onTap: _toggleUserInfo,
+
+                  // Render HomeScreen outside the IndexedStack
+                  if (_selectedIndex == 2)
+                    Navigator(
+                      key: _navigatorKeys[2],
+                      onGenerateRoute: (settings) => MaterialPageRoute(builder: (_) => const HomeScreen()),
                     ),
-                  ),
+                  // AnimatedPositioned(
+                  //   duration: const Duration(milliseconds: 500),
+                  //   curve: Curves.easeInOut,
+                  //   top: 100,
+                  //   left: _showUserInfo ? -20 : -(context.screenWidth / 1.2) - sideIconShowed,
+                  //   child: _buildSideAction(
+                  //     icon: Assets.images.sideActions.user.path,
+                  //     actionWidget: UserInfoAction(),
+                  //     onTap: _toggleUserInfo,
+                  //   ),
+                  // ),
                   // AnimatedPositioned(
                   //   duration: const Duration(milliseconds: 500),
                   //   curve: Curves.easeInOut,
@@ -177,30 +188,30 @@ class _MainScreenState extends State<MainScreen> {
                   //     onTap: _toggleMovements,
                   //   ),
                   // ),
-                  if (_showScanQR)
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                      top: 180,
-                      left: -20,
-                      child: _buildSideAction(
-                        icon: Assets.images.sideActions.qr.path,
-                        actionWidget: ScanQrAction(),
-                        onTap: _toggleScanQR,
-                      ),
-                    )
-                  else
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                      top: 180,
-                      left: -(context.screenWidth / 1.2) - sideIconShowed,
-                      child: _buildSideAction(
-                        icon: Assets.images.sideActions.qr.path,
-                        actionWidget: _showScanQR ? ScanQrAction() : SideActionPlaceholder(),
-                        onTap: _toggleScanQR,
-                      ),
-                    ),
+                  // if (_showScanQR)
+                  //   AnimatedPositioned(
+                  //     duration: const Duration(milliseconds: 500),
+                  //     curve: Curves.easeInOut,
+                  //     top: 180,
+                  //     left: -20,
+                  //     child: _buildSideAction(
+                  //       icon: Assets.images.sideActions.qr.path,
+                  //       actionWidget: ScanQrAction(),
+                  //       onTap: _toggleScanQR,
+                  //     ),
+                  //   )
+                  // else
+                  //   AnimatedPositioned(
+                  //     duration: const Duration(milliseconds: 500),
+                  //     curve: Curves.easeInOut,
+                  //     top: 180,
+                  //     left: -(context.screenWidth / 1.2) - sideIconShowed,
+                  //     child: _buildSideAction(
+                  //       icon: Assets.images.sideActions.qr.path,
+                  //       actionWidget: _showScanQR ? ScanQrAction() : SideActionPlaceholder(),
+                  //       onTap: _toggleScanQR,
+                  //     ),
+                  //   ),
                 ],
               ),
             ),
@@ -246,13 +257,13 @@ class _MainScreenState extends State<MainScreen> {
                             isSubItem: true,
                             onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
                           ),
-                          _buildMenuItem(
-                            label: "حوالة محجوزة لحين التنفيذ",
-                            icon: Assets.images.block.path,
-                            expandable: false,
-                            isSubItem: true,
-                            onTap: () => _pushInCurrentTab(ReserevedTransferScreen()),
-                          ),
+                          // _buildMenuItem(
+                          //   label: "حوالة محجوزة لحين التنفيذ",
+                          //   icon: Assets.images.block.path,
+                          //   expandable: false,
+                          //   isSubItem: true,
+                          //   onTap: () => _pushInCurrentTab(ReserevedTransferScreen()),
+                          // ),
                         ],
                       ),
                       _buildMenuItem(
@@ -306,62 +317,62 @@ class _MainScreenState extends State<MainScreen> {
                             isSubItem: true,
                             onTap: () => _pushInCurrentTab(AccountStatementScreen()),
                           ),
-                          _buildMenuItem(
-                            label: "صندوق الارباح",
-                            icon: Assets.images.heart.path,
-                            expandable: false,
-                            isSubItem: true,
-                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
-                          ),
+                          // _buildMenuItem(
+                          //   label: "صندوق الارباح",
+                          //   icon: Assets.images.heart.path,
+                          //   expandable: false,
+                          //   isSubItem: true,
+                          //   onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                          // ),
                         ],
                       ),
-                      _buildMenuItem(
-                        label: "المنشورات",
-                        icon: Assets.images.sideActions.twitter.path,
-                        children: [
-                          _buildMenuItem(
-                            label: "اخبار الشركة",
-                            icon: Icons.message_outlined,
-                            expandable: false,
-                            isSubItem: true,
-                            onTap: () => _pushInCurrentTab(CompanyNewsScreen()),
-                          ),
-                          _buildMenuItem(
-                            label: "منشورات المراكز",
-                            icon: Assets.images.sideActions.twitter.path,
-                            expandable: false,
-                            isSubItem: true,
-                            onTap: () => _pushInCurrentTab(CentersPostsScreen()),
-                          ),
-                        ],
-                      ),
-                      _buildMenuItem(
-                        label: "أدوات",
-                        icon: Assets.images.sideActions.settings.path,
-                        children: [
-                          _buildMenuItem(
-                            label: "ادارة الوكلاء",
-                            icon: Icons.person_add_alt,
-                            expandable: false,
-                            isSubItem: true,
-                            onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
-                          ),
-                          _buildMenuItem(
-                            label: "التقارير",
-                            icon: Assets.images.dataAnalytics.path,
-                            expandable: false,
-                            isSubItem: true,
-                            onTap: () => _pushInCurrentTab(ReportsScreen()),
-                          ),
-                          _buildMenuItem(
-                            label: "تغيير كلمة المرور",
-                            icon: Icons.lock_open,
-                            expandable: false,
-                            isSubItem: true,
-                            onTap: () => _pushInCurrentTab(ChangePasswordScreen()),
-                          ),
-                        ],
-                      ),
+                      // _buildMenuItem(
+                      //   label: "المنشورات",
+                      //   icon: Assets.images.sideActions.twitter.path,
+                      //   children: [
+                      //     _buildMenuItem(
+                      //       label: "اخبار الشركة",
+                      //       icon: Icons.message_outlined,
+                      //       expandable: false,
+                      //       isSubItem: true,
+                      //       onTap: () => _pushInCurrentTab(CompanyNewsScreen()),
+                      //     ),
+                      //     _buildMenuItem(
+                      //       label: "منشورات المراكز",
+                      //       icon: Assets.images.sideActions.twitter.path,
+                      //       expandable: false,
+                      //       isSubItem: true,
+                      //       onTap: () => _pushInCurrentTab(CentersPostsScreen()),
+                      //     ),
+                      //   ],
+                      // ),
+                      // _buildMenuItem(
+                      //   label: "أدوات",
+                      //   icon: Assets.images.sideActions.settings.path,
+                      //   children: [
+                      //     _buildMenuItem(
+                      //       label: "ادارة الوكلاء",
+                      //       icon: Icons.person_add_alt,
+                      //       expandable: false,
+                      //       isSubItem: true,
+                      //       onTap: () => _pushInCurrentTab(OutgoingTransferScreen()),
+                      //     ),
+                      //     _buildMenuItem(
+                      //       label: "التقارير",
+                      //       icon: Assets.images.dataAnalytics.path,
+                      //       expandable: false,
+                      //       isSubItem: true,
+                      //       onTap: () => _pushInCurrentTab(ReportsScreen()),
+                      //     ),
+                      //     _buildMenuItem(
+                      //       label: "تغيير كلمة المرور",
+                      //       icon: Icons.lock_open,
+                      //       expandable: false,
+                      //       isSubItem: true,
+                      //       onTap: () => _pushInCurrentTab(ChangePasswordScreen()),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 ),
@@ -486,7 +497,6 @@ class _MainScreenState extends State<MainScreen> {
           padding: EdgeInsets.only(right: isSubItem ? 10 : 0),
           child: ListTile(
             textColor: context.onPrimaryColor,
-
             title: Text(label, style: const TextStyle(fontSize: 15)),
             leading:
                 icon is String
@@ -510,12 +520,8 @@ class _MainScreenState extends State<MainScreen> {
                     : onTap,
           ),
         ),
-        AnimatedCrossFade(
-          firstChild: SizedBox.shrink(),
-          secondChild: Column(children: children),
-          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-          duration: const Duration(milliseconds: 300),
-        ),
+        // Show children normally without animation
+        if (isExpanded) ...children,
       ],
     );
   }

@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:golder_octopus/features/credit/data/models/get_sender_curs_response.dart';
+import 'package:golder_octopus/features/credit/domain/use_cases/get_sender_curs_usecase.dart';
 import '../../../../common/state_managment/bloc_state.dart';
 import '../../../account_statement/data/models/currencies_response.dart';
 import '../../data/models/get_companies_response.dart';
@@ -32,6 +35,7 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
   final GetCreditTaxUsecase getCreditTaxUsecase;
   final NewCreditUsecase newCreditUsecase;
   final CurrenciesUsecase currenciesUsecase;
+  final GetSenderCursUsecase getSenderCursUsecase;
   CreditBloc({
     required this.outgoingCreditUsecase,
     required this.incomingCreditUsecase,
@@ -41,6 +45,7 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
     required this.getCreditTaxUsecase,
     required this.newCreditUsecase,
     required this.currenciesUsecase,
+    required this.getSenderCursUsecase,
   }) : super(CreditState()) {
     on<GetOutgoingCreditsEvent>(_onGetOutgoingCreditsEvent);
     on<GetIncomingCreditsEvent>(_onGetIncomingCreditsEvent);
@@ -48,10 +53,11 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
     on<GetIncomingCreditDetailsEvent>(_onGetIncomingCreditDetailsEvent);
     on<GetNewCreditDetailsEvent>(_onGetNewCreditDetailsEvent);
     on<GetCompaniesEvent>(_onGetCompaniesEvent);
-    on<GetCreditTargetsEvent>(_onGetCreditTargetsEvent);
-    on<GetCreditTaxEvent>(_onGetCreditTaxEvent);
+    on<GetCreditTargetsEvent>(_onGetCreditTargetsEvent, transformer: restartable());
+    on<GetCreditTaxEvent>(_onGetCreditTaxEvent, transformer: restartable());
     on<NewCreditEvent>(_onNewCreditEvent);
     on<GetCurrenciesEvent>(_onGetCurrenciesEvent);
+    on<GetSenderCursEvent>(_onGetSenderCursEvent);
   }
 
   Future<void> _onGetOutgoingCreditsEvent(GetOutgoingCreditsEvent event, Emitter<CreditState> emit) async {
@@ -124,11 +130,9 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
     result.fold(
       (left) {
         emit(state.copyWith(getCompaniesStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getCompaniesStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getCompaniesStatus: Status.success, getCompaniesResponse: right));
-        emit(state.copyWith(getCompaniesStatus: Status.initial));
       },
     );
   }
@@ -140,11 +144,9 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
     result.fold(
       (left) {
         emit(state.copyWith(getCreditTargetsStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getCreditTargetsStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getCreditTargetsStatus: Status.success, getCreditTargetsResponse: right));
-        emit(state.copyWith(getCreditTargetsStatus: Status.initial));
       },
     );
   }
@@ -156,11 +158,9 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
     result.fold(
       (left) {
         emit(state.copyWith(getCreditTaxStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getCreditTaxStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getCreditTaxStatus: Status.success, getCreditTaxResponse: right));
-        emit(state.copyWith(getCreditTaxStatus: Status.initial));
       },
     );
   }
@@ -172,11 +172,9 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
     result.fold(
       (left) {
         emit(state.copyWith(newCreditStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(newCreditStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(newCreditStatus: Status.success, newCreditResponse: right));
-        emit(state.copyWith(newCreditStatus: Status.initial));
       },
     );
   }
@@ -207,11 +205,22 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
     result.fold(
       (left) {
         emit(state.copyWith(getCurreciesStatus: Status.failure, errorMessage: left.message));
-        emit(state.copyWith(getCurreciesStatus: Status.initial));
       },
       (right) {
         emit(state.copyWith(getCurreciesStatus: Status.success, currenciesResponse: right));
-        emit(state.copyWith(getCurreciesStatus: Status.initial));
+      },
+    );
+  }
+
+  Future<void> _onGetSenderCursEvent(GetSenderCursEvent event, Emitter<CreditState> emit) async {
+    emit(state.copyWith(getSenderCursStatus: Status.loading));
+    final result = await getSenderCursUsecase();
+    result.fold(
+      (left) {
+        emit(state.copyWith(getSenderCursStatus: Status.failure, errorMessage: left.message));
+      },
+      (right) {
+        emit(state.copyWith(getSenderCursStatus: Status.success, getSenderCursResponse: right));
       },
     );
   }

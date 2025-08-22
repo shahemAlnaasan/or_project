@@ -85,7 +85,7 @@ class IncomingCreditDetailsDialog extends StatelessWidget {
               ),
               _infoRow(
                 label: LocaleKeys.credits_transfer_date.tr(),
-                value: DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate),
+                value: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.tryParse(transDetails.transdate)!),
                 context: context,
               ),
               _infoRow(label: LocaleKeys.credits_credit_number.tr(), value: transDetails.transnum, context: context),

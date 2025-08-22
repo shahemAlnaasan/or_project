@@ -1,3 +1,5 @@
+import 'package:golder_octopus/features/credit/data/models/get_sender_curs_response.dart';
+
 import '../../../../common/consts/typedef.dart';
 import '../../data/models/get_companies_response.dart';
 import '../../data/models/get_credit_targets_response.dart';
@@ -18,4 +20,5 @@ abstract class CreditRepository {
   DataResponse<GetCreditTargetsResponse> getCreditTargets({required GetCreditTargetsParams params});
   DataResponse<GetCreditTaxResponse> getCreditTax({required GetCreditTaxParams params});
   DataResponse<NewCreditResponse> newCredit({required NewCreditParams params});
+  DataResponse<GetSenderCursResponse> getSenderCurs();
 }

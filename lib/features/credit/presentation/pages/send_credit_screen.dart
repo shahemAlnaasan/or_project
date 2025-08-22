@@ -21,10 +21,7 @@ class _SendCreditScreenState extends State<SendCreditScreen> {
   final GlobalKey<SendCreditFormState> _formKey = GlobalKey();
 
   Future<void> _onRefresh(BuildContext context) async {
-    _formKey.currentState?.resetForm();
-    context.read<CreditBloc>()
-      ..add(GetCompaniesEvent())
-      ..add(GetCurrenciesEvent());
+    _formKey.currentState?.resetForm(context);
   }
 
   @override

@@ -12,6 +12,7 @@ class CreditState extends Equatable {
   final Status? getCreditTaxStatus;
   final Status? newCreditStatus;
   final Status? getCurreciesStatus;
+  final Status? getSenderCursStatus;
 
   final String? errorMessage;
   final List<OutgoingCreditResponse>? outgoingCredits;
@@ -23,6 +24,7 @@ class CreditState extends Equatable {
   final GetCreditTargetsResponse? getCreditTargetsResponse;
   final GetCreditTaxResponse? getCreditTaxResponse;
   final NewCreditResponse? newCreditResponse;
+  final GetSenderCursResponse? getSenderCursResponse;
 
   final bool isForDialog;
 
@@ -42,6 +44,7 @@ class CreditState extends Equatable {
     this.getCreditTaxStatus,
     this.newCreditStatus,
     this.getCurreciesStatus,
+    this.getSenderCursStatus,
 
     this.isForDialog = true,
     this.errorMessage,
@@ -52,6 +55,7 @@ class CreditState extends Equatable {
     this.getCreditTargetsResponse,
     this.getCreditTaxResponse,
     this.newCreditResponse,
+    this.getSenderCursResponse,
   });
 
   CreditState copyWith({
@@ -68,6 +72,7 @@ class CreditState extends Equatable {
     Status? getCreditTaxStatus,
     Status? newCreditStatus,
     Status? getCurreciesStatus,
+    Status? getSenderCursStatus,
 
     bool? isForDialog,
     List<OutgoingCreditResponse>? outgoingCredits,
@@ -79,6 +84,7 @@ class CreditState extends Equatable {
     GetCreditTaxResponse? getCreditTaxResponse,
     NewCreditResponse? newCreditResponse,
     CurrenciesResponse? currenciesResponse,
+    GetSenderCursResponse? getSenderCursResponse,
 
     String? fromDate,
     String? toDate,
@@ -94,6 +100,7 @@ class CreditState extends Equatable {
       getCreditTaxStatus: getCreditTaxStatus ?? this.getCreditTaxStatus,
       newCreditStatus: newCreditStatus ?? this.newCreditStatus,
       getCurreciesStatus: getCurreciesStatus ?? this.getCurreciesStatus,
+      getSenderCursStatus: getSenderCursStatus ?? this.getSenderCursStatus,
 
       isForDialog: isForDialog ?? this.isForDialog,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -105,6 +112,7 @@ class CreditState extends Equatable {
       getCreditTaxResponse: getCreditTaxResponse ?? this.getCreditTaxResponse,
       newCreditResponse: newCreditResponse ?? this.newCreditResponse,
       currenciesResponse: currenciesResponse ?? this.currenciesResponse,
+      getSenderCursResponse: getSenderCursResponse ?? this.getSenderCursResponse,
       fromDate: fromDate ?? this.fromDate,
       toDate: toDate ?? this.toDate,
     );
@@ -122,7 +130,7 @@ class CreditState extends Equatable {
     getCreditTaxStatus,
     newCreditStatus,
     getCurreciesStatus,
-
+    getSenderCursStatus,
     isForDialog,
     errorMessage,
     outgoingCredits,
@@ -133,6 +141,7 @@ class CreditState extends Equatable {
     getCreditTaxResponse,
     newCreditResponse,
     currenciesResponse,
+    getSenderCursResponse,
     fromDate,
     toDate,
   ];

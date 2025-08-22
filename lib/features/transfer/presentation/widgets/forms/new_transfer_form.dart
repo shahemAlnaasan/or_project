@@ -1,9 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:golder_octopus/features/main/presentation/pages/main_screen.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/state_managment/bloc_state.dart';
 import '../../../../../common/utils/device_info.dart';
@@ -75,7 +76,6 @@ class NewTransferFormState extends State<NewTransferForm> {
   FocusNode notesNode = FocusNode();
   FocusNode addressNode = FocusNode();
 
-  String? selectedDestination;
   Map<String, Target> targetsMap = {};
   Target? selectedTarget;
   CurrenciesResponse? currenciesResponse;
@@ -113,9 +113,6 @@ class NewTransferFormState extends State<NewTransferForm> {
     feesController = TextEditingController(text: widget.fees ?? "0");
     notesController = TextEditingController(text: widget.notes ?? '');
     addressController = TextEditingController(text: widget.address ?? '');
-
-    selectedDestination = widget.destination;
-    // selectedCurrency = widget.currency;
   }
 
   @override
@@ -131,7 +128,7 @@ class NewTransferFormState extends State<NewTransferForm> {
     super.dispose();
   }
 
-  void checkRequiredFieldsFilled(BuildContext context) {
+  void checkRequiredFieldsFilled(BuildContext context) async {
     if (selectedTarget != null && selectedCurrency != null && amountController.text.trim().isNotEmpty) {
       final GetTaxParams params = GetTaxParams(
         target: selectedTarget!.cid.contains('-') ? "" : selectedTarget!.cid,
@@ -143,6 +140,7 @@ class NewTransferFormState extends State<NewTransferForm> {
         rate: "1",
         apiInfo: selectedTarget!.cid.contains('-') ? selectedTarget!.cid : "",
       );
+
       context.read<TransferBloc>().add(GetTaxEvent(params: params));
     } else {
       setState(() {
@@ -151,7 +149,14 @@ class NewTransferFormState extends State<NewTransferForm> {
     }
   }
 
-  void resetForm() {
+  bool isEmptyOrZero(String? value) {
+    if (value == null || value.trim().isEmpty) return true;
+    final num? number = double.tryParse(value.replaceAll(',', '.'));
+    if (number == null || number <= 0) return true;
+    return false;
+  }
+
+  void resetForm(BuildContext context) {
     setState(() {
       beneficiaryNameController.clear();
       beneficiaryPhoneController.clear();
@@ -161,75 +166,104 @@ class NewTransferFormState extends State<NewTransferForm> {
       feesController.text = "0";
       notesController.clear();
       addressController.clear();
-      selectedTarget = null;
-      selectedDestination = null;
-      selectedCurrency = null;
       filteredCurrencies.clear();
+      selectedTarget = null;
+      selectedCurrency = null;
       currenciesResponse = null;
+      targetsMap = {};
     });
+    context.read<TransferBloc>().add(GetTransTargetsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TransferBloc, TransferState>(
-      listener: (context, state) async {
-        final blocContext = context;
-
-        if (state.newTransferStatus == Status.success && state.newTransResponse != null) {
-          TransDetailsParams params = TransDetailsParams(transNum: state.newTransResponse!.transnum);
-          context.read<TransferBloc>().add(GetTransDetailsEvent(params: params));
-          ToastificationDialog.showToast(
-            msg: "تم ارسال الحوالة",
-            context: context,
-            type: ToastificationType.success,
-            autoCloseDuration: Duration(seconds: 15),
-          );
-          Navigator.of(
-            rootNavigator: true,
-            context,
-          ).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const MainScreen()), (route) => false);
-        }
-        if (state.transDetailsStatus == Status.success && state.transDetailsResponse != null) {
-          await Future.delayed(Duration(seconds: 1));
-          ToastificationDialog.dismiss();
-          Navigator.of(blocContext, rootNavigator: true).push(
-            MaterialPageRoute(
-              builder: (context) => OutgoingTransferReceiptScreen(transDetailsResponse: state.transDetailsResponse!),
-            ),
-          );
-        }
-        if (state.newTransferStatus == Status.failure) {
-          ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.success);
-        }
-        if (state.getTransTargetsStatus == Status.success && state.getTransTargetsResponse != null) {
-          setState(() {
-            targetsMap = state.getTransTargetsResponse!.data;
-          });
-        }
-        if (state.getTaxStatus == Status.success && state.getTaxResponse != null) {
-          setState(() {
-            feesController.text = state.getTaxResponse!.data.tax.toString();
-          });
-        }
-        if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
-          final rawCurs = state.getTargetInfoResponse!.data.curs;
-          final allowedSymbols = rawCurs.split(',').where((e) => e.isNotEmpty).map((e) => e.toLowerCase()).toSet();
-
-          final allCurrencies = state.currenciesResponse?.curs ?? [];
-
-          final matchingCurrencies =
-              allCurrencies.where((cur) => allowedSymbols.contains(cur.currency.toLowerCase())).toList();
-
-          setState(() {
-            addressController.text = state.getTargetInfoResponse!.data.address;
-            currenciesResponse = state.currenciesResponse;
-            filteredCurrencies = matchingCurrencies;
-            if (!matchingCurrencies.contains(selectedCurrency)) {
-              selectedCurrency = null;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.newTransferStatus != curr.newTransferStatus,
+          listener: (context, state) {
+            if (state.newTransferStatus == Status.success && state.newTransResponse != null) {
+              ToastificationDialog.showToast(
+                msg: "تم ارسال الحوالة",
+                context: context,
+                type: ToastificationType.success,
+                autoCloseDuration: Duration(seconds: 15),
+              );
+              TransDetailsParams params = TransDetailsParams(transNum: state.newTransResponse!.transnum);
+              context.read<TransferBloc>().add(GetTransDetailsEvent(params: params));
             }
-          });
-        }
-      },
+            if (state.newTransferStatus == Status.failure) {
+              ToastificationDialog.showToast(
+                msg: state.errorMessage!,
+                context: context,
+                type: ToastificationType.success,
+              );
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.transDetailsStatus != curr.transDetailsStatus,
+          listener: (context, state) async {
+            final blocContext = context;
+
+            if (state.transDetailsStatus == Status.success && state.transDetailsResponse != null) {
+              await Future.delayed(Duration(seconds: 1));
+              ToastificationDialog.dismiss();
+              Navigator.of(blocContext, rootNavigator: true).push(
+                MaterialPageRoute(
+                  builder:
+                      (context) => OutgoingTransferReceiptScreen(transDetailsResponse: state.transDetailsResponse!),
+                ),
+              );
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.getTransTargetsStatus != curr.getTransTargetsStatus,
+          listener: (context, state) {
+            log("targets worked");
+            if (state.getTransTargetsStatus == Status.success && state.getTransTargetsResponse != null) {
+              setState(() {
+                targetsMap = state.getTransTargetsResponse!.data;
+              });
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.getTaxStatus != curr.getTaxStatus,
+          listener: (context, state) {
+            if (state.getTaxStatus == Status.success && state.getTaxResponse != null) {
+              log("trigger tax with value ${state.getTaxResponse!.data.tax}");
+              setState(() {
+                feesController.text = state.getTaxResponse!.data.tax.toString();
+              });
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.getCurreciesStatus != curr.getCurreciesStatus,
+          listener: (context, state) {
+            if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
+              final rawCurs = state.getTargetInfoResponse!.data.curs;
+              final allowedSymbols = rawCurs.split(',').where((e) => e.isNotEmpty).map((e) => e.toLowerCase()).toSet();
+
+              final allCurrencies = state.currenciesResponse?.curs ?? [];
+
+              final matchingCurrencies =
+                  allCurrencies.where((cur) => allowedSymbols.contains(cur.currency.toLowerCase())).toList();
+
+              setState(() {
+                addressController.text = state.getTargetInfoResponse!.data.address;
+                currenciesResponse = state.currenciesResponse;
+                filteredCurrencies = matchingCurrencies;
+                if (!matchingCurrencies.contains(selectedCurrency)) {
+                  selectedCurrency = null;
+                }
+              });
+            }
+          },
+        ),
+      ],
       child: Form(
         key: _formKey,
         child: Column(
@@ -268,7 +302,6 @@ class NewTransferFormState extends State<NewTransferForm> {
                   onChanged: (value) {
                     setState(() {
                       selectedTarget = value;
-                      selectedDestination = value?.cn;
                     });
                     final String cid =
                         selectedTarget!.cid.contains('-') ? selectedTarget!.cid.split('-').first : selectedTarget!.cid;
@@ -312,7 +345,9 @@ class NewTransferFormState extends State<NewTransferForm> {
                   focusNode: amountNode,
                   focusOn: senderNameNode,
                   keyboardType: TextInputType.number,
-                  onChanged: (p0) => checkRequiredFieldsFilled(context),
+                  onChanged: (p0) {
+                    checkRequiredFieldsFilled(context);
+                  },
                 );
               },
             ),
@@ -366,7 +401,7 @@ class NewTransferFormState extends State<NewTransferForm> {
                             final blocContext = context;
 
                             if (_formKey.currentState!.validate()) {
-                              if (feesController.text.trim().isEmpty || int.tryParse(feesController.text) == 0) {
+                              if (isEmptyOrZero(feesController.text)) {
                                 ToastificationDialog.showToast(
                                   msg: "لايمكن ان تكون الاجور 0",
                                   context: context,
@@ -395,6 +430,8 @@ class NewTransferFormState extends State<NewTransferForm> {
                                       apiInfo: isTargetGlobal ? selectedTarget!.cid : "",
                                     );
                                     blocContext.read<TransferBloc>().add(NewTransferEvent(params: params));
+                                    await Future.delayed(Duration(seconds: 1));
+                                    resetForm(context);
                                   },
                                 );
                               }

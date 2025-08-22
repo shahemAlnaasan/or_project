@@ -103,7 +103,7 @@ class IncomingTransferDetailsDialog extends StatelessWidget {
               ),
               _infoRow(
                 label: LocaleKeys.transfer_date_of_transfer.tr(),
-                value: DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate),
+                value: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.tryParse(transDetails.transdate)!),
                 context: context,
               ),
               _infoRow(label: LocaleKeys.transfer_transfer_number.tr(), value: transDetails.transnum, context: context),
@@ -159,7 +159,7 @@ $companyName
 المبلغ  :${transDetails.amount} ${transDetails.currencyName}
 العمولة  :${transDetails.fee} ${transDetails.currencyName}
 المرسل  :${transDetails.srcName}
-تاريخ التحويل   :${DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate)}
+تاريخ التحويل   :${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.tryParse(transDetails.transdate)!)}
 رقم الحوالة   :${transDetails.transnum}
 اسم المستفيد   :${transDetails.benifName}
 هاتف المستفيد   :${transDetails.benifPhone}

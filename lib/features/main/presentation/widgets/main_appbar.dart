@@ -21,6 +21,7 @@ AppBar mainAppbar(BuildContext context, {void Function()? onTap}) {
       child: Container(color: context.onPrimaryColor, height: 1),
     ),
     surfaceTintColor: context.background,
+    title: Image.asset(Assets.images.logo.companyLogo.path, scale: 26),
 
     automaticallyImplyLeading: false,
 
@@ -52,8 +53,8 @@ AppBar mainAppbar(BuildContext context, {void Function()? onTap}) {
           );
         },
       ),
-      buildActionButton(icon: Assets.images.navbar.exchange.path, onPressed: () {}, context: context),
-      buildActionButton(icon: Assets.images.navbar.exchange.path, onPressed: () {}, context: context),
+      // buildActionButton(icon: Assets.images.navbar.exchange.path, onPressed: () {}, context: context),
+      // buildActionButton(icon: Assets.images.navbar.exchange.path, onPressed: () {}, context: context),
     ],
     leading: Padding(
       padding: EdgeInsets.only(right: 15),
@@ -71,10 +72,14 @@ Widget buildActionButton({
   required void Function()? onPressed,
   required BuildContext context,
 }) {
-  return GestureDetector(
+  return InkWell(
+    hoverColor: Colors.transparent,
+    focusColor: Colors.transparent,
+    highlightColor: Colors.transparent,
+    splashColor: Colors.transparent,
     onTap: onPressed,
     child: Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(15),
       margin: EdgeInsets.symmetric(horizontal: 2),
       child: Image.asset(icon, scale: scale ?? 8.4, color: context.onPrimaryColor),
     ),

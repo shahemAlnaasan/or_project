@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:golder_octopus/features/credit/data/models/get_sender_curs_response.dart';
 import '../../../../core/config/endpoints.dart';
 import '../../../../core/network/api_handler.dart';
 import '../../../../core/network/exceptions.dart';
@@ -73,6 +74,13 @@ class CreditRemoteDataSource with ApiHandler {
       fromJson: (json) => GetCompaniesResponse.fromJson(json),
 
       validateApi: false,
+    );
+  }
+
+  Future<Either<Failure, GetSenderCursResponse>> getSenderCurs() async {
+    return handleApiCall(
+      apiCall: () => httpClient.post(AppEndPoint.getSenderCurs),
+      fromJson: (json) => GetSenderCursResponse.fromJson(json),
     );
   }
 }

@@ -50,8 +50,8 @@ class ModelUsage {
     data: Data(
       transnum: "transnum",
       password: "password",
-      transdate: DateTime.now(),
-      rcvdate: DateTime.now(),
+      transdate: "DateTime.now()",
+      rcvdate: "DateTime.now()",
       srcName: "srcName",
       srcBox: "srcBox",
       targetName: "targetName",

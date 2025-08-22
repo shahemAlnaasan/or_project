@@ -57,7 +57,7 @@ class _PayIncomingTransferScreenState extends State<PayIncomingTransferScreen> {
                     _buildRowData(lable: LocaleKeys.transfer_transaction_number.tr(), value: transDetails.transnum),
                     _buildRowData(
                       lable: LocaleKeys.credits_date_of_send.tr(),
-                      value: DateFormat('yyyy-MM-dd HH:mm:ss').format(transDetails.transdate),
+                      value: DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.tryParse(transDetails.transdate)!),
                     ),
                     SizedBox(height: 15),
                     _buildRowData(

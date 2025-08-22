@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +11,9 @@ import 'package:golder_octopus/features/transfer/data/models/get_sy_targets_resp
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_target_info_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/get_tax_usecase.dart';
 import 'package:golder_octopus/features/transfer/domain/use_cases/new_sy_transfer_usecase.dart';
+import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
 import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
+import 'package:golder_octopus/features/transfer/presentation/pages/outgoing_transfer_receipt_screen.dart';
 import 'package:toastification/toastification.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/widgets/app_text.dart';
@@ -69,6 +73,8 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
   List<Cur> currencies = [];
   Cur? selectedCurrency;
 
+  String recievedAmount = "0";
+
   String? singleSelectValidator(value) {
     if (value == null) {
       return LocaleKeys.transfer_this_field_cant_be_empty.tr();
@@ -103,17 +109,32 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
       if (reverse) {
         setState(() {
           double recievedAmount = double.tryParse(receivedAmountController.text) ?? 0.0;
-          amountController.text = (recievedAmount / price).toStringAsFixed(2);
+          amountController.text = _formatNumber((recievedAmount / price));
         });
       } else {
         setState(() {
           double amount = double.tryParse(amountController.text) ?? 0.0;
-          receivedAmountController.text = (amount * price).toStringAsFixed(2);
+          recievedAmount = (amount * price).toString();
+          receivedAmountController.text = _formatNumber((amount * price));
         });
       }
 
       exchangeController.text = price.toStringAsFixed(0);
     }
+  }
+
+  String _formatNumber(double value) {
+    if (value % 1 == 0) {
+      return value.toInt().toString();
+    }
+    return value.toStringAsFixed(3).replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
+  }
+
+  bool isEmptyOrZero(String? value) {
+    if (value == null || value.trim().isEmpty) return true;
+    final num? number = double.tryParse(value.replaceAll(',', '.'));
+    if (number == null || number <= 0) return true;
+    return false;
   }
 
   void checkRequiredFieldsFilled(BuildContext context) {
@@ -144,7 +165,7 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
     receivedAmountController = TextEditingController(text: widget.receivedAmount ?? '');
     exchangeController = TextEditingController(text: widget.exchange ?? '');
     amountController = TextEditingController(text: widget.amount ?? '');
-    feesController = TextEditingController(text: widget.fees ?? '');
+    feesController = TextEditingController(text: widget.fees ?? '0');
     notesController = TextEditingController(text: widget.notes ?? '');
     addressController = TextEditingController(text: widget.address ?? '');
   }
@@ -160,201 +181,264 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
     super.dispose();
   }
 
-  void resetForm() {
+  void resetForm(BuildContext context) {
     setState(() {
       beneficiaryNameController.clear();
       beneficiaryPhoneController.clear();
       amountController.clear();
+      receivedAmountController.clear();
+      exchangeController.clear();
       feesController.text = "0";
       notesController.clear();
       addressController.clear();
+      getSyPricesResponse = null;
+      getSyTargetsResponse = null;
+      targets = [];
+      selectedTarget = null;
+      currencies = [];
+      selectedCurrency = null;
     });
+    context.read<TransferBloc>()
+      ..add(GetSyTargetsEvent())
+      ..add(GetSyPricesEvent())
+      ..add(GetCurrenciesEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TransferBloc, TransferState>(
-      listener: (context, state) {
-        if (state.getSyPricesStatus == Status.failure) {
-          ToastificationDialog.showToast(
-            msg: state.errorMessage ?? "error",
-            context: context,
-            type: ToastificationType.error,
-          );
-        }
-        if (state.getSyPricesStatus == Status.success && state.getSyPricesResponse != null) {
-          setState(() {
-            getSyPricesResponse = state.getSyPricesResponse;
-          });
-        }
-        if (state.getSyTargetsStatus == Status.success && state.getSyTargetsResponse != null) {
-          setState(() {
-            getSyTargetsResponse = state.getSyTargetsResponse;
-            targets = getSyTargetsResponse?.targets.values.toList() ?? [];
-          });
-        }
-        if (state.getSyTaxStatus == Status.success && state.getSyTaxResponse != null) {
-          setState(() {
-            feesController.text = state.getSyTaxResponse!.data.tax.toString();
-          });
-        }
-        if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
-          final rawCurs = state.getTargetInfoResponse!.data.curs;
-          final allowedSymbols = rawCurs.split(',').where((e) => e.isNotEmpty).map((e) => e.toLowerCase()).toSet();
-
-          final allCurrencies = state.currenciesResponse?.curs ?? [];
-
-          final matchingCurrencies =
-              allCurrencies.where((cur) => allowedSymbols.contains(cur.currency.toLowerCase())).toList();
-
-          setState(() {
-            addressController.text = state.getTargetInfoResponse!.data.address;
-            currencies = state.currenciesResponse!.curs;
-            if (!matchingCurrencies.contains(selectedCurrency)) {
-              selectedCurrency = null;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.getSyPricesStatus != curr.getSyPricesStatus,
+          listener: (context, state) {
+            if (state.getSyPricesStatus == Status.success && state.getSyPricesResponse != null) {
+              setState(() {
+                getSyPricesResponse = state.getSyPricesResponse;
+              });
             }
-          });
-        }
-        if (state.newSyTransferStatus == Status.success && state.newSyTransferResponse != null) {}
-      },
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              buildFieldTitle(title: LocaleKeys.transfer_beneficiary_name.tr()),
-              buildTextField(hint: LocaleKeys.transfer_beneficiary_name.tr(), controller: beneficiaryNameController),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_beneficiary_phone.tr()),
-              buildTextField(hint: LocaleKeys.transfer_beneficiary_phone.tr(), controller: beneficiaryPhoneController),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_destination.tr()),
-              CustomDropdown<Target>(
-                menuList: targets,
-                singleSelectValidator: (value) => singleSelectValidator(value),
-                enableSearch: true,
-                menuMaxHeight: 250,
-                initaValue: selectedTarget,
-                compareFn: (a, b) => a.cid == b.cid,
-                labelText: LocaleKeys.transfer_destination.tr(),
-                hintText: LocaleKeys.transfer_destination.tr(),
-                itemAsString: (target) => target.cn,
-                onChanged: (value) {
-                  setState(() {
-                    selectedTarget = value!;
-                    setAmountsAndExchangePriceAndFees(context);
-                  });
-                  final String cid = selectedTarget!.cid;
-                  final GetTargetInfoParams params = GetTargetInfoParams(id: cid, api: "false");
-                  context.read<TransferBloc>().add(GetTargetInfoEvent(params: params));
-                  selectedCurrency = null;
-                },
-              ),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_transfer_currency.tr()),
-              CustomDropdown<Cur>(
-                menuList: currencies,
-                singleSelectValidator: (value) => singleSelectValidator(value),
-                initaValue: selectedCurrency,
-                compareFn: (a, b) => a.currency == b.currency,
-                labelText: LocaleKeys.transfer_transfer_currency.tr(),
-                hintText: LocaleKeys.transfer_transfer_currency.tr(),
-                itemAsString: (cur) => cur.currencyName,
-                onChanged: (cur) {
-                  setState(() {
-                    selectedCurrency = cur;
-                    setAmountsAndExchangePriceAndFees(context);
-                  });
-                },
-              ),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_money_amount.tr()),
-              buildTextField(
-                hint: LocaleKeys.transfer_money_amount.tr(),
-                controller: amountController,
-                onChanged: (p0) => setAmountsAndExchangePriceAndFees(context),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_recived_amount.tr()),
-              buildTextField(
-                hint: LocaleKeys.transfer_recived_amount.tr(),
-                controller: receivedAmountController,
-                onChanged: (p0) => setAmountsAndExchangePriceAndFees(context, reverse: true),
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_excange.tr()),
-              buildTextField(
-                hint: LocaleKeys.transfer_excange.tr(),
-                controller: exchangeController,
-                readOnly: true,
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_fees.tr()),
-              buildTextField(
-                hint: LocaleKeys.transfer_fees.tr(),
-                controller: feesController,
-                readOnly: true,
-                keyboardType: TextInputType.number,
-              ),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_address.tr()),
-              buildTextField(hint: LocaleKeys.transfer_address.tr(), controller: addressController, mxLine: 3),
-              SizedBox(height: 3),
-              buildFieldTitle(title: LocaleKeys.transfer_notes.tr()),
-              buildTextField(
-                hint: LocaleKeys.transfer_notes.tr(),
-                controller: notesController,
-                mxLine: 3,
-                needValidation: false,
-              ),
-              SizedBox(height: 3),
-              LargeButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    if (int.tryParse(amountController.text) == 0 ||
-                        int.tryParse(receivedAmountController.text) == 0 ||
-                        int.tryParse(exchangeController.text) == 0) {
-                      ToastificationDialog.showToast(
-                        msg: "خطأ في ادخال البيانات",
-                        context: context,
-                        type: ToastificationType.error,
-                      );
-                      return;
-                    }
-                    if (int.tryParse(feesController.text) == 0) {
-                      ToastificationDialog.showToast(
-                        msg: "لايمكن ان تكون الاجور 0",
-                        context: context,
-                        type: ToastificationType.error,
-                      );
-                      return;
-                    }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.getSyTargetsStatus != curr.getSyTargetsStatus,
+          listener: (context, state) {
+            if (state.getSyTargetsStatus == Status.success && state.getSyTargetsResponse != null) {
+              setState(() {
+                getSyTargetsResponse = state.getSyTargetsResponse;
+                targets = getSyTargetsResponse?.targets.values.toList() ?? [];
+              });
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.getSyTaxStatus != curr.getSyTaxStatus,
+          listener: (context, state) {
+            if (state.getSyTaxStatus == Status.success && state.getSyTaxResponse != null) {
+              setState(() {
+                feesController.text = state.getSyTaxResponse!.data.tax.toString();
+              });
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.getCurreciesStatus != curr.getCurreciesStatus,
+          listener: (context, state) {
+            if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
+              setState(() {
+                currencies =
+                    state.currenciesResponse!.curs
+                        .where(
+                          (cur) =>
+                              cur.currency == "usd" ||
+                              cur.currency == "eur" ||
+                              cur.currency == "tl" ||
+                              cur.currency == "يورو" ||
+                              cur.currency == "ليرة تركية" ||
+                              cur.currency == "ليرة سورية",
+                        )
+                        .toList();
+              });
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.newSyTransferStatus != curr.newSyTransferStatus,
+          listener: (context, state) {
+            if (state.newSyTransferStatus == Status.success && state.newSyTransferResponse != null) {
+              ToastificationDialog.showToast(
+                msg: "تم ارسال الحوالة",
+                context: context,
+                type: ToastificationType.success,
+                autoCloseDuration: Duration(seconds: 15),
+              );
+              TransDetailsParams params = TransDetailsParams(transNum: state.newTransResponse!.transnum);
+              context.read<TransferBloc>().add(GetTransDetailsEvent(params: params));
+            }
+            if (state.newSyTransferStatus == Status.failure) {
+              ToastificationDialog.showToast(
+                msg: state.errorMessage!,
+                context: context,
+                type: ToastificationType.success,
+              );
+            }
+          },
+        ),
+        BlocListener<TransferBloc, TransferState>(
+          listenWhen: (prev, curr) => prev.transDetailsStatus != curr.transDetailsStatus,
+          listener: (context, state) async {
+            final blocContext = context;
+
+            if (state.transDetailsStatus == Status.success && state.transDetailsResponse != null) {
+              await Future.delayed(Duration(seconds: 1));
+              ToastificationDialog.dismiss();
+              Navigator.of(blocContext, rootNavigator: true).push(
+                MaterialPageRoute(
+                  builder:
+                      (context) => OutgoingTransferReceiptScreen(transDetailsResponse: state.transDetailsResponse!),
+                ),
+              );
+            }
+          },
+        ),
+      ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 8,
+          children: [
+            buildFieldTitle(title: LocaleKeys.transfer_beneficiary_name.tr()),
+            buildTextField(hint: LocaleKeys.transfer_beneficiary_name.tr(), controller: beneficiaryNameController),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_beneficiary_phone.tr()),
+            buildTextField(hint: LocaleKeys.transfer_beneficiary_phone.tr(), controller: beneficiaryPhoneController),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_destination.tr()),
+            CustomDropdown<Target>(
+              menuList: targets,
+              singleSelectValidator: (value) => singleSelectValidator(value),
+              enableSearch: true,
+              menuMaxHeight: 250,
+              initaValue: selectedTarget,
+              compareFn: (a, b) => a.cid == b.cid,
+              labelText: LocaleKeys.transfer_destination.tr(),
+              hintText: LocaleKeys.transfer_destination.tr(),
+              itemAsString: (target) => target.cn,
+              onChanged: (value) {
+                setState(() {
+                  selectedTarget = value!;
+                  setAmountsAndExchangePriceAndFees(context);
+                });
+                final String cid = selectedTarget!.cid;
+                final GetTargetInfoParams params = GetTargetInfoParams(id: cid, api: "false");
+                context.read<TransferBloc>().add(GetTargetInfoEvent(params: params));
+                selectedCurrency = null;
+              },
+            ),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_transfer_currency.tr()),
+            CustomDropdown<Cur>(
+              menuList: currencies,
+              singleSelectValidator: (value) => singleSelectValidator(value),
+              initaValue: selectedCurrency,
+              compareFn: (a, b) => a.currency == b.currency,
+              labelText: LocaleKeys.transfer_transfer_currency.tr(),
+              hintText: LocaleKeys.transfer_transfer_currency.tr(),
+              itemAsString: (cur) => cur.currencyName,
+              onChanged: (cur) {
+                setState(() {
+                  selectedCurrency = cur;
+                  setAmountsAndExchangePriceAndFees(context);
+                });
+              },
+            ),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_money_amount.tr()),
+            buildTextField(
+              hint: LocaleKeys.transfer_money_amount.tr(),
+              controller: amountController,
+              onChanged: (p0) => setAmountsAndExchangePriceAndFees(context),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_recived_amount.tr()),
+            buildTextField(
+              hint: LocaleKeys.transfer_recived_amount.tr(),
+              controller: receivedAmountController,
+              onChanged: (p0) => setAmountsAndExchangePriceAndFees(context, reverse: true),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_excange.tr()),
+            buildTextField(
+              hint: LocaleKeys.transfer_excange.tr(),
+              controller: exchangeController,
+              readOnly: true,
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_fees.tr()),
+            buildTextField(
+              hint: LocaleKeys.transfer_fees.tr(),
+              controller: feesController,
+              readOnly: true,
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_address.tr()),
+            buildTextField(hint: LocaleKeys.transfer_address.tr(), controller: addressController, mxLine: 3),
+            SizedBox(height: 3),
+            buildFieldTitle(title: LocaleKeys.transfer_notes.tr()),
+            buildTextField(
+              hint: LocaleKeys.transfer_notes.tr(),
+              controller: notesController,
+              mxLine: 3,
+              needValidation: false,
+            ),
+            SizedBox(height: 3),
+            LargeButton(
+              onPressed: () async {
+                final blocContext = context;
+
+                if (_formKey.currentState!.validate()) {
+                  if (isEmptyOrZero(amountController.text) ||
+                      isEmptyOrZero(receivedAmountController.text) ||
+                      isEmptyOrZero(exchangeController.text)) {
+                    ToastificationDialog.showToast(
+                      msg: "خطأ في ادخال البيانات",
+                      context: context,
+                      type: ToastificationType.error,
+                    );
+                    return;
+                  }
+                  if (feesController.text.trim().isEmpty || int.tryParse(feesController.text) == 0) {
+                    ToastificationDialog.showToast(
+                      msg: "لايمكن ان تكون الاجور 0",
+                      context: context,
+                      type: ToastificationType.error,
+                    );
+                  } else {
                     NewSyTransferParams params = NewSyTransferParams(
                       target: int.tryParse(selectedTarget!.cid) ?? 0,
                       rcvname: beneficiaryNameController.text,
                       rcvphone: beneficiaryPhoneController.text,
-                      amount: int.tryParse(amountController.text) ?? 0,
+                      amount: double.tryParse(amountController.text) ?? 0,
                       currency: selectedCurrency!.currency,
-                      amountSy: int.tryParse(receivedAmountController.text) ?? 0,
+                      amountSy: double.tryParse(recievedAmount) ?? 0,
                       isSy: "true",
                       cut: int.tryParse(exchangeController.text) ?? 0,
                       api: "false",
                     );
                     context.read<TransferBloc>().add(NewSyTransferEvent(params: params));
+                    await Future.delayed(Duration(seconds: 1));
+                    resetForm(blocContext);
                   }
-                },
-                text: LocaleKeys.transfer_send.tr(),
-                backgroundColor: context.primaryContainer,
-                circularRadius: 12,
-              ),
-            ],
-          ),
+                }
+              },
+              text: LocaleKeys.transfer_send.tr(),
+              backgroundColor: context.primaryContainer,
+              circularRadius: 12,
+            ),
+          ],
         ),
       ),
     );

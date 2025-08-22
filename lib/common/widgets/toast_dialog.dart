@@ -23,7 +23,7 @@ class ToastificationDialog {
         onCloseButtonTap: (_) => _isShowing = false,
       ),
       title: Text(msg, maxLines: 3, textAlign: TextAlign.center),
-      autoCloseDuration: autoCloseDuration ?? const Duration(milliseconds: 3000),
+      autoCloseDuration: autoCloseDuration ?? const Duration(seconds: 5),
       animationDuration: const Duration(milliseconds: 150),
       applyBlurEffect: true,
       pauseOnHover: true,
