@@ -63,6 +63,7 @@ dependencies:
   google_mlkit_barcode_scanning: ^0.14.1
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.6
+  qr_flutter: ^4.1.0
   
 
 

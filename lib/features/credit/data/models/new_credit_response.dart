@@ -9,7 +9,7 @@ NewCreditResponse newCreditResponseFromJson(String str) => NewCreditResponse.fro
 String newCreditResponseToJson(NewCreditResponse data) => json.encode(data.toJson());
 
 class NewCreditResponse {
-  int status;
+  String status;
   String transnum;
   String password;
   String externalNum;
@@ -17,10 +17,10 @@ class NewCreditResponse {
   NewCreditResponse({required this.status, required this.transnum, required this.password, required this.externalNum});
 
   factory NewCreditResponse.fromJson(Map<String, dynamic> json) => NewCreditResponse(
-    status: json["status"],
-    transnum: json["transnum"],
-    password: json["password"],
-    externalNum: json["external_num"],
+    status: json["status"].toString(),
+    transnum: json["transnum"].toString(),
+    password: json["password"].toString(),
+    externalNum: json["external_num"].toString(),
   );
 
   Map<String, dynamic> toJson() => {

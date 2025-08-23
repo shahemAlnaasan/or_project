@@ -153,6 +153,7 @@ class _OutgoingTransferScreenState extends State<OutgoingTransferScreen> {
                 ),
               ),
       child: BlocListener<TransferBloc, TransferState>(
+        listenWhen: (prev, curr) => prev.transDetailsStatus != curr.transDetailsStatus,
         listener: (context, state) {
           if (state.transDetailsStatus == Status.loading) {
             ToastificationDialog.showLoading(context: context);

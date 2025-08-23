@@ -265,6 +265,10 @@ class SendCreditFormState extends State<SendCreditForm> {
                 onChanged: (company) {
                   setState(() {
                     selectedCompany = company!;
+                    selectedCurrency = null;
+                    amountController.clear();
+                    selectedBox = null;
+                    boxes = [];
                     checkRequiredFieldsFilled(context);
                   });
                 },
@@ -358,38 +362,30 @@ class SendCreditFormState extends State<SendCreditForm> {
                               final blocContext = context;
 
                               if (_formKey.currentState!.validate()) {
-                                if (feesController.text.trim().isEmpty || int.tryParse(feesController.text) == 0) {
-                                  ToastificationDialog.showToast(
-                                    msg: "لايمكن ان تكون الاجور 0",
-                                    context: context,
-                                    type: ToastificationType.error,
-                                  );
-                                } else {
-                                  _showDetailsDialog(
-                                    blocContext,
-                                    senderName: "${selectedBox!.cn} ${selectedCurrency!.currencyName}",
-                                    amount: amountController.text,
-                                    onPressed: () async {
-                                      final String deviceType = await DeviceInfo.deviceType();
-                                      final String? deviceIp = await DeviceInfo.getDeviceIp();
-                                      // ignore: unused_local_variable
-                                      final NewCreditParams params = NewCreditParams(
-                                        company: selectedCompany!.id,
-                                        amount: amountController.text.trim(),
-                                        currency: selectedCurrency!.currency,
-                                        targetId: selectedBox!.cid,
-                                        targetName: selectedBox!.cn,
-                                        ipInfo: deviceIp ?? "",
-                                        deviceInfo: deviceType,
-                                      );
-                                      // ignore: use_build_context_synchronously
-                                      blocContext.read<CreditBloc>().add(NewCreditEvent(params: params));
-                                      await Future.delayed(Duration(seconds: 1));
-                                      // ignore: use_build_context_synchronously
-                                      resetForm(blocContext);
-                                    },
-                                  );
-                                }
+                                _showDetailsDialog(
+                                  blocContext,
+                                  senderName: "${selectedBox!.cn} ${selectedCurrency!.currencyName}",
+                                  amount: amountController.text,
+                                  onPressed: () async {
+                                    final String deviceType = await DeviceInfo.deviceType();
+                                    final String? deviceIp = await DeviceInfo.getDeviceIp();
+                                    // ignore: unused_local_variable
+                                    final NewCreditParams params = NewCreditParams(
+                                      company: selectedCompany!.id,
+                                      amount: amountController.text.trim(),
+                                      currency: selectedCurrency!.currency,
+                                      targetId: selectedBox!.cid,
+                                      targetName: selectedBox!.cn,
+                                      ipInfo: deviceIp ?? "",
+                                      deviceInfo: deviceType,
+                                    );
+                                    // ignore: use_build_context_synchronously
+                                    blocContext.read<CreditBloc>().add(NewCreditEvent(params: params));
+                                    await Future.delayed(Duration(seconds: 1));
+                                    // ignore: use_build_context_synchronously
+                                    resetForm(blocContext);
+                                  },
+                                );
                               }
                             },
                     text: LocaleKeys.transfer_send.tr(),

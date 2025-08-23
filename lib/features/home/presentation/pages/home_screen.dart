@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:golder_octopus/common/consts/app_consts.dart';
+import 'package:golder_octopus/common/consts/app_keys.dart';
+import 'package:golder_octopus/common/extentions/navigation_extensions.dart';
+import 'package:golder_octopus/core/datasources/hive_helper.dart';
 import 'package:golder_octopus/core/di/injection.dart';
+import 'package:golder_octopus/features/auth/presentation/pages/login_screen.dart';
 import '../../../../common/consts/model_usage.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/state_managment/bloc_state.dart';
@@ -23,6 +28,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   CurrenciesResponse? currenciesResponse;
+  final bool isFirstLogin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +38,21 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocListener<HomeBloc, HomeState>(
         listener: (context, state) {
           if (state.homeStatus == Status.failure) {
-            ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
-          }
-          if (state.currenciesStatus == Status.success) {
-            setState(() {
-              currenciesResponse = state.currencies;
-            });
+            if (state.errorMessage! == AppConsts.networkError) {
+              ToastificationDialog.showToast(
+                msg: state.errorMessage!,
+                context: context,
+                type: ToastificationType.error,
+              );
+            } else {
+              HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasLogin, value: false);
+              HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasVerifyLogin, value: false);
+              context.pushAndRemoveUntil(LoginScreen());
+              Navigator.of(
+                context,
+                rootNavigator: true,
+              ).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
+            }
           }
         },
         child: Scaffold(
@@ -95,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                           },
                         ),
-                        QuickActionsGrid(currenciesResponse: currenciesResponse),
+                        QuickActionsGrid(),
                         SizedBox(height: 3),
                         NewsSlider(),
                         SizedBox(height: 20),

@@ -118,19 +118,33 @@ class _IncomingTransferScreenState extends State<IncomingTransferScreen> {
     return BlocProvider(
       lazy: false,
       create: (context) => getIt<TransferBloc>()..add(GetIncomingTransfersEvent()),
-      child: BlocListener<TransferBloc, TransferState>(
-        listener: (context, state) {
-          if (state.incomingTransferStatus == Status.failure) {
-            ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
-          }
-          if (state.incomingTransDetailsStatus == Status.loading) {
-            ToastificationDialog.showLoading(context: context);
-          }
-          if (state.incomingTransDetailsStatus == Status.success && state.incomingTransDetailsResponse != null) {
-            ToastificationDialog.dismiss();
-            _showDetailsDialog(context, transDetailsResponse: state.incomingTransDetailsResponse!);
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<TransferBloc, TransferState>(
+            listenWhen: (prev, curr) => prev.incomingTransDetailsStatus != curr.incomingTransDetailsStatus,
+            listener: (context, state) {
+              if (state.incomingTransDetailsStatus == Status.loading) {
+                ToastificationDialog.showLoading(context: context);
+              }
+              if (state.incomingTransDetailsStatus == Status.success && state.incomingTransDetailsResponse != null) {
+                ToastificationDialog.dismiss();
+                _showDetailsDialog(context, transDetailsResponse: state.incomingTransDetailsResponse!);
+              }
+            },
+          ),
+          BlocListener<TransferBloc, TransferState>(
+            listenWhen: (prev, curr) => prev.incomingTransferStatus != curr.incomingTransferStatus,
+            listener: (context, state) {
+              if (state.incomingTransferStatus == Status.failure) {
+                ToastificationDialog.showToast(
+                  msg: state.errorMessage!,
+                  context: context,
+                  type: ToastificationType.error,
+                );
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           backgroundColor: context.background,
           body: Builder(

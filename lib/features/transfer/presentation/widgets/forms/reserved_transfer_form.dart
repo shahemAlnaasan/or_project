@@ -119,7 +119,7 @@ class _ReservedTransferFormState extends State<ReservedTransferForm> {
             });
           }
           if (state.getTargetInfoStatus == Status.success && state.getTargetInfoResponse != null) {
-            final rawCurs = state.getTargetInfoResponse!.data.curs;
+            final rawCurs = state.getTargetInfoResponse!.data?.curs ?? "";
             final allowedSymbols = rawCurs.split(',').where((e) => e.isNotEmpty).map((e) => e.toLowerCase()).toSet();
 
             final allCurrencies = state.currenciesResponse?.curs ?? [];

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:golder_octopus/common/consts/app_consts.dart';
 
 import 'exceptions.dart';
 
@@ -9,7 +10,7 @@ class ExceptionHandler {
     if (error is DioException) {
       return _handleDioException(error);
     } else if (error is SocketException) {
-      return const NetworkFailure(message: "خطأ بالاتصال، يرجى المحاولة مجددًا");
+      return const NetworkFailure(message: AppConsts.networkError);
     } else {
       return Failure(message: error.toString());
     }
@@ -19,8 +20,9 @@ class ExceptionHandler {
 
   static Failure _handleDioException(DioException error) {
     // Handle connection-related errors first
-    if (error.type == DioExceptionType.connectionError || error.error is SocketException)
-      return const NetworkFailure(message: "خطأ بالاتصال، يرجى المحاولة مجددًا");
+    if (error.type == DioExceptionType.connectionError || error.error is SocketException) {
+      return const NetworkFailure(message: AppConsts.networkError);
+    }
 
     // Handle specific error types
     switch (error.type) {
@@ -28,16 +30,16 @@ class ExceptionHandler {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.connectionError:
-        return const NetworkFailure(message: "خطأ بالاتصال، يرجى المحاولة مجددًا");
+        return const NetworkFailure(message: AppConsts.networkError);
       case DioExceptionType.cancel:
-        return const NetworkFailure(message: "خطأ بالاتصال، يرجى المحاولة مجددًا");
+        return const NetworkFailure(message: AppConsts.networkError);
       case DioExceptionType.badResponse:
         return _mapErrorToFailure(error.response!);
       case DioExceptionType.badCertificate:
-        return const NetworkFailure(message: "خطأ بالاتصال، يرجى المحاولة مجددًا");
+        return const NetworkFailure(message: AppConsts.networkError);
       case DioExceptionType.unknown:
         return NetworkFailure(
-          message: _sanitizeErrorMessage(error.message ?? "خطأ بالاتصال، يرجى المحاولة مجددًا"),
+          message: _sanitizeErrorMessage(error.message ?? AppConsts.networkError),
           statusCode: error.response?.statusCode,
         );
     }
@@ -45,7 +47,7 @@ class ExceptionHandler {
 
   static Failure _mapErrorToFailure(Response response) {
     // Handle HTML responses (common with VPNs/proxies)
-    if (_isHtmlResponse(response)) return const NetworkFailure(message: "خطأ بالاتصال، يرجى المحاولة مجددًا");
+    if (_isHtmlResponse(response)) return const NetworkFailure(message: AppConsts.networkError);
 
     // Handle empty responses
     if (response.data == null) return ServerFailure(message: 'Empty Server Response', statusCode: response.statusCode);

@@ -45,8 +45,6 @@ class CreditRemoteDataSource with ApiHandler {
     return handleApiCall(
       apiCall: () => httpClient.post(AppEndPoint.newCredit, data: params.getBody()),
       fromJson: (json) => NewCreditResponse.fromJson(json),
-
-      validateApi: false,
     );
   }
 

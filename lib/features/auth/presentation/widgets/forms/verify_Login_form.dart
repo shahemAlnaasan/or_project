@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/extentions/navigation_extensions.dart';
 import '../../../../../common/state_managment/bloc_state.dart';
@@ -92,6 +93,14 @@ class _NewTransferFormState extends State<VerifyLoginForm> {
                         child: Image.asset(Assets.images.logo.appStoreLogo.path, scale: 15),
                       ),
                     ],
+                  ),
+                  SizedBox(height: 10),
+                  QrImageView(
+                    data: state.key ?? "",
+                    version: QrVersions.auto,
+                    size: 200.0,
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
                   ),
                   SizedBox(height: 10),
 

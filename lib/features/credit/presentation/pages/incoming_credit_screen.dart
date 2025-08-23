@@ -105,24 +105,38 @@ class _IncomingCreditScreenState extends State<IncomingCreditScreen> {
     return BlocProvider(
       lazy: false,
       create: (context) => getIt<CreditBloc>()..add(GetIncomingCreditsEvent(params: params)),
-      child: BlocListener<CreditBloc, CreditState>(
-        listener: (context, state) {
-          if (state.getIncomingCreditsStatus == Status.failure) {
-            ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
-          }
-          if (state.incomingCreditDetailsStatus == Status.loading) {
-            ToastificationDialog.showLoading(context: context);
-          }
-          if (state.incomingCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
-            if (state.isForDialog) {
-              ToastificationDialog.dismiss();
-              _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
-            } else {
-              ToastificationDialog.dismiss();
-              context.push(ReceiveCreditScreen(transDetailsResponse: state.creditDetailsResponse!));
-            }
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<CreditBloc, CreditState>(
+            listenWhen: (prev, curr) => prev.getIncomingCreditsStatus != curr.getIncomingCreditsStatus,
+            listener: (context, state) {
+              if (state.getIncomingCreditsStatus == Status.failure) {
+                ToastificationDialog.showToast(
+                  msg: state.errorMessage!,
+                  context: context,
+                  type: ToastificationType.error,
+                );
+              }
+            },
+          ),
+          BlocListener<CreditBloc, CreditState>(
+            listenWhen: (prev, curr) => prev.incomingCreditDetailsStatus != curr.incomingCreditDetailsStatus,
+            listener: (context, state) {
+              if (state.incomingCreditDetailsStatus == Status.loading) {
+                ToastificationDialog.showLoading(context: context);
+              }
+              if (state.incomingCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
+                if (state.isForDialog) {
+                  ToastificationDialog.dismiss();
+                  _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
+                } else {
+                  ToastificationDialog.dismiss();
+                  context.push(ReceiveCreditScreen(transDetailsResponse: state.creditDetailsResponse!));
+                }
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           backgroundColor: context.background,
           body: Builder(

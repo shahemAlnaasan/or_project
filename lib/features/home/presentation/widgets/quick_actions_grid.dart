@@ -4,7 +4,6 @@ import 'package:golder_octopus/features/transfer/presentation/pages/forms_screen
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/navigation_extensions.dart';
 import '../../../../common/widgets/app_text.dart';
-import '../../../account_statement/data/models/currencies_response.dart';
 import '../../../account_statement/presentation/pages/account_statement_screen.dart';
 import '../../../credit/presentation/pages/incoming_credit_screen.dart';
 import '../../../credit/presentation/pages/outgoing_credit_screen.dart';
@@ -20,9 +19,7 @@ import '../../../../generated/assets.gen.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class QuickActionsGrid extends StatefulWidget {
-  final CurrenciesResponse? currenciesResponse;
-
-  const QuickActionsGrid({super.key, required this.currenciesResponse});
+  const QuickActionsGrid({super.key});
 
   @override
   State<QuickActionsGrid> createState() => _QuickActionsGridState();

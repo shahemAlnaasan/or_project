@@ -10,14 +10,19 @@ String getTargetInfoResponseToJson(GetTargetInfoResponse data) => json.encode(da
 
 class GetTargetInfoResponse {
   int status;
-  Data data;
+  Data? data;
 
-  GetTargetInfoResponse({required this.status, required this.data});
+  GetTargetInfoResponse({required this.status, this.data});
 
-  factory GetTargetInfoResponse.fromJson(Map<String, dynamic> json) =>
-      GetTargetInfoResponse(status: json["status"], data: Data.fromJson(json["data"]));
+  factory GetTargetInfoResponse.fromJson(Map<String, dynamic> json) {
+    final rawData = json["data"];
+    return GetTargetInfoResponse(
+      status: json["status"],
+      data: (rawData is Map<String, dynamic>) ? Data.fromJson(rawData) : null,
+    );
+  }
 
-  Map<String, dynamic> toJson() => {"status": status, "data": data.toJson()};
+  Map<String, dynamic> toJson() => {"status": status, "data": data?.toJson() ?? {}};
 }
 
 class Data {

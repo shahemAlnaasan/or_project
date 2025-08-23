@@ -14,6 +14,7 @@ import 'package:golder_octopus/features/transfer/domain/use_cases/new_sy_transfe
 import 'package:golder_octopus/features/transfer/domain/use_cases/trans_details_usecase.dart';
 import 'package:golder_octopus/features/transfer/presentation/bloc/transfer_bloc.dart';
 import 'package:golder_octopus/features/transfer/presentation/pages/outgoing_transfer_receipt_screen.dart';
+import 'package:golder_octopus/features/transfer/presentation/widgets/dialogs/confirm_transfer_dialog.dart';
 import 'package:toastification/toastification.dart';
 import '../../../../../common/extentions/colors_extension.dart';
 import '../../../../../common/widgets/app_text.dart';
@@ -120,6 +121,12 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
       }
 
       exchangeController.text = price.toStringAsFixed(0);
+    } else {
+      if (reverse) {
+        amountController.clear();
+      } else {
+        receivedAmountController.clear();
+      }
     }
   }
 
@@ -135,6 +142,20 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
     final num? number = double.tryParse(value.replaceAll(',', '.'));
     if (number == null || number <= 0) return true;
     return false;
+  }
+
+  void _showDetailsDialog(
+    BuildContext context, {
+    required String senderName,
+    required String amount,
+    required void Function()? onPressed,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ConfirmTransferDialog(senderName: senderName, amount: amount, onPressed: onPressed);
+      },
+    );
   }
 
   void checkRequiredFieldsFilled(BuildContext context) {
@@ -385,7 +406,12 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
             ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_address.tr()),
-            buildTextField(hint: LocaleKeys.transfer_address.tr(), controller: addressController, mxLine: 3),
+            buildTextField(
+              hint: LocaleKeys.transfer_address.tr(),
+              controller: addressController,
+              mxLine: 3,
+              readOnly: true,
+            ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_notes.tr()),
             buildTextField(
@@ -410,27 +436,34 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
                     );
                     return;
                   }
-                  if (feesController.text.trim().isEmpty || int.tryParse(feesController.text) == 0) {
+                  if (isEmptyOrZero(feesController.text)) {
                     ToastificationDialog.showToast(
                       msg: "لايمكن ان تكون الاجور 0",
                       context: context,
                       type: ToastificationType.error,
                     );
                   } else {
-                    NewSyTransferParams params = NewSyTransferParams(
-                      target: int.tryParse(selectedTarget!.cid) ?? 0,
-                      rcvname: beneficiaryNameController.text,
-                      rcvphone: beneficiaryPhoneController.text,
-                      amount: double.tryParse(amountController.text) ?? 0,
-                      currency: selectedCurrency!.currency,
-                      amountSy: double.tryParse(recievedAmount) ?? 0,
-                      isSy: "true",
-                      cut: int.tryParse(exchangeController.text) ?? 0,
-                      api: "false",
+                    _showDetailsDialog(
+                      context,
+                      senderName: beneficiaryNameController.text,
+                      amount: "${amountController.text} ${selectedCurrency!.currencyName}",
+                      onPressed: () async {
+                        NewSyTransferParams params = NewSyTransferParams(
+                          target: int.tryParse(selectedTarget!.cid) ?? 0,
+                          rcvname: beneficiaryNameController.text,
+                          rcvphone: beneficiaryPhoneController.text,
+                          amount: double.tryParse(amountController.text) ?? 0,
+                          currency: selectedCurrency!.currency,
+                          amountSy: double.tryParse(recievedAmount) ?? 0,
+                          isSy: "true",
+                          cut: int.tryParse(exchangeController.text) ?? 0,
+                          api: "false",
+                        );
+                        context.read<TransferBloc>().add(NewSyTransferEvent(params: params));
+                        await Future.delayed(Duration(seconds: 1));
+                        resetForm(blocContext);
+                      },
                     );
-                    context.read<TransferBloc>().add(NewSyTransferEvent(params: params));
-                    await Future.delayed(Duration(seconds: 1));
-                    resetForm(blocContext);
                   }
                 }
               },

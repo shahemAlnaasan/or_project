@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../common/consts/app_keys.dart';
@@ -25,6 +27,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(state.copyWith(status: Status.loading));
     final String deviceType = await DeviceInfo.deviceType();
     final String? deviceIp = await DeviceInfo.getDeviceIp();
+    log("ip $deviceIp");
+    log("type $deviceType");
     if (deviceIp != null) {
       final LoginParams params = LoginParams(
         username: event.params.username,

@@ -244,7 +244,7 @@ class NewTransferFormState extends State<NewTransferForm> {
           listenWhen: (prev, curr) => prev.getCurreciesStatus != curr.getCurreciesStatus,
           listener: (context, state) {
             if (state.getCurreciesStatus == Status.success && state.currenciesResponse != null) {
-              final rawCurs = state.getTargetInfoResponse!.data.curs;
+              final rawCurs = state.getTargetInfoResponse!.data?.curs ?? "";
               final allowedSymbols = rawCurs.split(',').where((e) => e.isNotEmpty).map((e) => e.toLowerCase()).toSet();
 
               final allCurrencies = state.currenciesResponse?.curs ?? [];
@@ -253,7 +253,7 @@ class NewTransferFormState extends State<NewTransferForm> {
                   allCurrencies.where((cur) => allowedSymbols.contains(cur.currency.toLowerCase())).toList();
 
               setState(() {
-                addressController.text = state.getTargetInfoResponse!.data.address;
+                addressController.text = state.getTargetInfoResponse!.data?.address ?? "";
                 currenciesResponse = state.currenciesResponse;
                 filteredCurrencies = matchingCurrencies;
                 if (!matchingCurrencies.contains(selectedCurrency)) {
@@ -410,8 +410,8 @@ class NewTransferFormState extends State<NewTransferForm> {
                               } else {
                                 _showDetailsDialog(
                                   context,
-                                  senderName: "${senderNameController.text} ${selectedCurrency!.currency}",
-                                  amount: amountController.text,
+                                  senderName: senderNameController.text,
+                                  amount: "${amountController.text} ${selectedCurrency!.currencyName}",
                                   onPressed: () async {
                                     final String deviceType = await DeviceInfo.deviceType();
                                     final String? deviceIp = await DeviceInfo.getDeviceIp();

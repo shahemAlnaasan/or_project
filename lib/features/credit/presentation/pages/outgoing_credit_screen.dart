@@ -128,19 +128,33 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
           (context) =>
               getIt<CreditBloc>()
                 ..add(GetOutgoingCreditsEvent(params: OutgoingCreditParams(startDate: "", endDate: ""))),
-      child: BlocListener<CreditBloc, CreditState>(
-        listener: (context, state) {
-          if (state.getOutgoingCreditsStatus == Status.failure) {
-            ToastificationDialog.showToast(msg: state.errorMessage!, context: context, type: ToastificationType.error);
-          }
-          if (state.outgoingCreditDetailsStatus == Status.loading) {
-            ToastificationDialog.showLoading(context: context);
-          }
-          if (state.outgoingCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
-            ToastificationDialog.dismiss();
-            _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<CreditBloc, CreditState>(
+            listenWhen: (prev, curr) => prev.getOutgoingCreditsStatus != curr.getOutgoingCreditsStatus,
+            listener: (context, state) {
+              if (state.getOutgoingCreditsStatus == Status.failure) {
+                ToastificationDialog.showToast(
+                  msg: state.errorMessage!,
+                  context: context,
+                  type: ToastificationType.error,
+                );
+              }
+            },
+          ),
+          BlocListener<CreditBloc, CreditState>(
+            listenWhen: (prev, curr) => prev.outgoingCreditDetailsStatus != curr.outgoingCreditDetailsStatus,
+            listener: (context, state) {
+              if (state.outgoingCreditDetailsStatus == Status.loading) {
+                ToastificationDialog.showLoading(context: context);
+              }
+              if (state.outgoingCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
+                ToastificationDialog.dismiss();
+                _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           backgroundColor: context.background,
           body: SingleChildScrollView(

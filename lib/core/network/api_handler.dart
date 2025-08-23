@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:golder_octopus/common/consts/app_consts.dart';
 
 import 'error_handler.dart';
 import 'exceptions.dart';
@@ -45,7 +46,7 @@ mixin ApiHandler {
         return Right(jsonData as T);
       }
 
-      final message = jsonData["message"]?.toString() ?? "خطأ بالاتصال، يرجى المحاولة مجدداً";
+      final message = jsonData["message"]?.toString() ?? AppConsts.networkError;
       return Left(Failure(message: message));
     } catch (error) {
       if (error is DioException && error.response != null) {
