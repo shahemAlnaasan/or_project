@@ -113,6 +113,9 @@ class $AssetsImagesFlagsGen {
 class $AssetsImagesLogoGen {
   const $AssetsImagesLogoGen();
 
+  /// File path: assets/images/logo/12.png
+  AssetGenImage get a12 => const AssetGenImage('assets/images/logo/12.png');
+
   /// File path: assets/images/logo/android_12_splash.png
   AssetGenImage get android12Splash =>
       const AssetGenImage('assets/images/logo/android_12_splash.png');
@@ -129,16 +132,21 @@ class $AssetsImagesLogoGen {
   AssetGenImage get googlePlayLogo =>
       const AssetGenImage('assets/images/logo/google_play_logo.png');
 
+  /// File path: assets/images/logo/is12.png
+  AssetGenImage get is12 => const AssetGenImage('assets/images/logo/is12.png');
+
   /// File path: assets/images/logo/splash_logo.png
   AssetGenImage get splashLogo =>
       const AssetGenImage('assets/images/logo/splash_logo.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
+    a12,
     android12Splash,
     appStoreLogo,
     companyLogo,
     googlePlayLogo,
+    is12,
     splashLogo,
   ];
 }
@@ -239,13 +247,13 @@ class $AssetsImagesQuickActionsGen {
   AssetGenImage get shearBone =>
       const AssetGenImage('assets/images/quick_actions/shear_bone_.png');
 
-  /// File path: assets/images/quick_actions/syria.png
-  AssetGenImage get syria =>
-      const AssetGenImage('assets/images/quick_actions/syria.png');
-
   /// File path: assets/images/quick_actions/transfer.png
   AssetGenImage get transfer =>
       const AssetGenImage('assets/images/quick_actions/transfer.png');
+
+  /// File path: assets/images/quick_actions/usdt.png
+  AssetGenImage get usdt =>
+      const AssetGenImage('assets/images/quick_actions/usdt.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
@@ -259,8 +267,8 @@ class $AssetsImagesQuickActionsGen {
     receiveMoney,
     sendCredit,
     shearBone,
-    syria,
     transfer,
+    usdt,
   ];
 }
 

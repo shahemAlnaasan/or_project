@@ -16,7 +16,10 @@ class GetSyPricesResponse {
 
   factory GetSyPricesResponse.fromJson(Map<String, dynamic> json) => GetSyPricesResponse(
     time: json["time"],
-    prices: Map.from(json["prices"]).map((k, v) => MapEntry<String, Price>(k, Price.fromJson(v))),
+    prices:
+        json["prices"] == null
+            ? {}
+            : Map.from(json["prices"]).map((k, v) => MapEntry<String, Price>(k, Price.fromJson(v))),
   );
 
   Map<String, dynamic> toJson() => {

@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/core/config/app_config.dart';
 import 'package:golder_octopus/features/transfer/data/models/trans_details_response.dart';
 import '../../../../common/utils/number_to_arabic_words.dart';
 import '../../../../common/widgets/app_text.dart';
 import '../../../../common/widgets/dotted_line.dart';
-import '../../../../generated/assets.gen.dart';
 
 class CreditReciept extends StatelessWidget {
   final GlobalKey globalKey;
@@ -29,7 +29,7 @@ class CreditReciept extends StatelessWidget {
     if (transDetails.apiInfo == "false") {
       return transDetails.transnum;
     } else {
-      return transDetails.apiTransnum;
+      return "${transDetails.transnum} / ${transDetails.apiTransnum} - ${transDetails.password}";
     }
   }
 
@@ -62,8 +62,34 @@ class CreditReciept extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Align(
-                  alignment: Alignment.centerRight,
-                  child: Image.asset(Assets.images.logo.companyLogo.path, scale: 16),
+                  alignment: Alignment.center,
+                  child: Row(
+                    spacing: 20,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (transDetails.api != "false")
+                        Image.network(
+                          transDetails.header,
+                          width: 70,
+                          height: 70,
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.high,
+                          errorBuilder: (context, error, stackTrace) {
+                            return SizedBox.shrink();
+                          },
+                        ),
+                      Image.network(
+                        AppConfig.logoUrl,
+                        width: 70,
+                        height: 70,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                        errorBuilder: (context, error, stackTrace) {
+                          return SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 1),
                 AppText.titleSmall(
@@ -73,7 +99,7 @@ class CreditReciept extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
 
-                _buildColumn("الاشعار", "${transDetails.transnum} / ${transDetails.password}"),
+                _buildColumn("الاشعار", setTransNum(transDetails)),
                 const SizedBox(height: 2),
                 _buildColumn("المصدر", maskNumber(transDetails.srcBox)),
                 const SizedBox(height: 2),
@@ -92,7 +118,7 @@ class CreditReciept extends StatelessWidget {
                   color: const Color.fromARGB(255, 46, 131, 49),
                 ),
                 const SizedBox(height: 2),
-                _buildColumn("البيان", ""),
+                _buildColumn("البيان", transDetails.notes),
                 const SizedBox(height: 2),
                 _buildColumn(
                   "التاريخ",

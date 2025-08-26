@@ -151,21 +151,8 @@ class _MainScreenState extends State<MainScreen> {
               },
               child: Stack(
                 children: [
-                  IndexedStack(
-                    index: _selectedIndex,
-                    children: List.generate(_rootScreens.length, (i) {
-                      // Remove HomeScreen from IndexedStack
-                      if (i == 2) return const SizedBox.shrink();
-                      return _buildTabNavigator(i);
-                    }),
-                  ),
+                  _buildTabNavigator(_selectedIndex),
 
-                  // Render HomeScreen outside the IndexedStack
-                  if (_selectedIndex == 2)
-                    Navigator(
-                      key: _navigatorKeys[2],
-                      onGenerateRoute: (settings) => MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    ),
                   // AnimatedPositioned(
                   //   duration: const Duration(milliseconds: 500),
                   //   curve: Curves.easeInOut,
@@ -390,7 +377,7 @@ class _MainScreenState extends State<MainScreen> {
         notchMargin: 16,
         padding: const EdgeInsets.only(bottom: 2, top: 6),
         height: 75,
-        color: context.background,
+        color: context.tertiary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(5, (index) {
@@ -419,7 +406,11 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(icon, scale: 5.5, color: context.secondary),
+            Image.asset(
+              icon,
+              scale: isSelected ? 4.8 : 5.5,
+              color: isSelected ? const Color.fromARGB(255, 201, 155, 19) : Colors.white,
+            ),
             const SizedBox(height: 1),
             AppText.bodyMedium(
               [
@@ -430,21 +421,21 @@ class _MainScreenState extends State<MainScreen> {
                 LocaleKeys.navbar_exchange.tr(),
               ][index],
               style: context.textTheme.labelMedium!.copyWith(
-                color: context.secondary,
-                fontWeight: FontWeight.w900,
-                fontSize: 11,
+                color: isSelected ? const Color.fromARGB(255, 201, 155, 19) : Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: isSelected ? 11.5 : 11,
               ),
             ),
-            const SizedBox(height: 4),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              width: 5,
-              height: 5,
-              decoration: BoxDecoration(
-                color: isSelected ? context.secondary : Colors.transparent,
-                shape: BoxShape.circle,
-              ),
-            ),
+            // const SizedBox(height: 4),
+            // AnimatedContainer(
+            //   duration: const Duration(milliseconds: 250),
+            //   width: 5,
+            //   height: 5,
+            //   decoration: BoxDecoration(
+            //     color: isSelected ? context.secondary : Colors.transparent,
+            //     shape: BoxShape.circle,
+            //   ),
+            // ),
           ],
         ),
       ),

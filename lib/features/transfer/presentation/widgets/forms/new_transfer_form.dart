@@ -88,6 +88,33 @@ class NewTransferFormState extends State<NewTransferForm> {
     return null;
   }
 
+  bool _submitForm(BuildContext context) {
+    final formState = _formKey.currentState;
+    if (formState == null) return false;
+
+    if (!formState.validate()) {
+      final firstInvalid = [
+        beneficiaryNameNode,
+        beneficiaryPhoneNode,
+        amountNode,
+        senderNameNode,
+        senderPhoneNode,
+      ].firstWhere(
+        (node) => !node.hasFocus && node.context != null && (Form.of(node.context!).validate() == false),
+        orElse: () => beneficiaryNameNode,
+      );
+
+      // Scroll to it
+      Scrollable.ensureVisible(
+        firstInvalid.context!,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return false;
+    }
+    return true;
+  }
+
   void _showDetailsDialog(
     BuildContext context, {
     required String senderName,
@@ -400,7 +427,7 @@ class NewTransferFormState extends State<NewTransferForm> {
                           : () async {
                             final blocContext = context;
 
-                            if (_formKey.currentState!.validate()) {
+                            if (_submitForm(context)) {
                               if (isEmptyOrZero(feesController.text)) {
                                 ToastificationDialog.showToast(
                                   msg: "لايمكن ان تكون الاجور 0",
@@ -428,6 +455,7 @@ class NewTransferFormState extends State<NewTransferForm> {
                                       deviceInfo: deviceType,
                                       api: selectedTarget!.api,
                                       apiInfo: isTargetGlobal ? selectedTarget!.cid : "",
+                                      apiAddress: addressController.text,
                                     );
                                     blocContext.read<TransferBloc>().add(NewTransferEvent(params: params));
                                     await Future.delayed(Duration(seconds: 1));

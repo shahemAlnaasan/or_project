@@ -123,11 +123,13 @@ class CurrentAccount {
 
   CurrentAccount({required this.amount, required this.currency, required this.currencyName});
 
-  factory CurrentAccount.fromJson(Map<String, dynamic> json) => CurrentAccount(
-    amount: json["amount"]?.toDouble(),
-    currency: json["currency"],
-    currencyName: json["currency_name"],
-  );
+  factory CurrentAccount.fromJson(Map<String, dynamic> json) {
+    return CurrentAccount(
+      amount: (json["amount"] as num?)?.toDouble() ?? 0.0,
+      currency: json["currency"] ?? "",
+      currencyName: json["currency_name"] ?? "",
+    );
+  }
 
   Map<String, dynamic> toJson() => {"amount": amount, "currency": currency, "currency_name": currencyName};
 }

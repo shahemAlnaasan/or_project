@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:golder_octopus/features/credit/presentation/pages/credit_receipt_screen.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/state_managment/bloc_state.dart';
@@ -150,7 +151,17 @@ class _OutgoingCreditScreenState extends State<OutgoingCreditScreen> {
               }
               if (state.outgoingCreditDetailsStatus == Status.success && state.creditDetailsResponse != null) {
                 ToastificationDialog.dismiss();
-                _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
+
+                if (state.isForOutCreditDialog) {
+                  _showDetailsDialog(context, transDetailsResponse: state.creditDetailsResponse!);
+                } else {
+                  Navigator.of(context, rootNavigator: true).push(
+                    MaterialPageRoute(
+                      fullscreenDialog: false,
+                      builder: (context) => CreditReceiptScreen(transDetailsResponse: state.creditDetailsResponse!),
+                    ),
+                  );
+                }
               }
             },
           ),

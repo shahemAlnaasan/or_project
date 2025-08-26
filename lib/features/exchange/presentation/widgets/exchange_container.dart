@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/core/config/app_config.dart';
 import 'package:golder_octopus/features/exchange/data/models/get_preices_model.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/widgets/app_text.dart';
@@ -89,6 +92,8 @@ class _ExchangeContainerState extends State<ExchangeContainer> {
 
       final iconPath1 = toCurrency!.img ?? "";
       final iconPath2 = fromCurrency!.img ?? "";
+      log(iconPath1);
+      log(iconPath2);
 
       final value1 = double.tryParse(buy?.price ?? "")?.toStringAsFixed(4) ?? "0.0000";
       final value2 = double.tryParse(sell?.price ?? "")?.toStringAsFixed(4) ?? "0.0000";
@@ -132,10 +137,10 @@ class _ExchangeContainerState extends State<ExchangeContainer> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Image.network(
-                  "https://rykv3340.com/procds/img/$iconPath1",
+                  "${AppConfig.imageUrl}$iconPath1",
                   width: 30,
                   height: 30,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   filterQuality: FilterQuality.high,
                   errorBuilder: (context, error, stackTrace) {
                     return SizedBox.shrink();
@@ -144,10 +149,10 @@ class _ExchangeContainerState extends State<ExchangeContainer> {
 
                 const SizedBox(width: 4),
                 Image.network(
-                  "https://rykv3340.com/procds/img/$iconPath2",
+                  "${AppConfig.imageUrl}$iconPath2",
                   width: 30,
                   height: 30,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   filterQuality: FilterQuality.high,
                   errorBuilder: (context, error, stackTrace) {
                     return SizedBox.shrink();

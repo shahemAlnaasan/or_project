@@ -11,7 +11,7 @@ class ThemesColorScheme {
     onPrimary: Colors.black,
     secondary: Color.fromARGB(201, 1, 1, 1),
     onSecondary: Colors.black,
-    tertiary: Color(0xFFB0BEC5),
+    tertiary: Color(0Xff252d39),
     onTertiary: Color(0xff63ad5e),
     error: Color(0xffff5d5a),
 
@@ -59,7 +59,7 @@ class ThemesColorScheme {
     secondaryContainer: Color(0xFF3A3A3A),
     onSecondaryContainer: Color(0xFFF0F0F0),
 
-    tertiary: Color(0xFF2C2C2F),
+    tertiary: Color(0xFF212121),
     onTertiary: Color(0xff63ad5e),
 
     // Additional (if needed)

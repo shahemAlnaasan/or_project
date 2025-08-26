@@ -104,7 +104,13 @@ class CreditBloc extends Bloc<CreditEvent, CreditState> {
         emit(state.copyWith(outgoingCreditDetailsStatus: Status.failure, errorMessage: left.message));
       },
       (right) {
-        emit(state.copyWith(outgoingCreditDetailsStatus: Status.success, creditDetailsResponse: right));
+        emit(
+          state.copyWith(
+            outgoingCreditDetailsStatus: Status.success,
+            creditDetailsResponse: right,
+            isForOutCreditDialog: event.isForDialog ? true : false,
+          ),
+        );
       },
     );
   }

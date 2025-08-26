@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/core/config/app_config.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/navigation_extensions.dart';
 import '../../../../common/extentions/size_extension.dart';
@@ -70,10 +71,10 @@ class CurrencyBalanceContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Image.network(
-                "https://rykv3340.com/procds/img/${acc.currencyImg}",
-                width: 45,
-                height: 45,
-                fit: BoxFit.cover,
+                "${AppConfig.imageUrl}${acc.currencyImg}",
+                width: 40,
+                height: 40,
+                fit: BoxFit.contain,
                 filterQuality: FilterQuality.high,
                 errorBuilder: (context, error, stackTrace) {
                   return SizedBox.shrink();

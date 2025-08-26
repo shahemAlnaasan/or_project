@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/core/config/app_config.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/size_extension.dart';
 import '../../../../common/widgets/app_text.dart';
 import '../widgets/forms/login_form.dart';
-import '../../../../generated/assets.gen.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -22,10 +22,21 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(Assets.images.logo.companyLogo.path, scale: 6),
+                Image.network(
+                  AppConfig.logoUrl,
+                  width: 90,
+                  height: 90,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SizedBox.shrink();
+                  },
+                ),
+
+                // Image.asset(Assets.images.logo.companyLogo.path, scale: 6),
                 SizedBox(height: 20),
                 AppText.headlineMedium(
-                  LocaleKeys.auth_welcome_to_golden_octopus.tr(),
+                  "مرحبا بكم في شركة برق للتجارة العامة",
                   textAlign: TextAlign.center,
                   fontWeight: FontWeight.w500,
                 ),

@@ -7,7 +7,6 @@ import '../../../../common/widgets/app_text.dart';
 import '../../../../core/di/injection.dart';
 import '../bloc/credit_bloc.dart';
 import '../widgets/send_credit_form.dart';
-import '../../../../generated/assets.gen.dart';
 import '../../../../generated/locale_keys.g.dart';
 
 class SendCreditScreen extends StatefulWidget {
@@ -53,8 +52,6 @@ class _SendCreditScreenState extends State<SendCreditScreen> {
                         textAlign: TextAlign.start,
                         fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(height: 20),
-                      Center(child: Image.asset(Assets.images.logo.companyLogo.path, scale: 11)),
                       SizedBox(height: 20),
                       SendCreditForm(key: _formKey),
                     ],

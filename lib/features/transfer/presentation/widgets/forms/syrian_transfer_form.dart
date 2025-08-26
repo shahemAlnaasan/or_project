@@ -65,6 +65,15 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
   late TextEditingController notesController;
   late TextEditingController addressController;
 
+  FocusNode beneficiaryNameNode = FocusNode();
+  FocusNode beneficiaryPhoneNode = FocusNode();
+  FocusNode amountNode = FocusNode();
+  FocusNode receivedAmountNode = FocusNode();
+  FocusNode exchangeNode = FocusNode();
+  FocusNode feesNode = FocusNode();
+  FocusNode notesNode = FocusNode();
+  FocusNode addressNode = FocusNode();
+
   GetSyPricesResponse? getSyPricesResponse;
   GetSyTargetsResponse? getSyTargetsResponse;
 
@@ -176,6 +185,27 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
         feesController.text = "0";
       });
     }
+  }
+
+  bool _submitForm(BuildContext context) {
+    final formState = _formKey.currentState;
+    if (formState == null) return false;
+
+    if (!formState.validate()) {
+      final firstInvalid = [beneficiaryNameNode, beneficiaryPhoneNode, amountNode, receivedAmountNode].firstWhere(
+        (node) => !node.hasFocus && node.context != null && (Form.of(node.context!).validate() == false),
+        orElse: () => beneficiaryNameNode,
+      );
+
+      // Scroll to it
+      Scrollable.ensureVisible(
+        firstInvalid.context!,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -328,10 +358,19 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
           spacing: 8,
           children: [
             buildFieldTitle(title: LocaleKeys.transfer_beneficiary_name.tr()),
-            buildTextField(hint: LocaleKeys.transfer_beneficiary_name.tr(), controller: beneficiaryNameController),
+            buildTextField(
+              hint: LocaleKeys.transfer_beneficiary_name.tr(),
+              controller: beneficiaryNameController,
+              focusNode: beneficiaryNameNode,
+              focusOn: beneficiaryPhoneNode,
+            ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_beneficiary_phone.tr()),
-            buildTextField(hint: LocaleKeys.transfer_beneficiary_phone.tr(), controller: beneficiaryPhoneController),
+            buildTextField(
+              hint: LocaleKeys.transfer_beneficiary_phone.tr(),
+              controller: beneficiaryPhoneController,
+              focusNode: beneficiaryPhoneNode,
+            ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_destination.tr()),
             CustomDropdown<Target>(
@@ -379,6 +418,7 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
               controller: amountController,
               onChanged: (p0) => setAmountsAndExchangePriceAndFees(context),
               keyboardType: TextInputType.number,
+              focusNode: amountNode,
             ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_recived_amount.tr()),
@@ -387,6 +427,7 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
               controller: receivedAmountController,
               onChanged: (p0) => setAmountsAndExchangePriceAndFees(context, reverse: true),
               keyboardType: TextInputType.number,
+              focusNode: receivedAmountNode,
             ),
             SizedBox(height: 3),
             buildFieldTitle(title: LocaleKeys.transfer_excange.tr()),
@@ -425,7 +466,7 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
               onPressed: () async {
                 final blocContext = context;
 
-                if (_formKey.currentState!.validate()) {
+                if (_submitForm(context)) {
                   if (isEmptyOrZero(amountController.text) ||
                       isEmptyOrZero(receivedAmountController.text) ||
                       isEmptyOrZero(exchangeController.text)) {
@@ -490,23 +531,28 @@ class SyrianTransferFormState extends State<SyrianTransferForm> {
 Widget buildTextField({
   required String hint,
   required TextEditingController controller,
+  void Function(String)? onChanged,
   String validatorTitle = "",
   int mxLine = 1,
   Widget? sufIcon,
   bool? readOnly,
   dynamic Function()? onTap,
-  bool needValidation = true,
-  void Function(String)? onChanged,
   TextInputType? keyboardType,
+  bool needValidation = true,
+  FocusNode? focusNode,
+  FocusNode? focusOn,
 }) {
   return CustomTextField(
     onTap: onTap,
     readOnly: readOnly,
-    mxLine: mxLine,
-    controller: controller,
     onChanged: onChanged,
     keyboardType: keyboardType,
+    mxLine: mxLine,
+    controller: controller,
     hint: hint,
+    focusNode: focusNode,
+    focusOn: focusOn,
+
     validator:
         needValidation
             ? (value) {

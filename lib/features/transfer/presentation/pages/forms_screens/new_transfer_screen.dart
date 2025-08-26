@@ -18,6 +18,7 @@ class NewTransferScreen extends StatefulWidget {
 
 class _NewTransferScreenState extends State<NewTransferScreen> {
   final GlobalKey<NewTransferFormState> _formKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
 
   Future<void> _onRefresh(BuildContext context) async {
     _formKey.currentState?.resetForm(context);
@@ -36,6 +37,7 @@ class _NewTransferScreenState extends State<NewTransferScreen> {
               backgroundColor: context.primaryColor,
               color: context.onPrimaryColor,
               child: SingleChildScrollView(
+                controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(bottom: 20),
                 child: Container(

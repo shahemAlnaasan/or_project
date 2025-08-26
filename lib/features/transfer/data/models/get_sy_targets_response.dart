@@ -16,7 +16,10 @@ class GetSyTargetsResponse {
 
   factory GetSyTargetsResponse.fromJson(Map<String, dynamic> json) => GetSyTargetsResponse(
     status: json["status"],
-    targets: Map.from(json["data"]).map((k, v) => MapEntry<String, Target>(k, Target.fromJson(v))),
+    targets:
+        json["data"] == null
+            ? {}
+            : Map.from(json["data"]).map((k, v) => MapEntry<String, Target>(k, Target.fromJson(v))),
   );
 
   Map<String, dynamic> toJson() => {

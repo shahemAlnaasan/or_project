@@ -70,6 +70,8 @@ class SendCreditFormState extends State<SendCreditForm> {
   List<Target> boxes = [];
   Target? selectedBox;
 
+  String img = "https://helal29485.com/okd/img/companylogo.PNG";
+
   @override
   void initState() {
     super.initState();
@@ -174,7 +176,7 @@ class SendCreditFormState extends State<SendCreditForm> {
               setState(() {
                 companies = state.getCompaniesResponse!.companies;
                 selectedCompany = state.getCompaniesResponse!.companies.firstWhere(
-                  (company) => company.name == "الايهم داخلي",
+                  (company) => company.name == "الايهم داخلي" || company.id == "false",
                 );
               });
             }
@@ -251,6 +253,22 @@ class SendCreditFormState extends State<SendCreditForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
+              Center(
+                child: Image.network(
+                  img,
+                  width: 90,
+                  height: 90,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                  errorBuilder: (context, error, stackTrace) {
+                    return SizedBox.shrink();
+                  },
+                ),
+              ),
+
+              // Center(child: Image.asset(Assets.images.logo.companyLogo.path, scale: 11)),
+              SizedBox(height: 10),
+
               buildFieldTitle(title: LocaleKeys.credits_company.tr()),
               CustomDropdown<Company>(
                 menuList: companies,
@@ -270,6 +288,7 @@ class SendCreditFormState extends State<SendCreditForm> {
                     selectedBox = null;
                     boxes = [];
                     checkRequiredFieldsFilled(context);
+                    img = selectedCompany!.img!;
                   });
                 },
               ),
@@ -339,6 +358,11 @@ class SendCreditFormState extends State<SendCreditForm> {
                   setState(() {
                     selectedBox = box;
                   });
+                  ToastificationDialog.showToast(
+                    msg: "لقد اخترت ${selectedBox!.cn} وجهة للاعتماد",
+                    context: context,
+                    type: ToastificationType.error,
+                  );
                 },
               ),
               buildFieldTitle(title: LocaleKeys.credits_fees.tr()),

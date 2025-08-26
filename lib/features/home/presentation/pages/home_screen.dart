@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
             } else {
               HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasLogin, value: false);
               HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasVerifyLogin, value: false);
+              HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.tokenKey, value: null);
               context.pushAndRemoveUntil(LoginScreen());
               Navigator.of(
                 context,

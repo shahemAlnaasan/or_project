@@ -42,7 +42,7 @@ class Cur extends HiveObject {
     currencyName: json["currency_name"],
     op: json["op"],
     price: json["price"],
-    currencyImg: json["currency_img"],
+    currencyImg: json["currency_img"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {

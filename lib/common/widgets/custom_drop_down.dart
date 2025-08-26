@@ -80,6 +80,9 @@ class _CustomDropdownState<T> extends State<CustomDropdown<T>> {
         ),
       ),
       popupProps: PopupProps.menu(
+        onItemsLoaded: (value) {
+          setState(() {});
+        },
         constraints: BoxConstraints(maxHeight: widget.menuMaxHeight),
         containerBuilder: (context, child) {
           return Container(

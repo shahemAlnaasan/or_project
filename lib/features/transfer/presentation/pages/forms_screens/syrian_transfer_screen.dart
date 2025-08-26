@@ -61,11 +61,7 @@ class _SyrianTransferScreenState extends State<SyrianTransferScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppText.displaySmall(
-                          LocaleKeys.home_syrian_transfer.tr(),
-                          textAlign: TextAlign.start,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        AppText.displaySmall("حوالة USDT", textAlign: TextAlign.start, fontWeight: FontWeight.bold),
                         SizedBox(height: 20),
                         SyrianTransferForm(key: _formKey),
                         SizedBox(height: 20),

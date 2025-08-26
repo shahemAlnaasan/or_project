@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:golder_octopus/core/config/app_config.dart';
 import '../../../../common/utils/number_to_arabic_words.dart';
 import '../../../../common/widgets/app_text.dart';
 import '../../../../common/widgets/dotted_line.dart';
@@ -57,13 +58,24 @@ class TransferReciept extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Image.asset(Assets.images.logo.companyLogo.path, scale: 16),
+                    Image.network(
+                      AppConfig.logoUrl,
+                      width: 70,
+                      height: 70,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                      errorBuilder: (context, error, stackTrace) {
+                        return SizedBox.shrink();
+                      },
+                    ),
+
+                    // Image.asset(Assets.images.logo.companyLogo.path, scale: 16),
                     if (transDetails.api != "false")
                       Image.network(
                         transDetails.header,
                         width: 70,
                         height: 70,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                         filterQuality: FilterQuality.high,
                         errorBuilder: (context, error, stackTrace) {
                           return SizedBox.shrink();

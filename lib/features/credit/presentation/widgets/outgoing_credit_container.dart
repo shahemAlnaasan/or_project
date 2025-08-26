@@ -87,14 +87,32 @@ class OutgoingCreditContainer extends StatelessWidget {
                 ),
               ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: CustomActionButton(
+                    onPressed: () {
+                      TransDetailsParams params = TransDetailsParams(transNum: outgoingCreditsResponse.transnum);
+                      context.read<CreditBloc>().add(GetOutgoingCreditDetailsEvent(params: params, isForDialog: false));
+                    },
+                    text: "اشعار",
+                    backgroundColor: context.primaryContainer,
+                  ),
+                ),
 
-            CustomActionButton(
-              onPressed: () {
-                TransDetailsParams params = TransDetailsParams(transNum: outgoingCreditsResponse.transnum);
-                context.read<CreditBloc>().add(GetOutgoingCreditDetailsEvent(params: params));
-              },
-              text: "تفاصيل",
-              backgroundColor: context.primaryContainer,
+                Expanded(
+                  child: CustomActionButton(
+                    onPressed: () {
+                      TransDetailsParams params = TransDetailsParams(transNum: outgoingCreditsResponse.transnum);
+                      context.read<CreditBloc>().add(GetOutgoingCreditDetailsEvent(params: params, isForDialog: true));
+                    },
+                    text: "تفاصيل",
+                    backgroundColor: context.primaryContainer,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

@@ -35,8 +35,8 @@ class _QuickActionsGridState extends State<QuickActionsGrid> {
         onTap: () => context.push(NewTransferScreen()),
       ),
       GridItem(
-        icon: Assets.images.quickActions.syria.path,
-        label: LocaleKeys.home_syrian_transfer.tr(),
+        icon: Assets.images.quickActions.usdt.path,
+        label: "حوالة USDT",
         onTap: () => context.push(SyrianTransferScreen()),
       ),
       GridItem(

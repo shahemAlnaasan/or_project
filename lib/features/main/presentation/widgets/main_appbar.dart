@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:golder_octopus/core/config/app_config.dart';
 import '../../../../common/consts/app_keys.dart';
 import '../../../../common/extentions/colors_extension.dart';
 import '../../../../common/extentions/navigation_extensions.dart';
@@ -14,14 +15,20 @@ import '../../../../generated/assets.gen.dart';
 AppBar mainAppbar(BuildContext context, {void Function()? onTap}) {
   return AppBar(
     toolbarHeight: 50,
-    backgroundColor: context.background,
+    backgroundColor: context.tertiary,
     elevation: 0,
-    bottom: PreferredSize(
-      preferredSize: Size.fromHeight(0),
-      child: Container(color: context.onPrimaryColor, height: 1),
-    ),
+    bottom: PreferredSize(preferredSize: Size.fromHeight(0), child: Container(color: context.background, height: 1)),
     surfaceTintColor: context.background,
-    title: Image.asset(Assets.images.logo.companyLogo.path, scale: 26),
+    title: Image.network(
+      AppConfig.logoUrl,
+      width: 40,
+      height: 40,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.high,
+      errorBuilder: (context, error, stackTrace) {
+        return SizedBox.shrink();
+      },
+    ),
 
     automaticallyImplyLeading: false,
 
@@ -34,6 +41,7 @@ AppBar mainAppbar(BuildContext context, {void Function()? onTap}) {
         onPressed: () {
           HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasLogin, value: false);
           HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.hasVerifyLogin, value: false);
+          HiveHelper.storeInHive(boxName: AppKeys.userBox, key: AppKeys.tokenKey, value: null);
           context.pushAndRemoveUntil(LoginScreen());
         },
         context: context,
@@ -60,7 +68,7 @@ AppBar mainAppbar(BuildContext context, {void Function()? onTap}) {
       padding: EdgeInsets.only(right: 15),
       child: GestureDetector(
         onTap: onTap,
-        child: Image.asset(Assets.images.navbar.option.path, scale: 4.5, color: context.onPrimaryColor),
+        child: Image.asset(Assets.images.navbar.option.path, scale: 4.5, color: Colors.white),
       ),
     ),
   );
@@ -81,7 +89,7 @@ Widget buildActionButton({
     child: Container(
       padding: EdgeInsets.all(15),
       margin: EdgeInsets.symmetric(horizontal: 2),
-      child: Image.asset(icon, scale: scale ?? 8.4, color: context.onPrimaryColor),
+      child: Image.asset(icon, scale: scale ?? 8.4, color: Colors.white),
     ),
   );
 }

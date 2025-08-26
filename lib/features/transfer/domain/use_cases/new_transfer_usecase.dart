@@ -26,6 +26,7 @@ class NewTransferParams with Params {
   final String deviceInfo;
   final String api;
   final String apiInfo;
+  final String apiAddress;
 
   NewTransferParams({
     required this.target,
@@ -39,6 +40,7 @@ class NewTransferParams with Params {
     required this.deviceInfo,
     required this.api,
     required this.apiInfo,
+    required this.apiAddress,
   });
 
   @override
@@ -54,5 +56,6 @@ class NewTransferParams with Params {
     "device_info": deviceInfo,
     "api": api,
     "api_info": apiInfo,
+    "api_address": apiAddress,
   };
 }

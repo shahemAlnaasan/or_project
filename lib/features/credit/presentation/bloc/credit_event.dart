@@ -21,8 +21,9 @@ class GetIncomingCreditsEvent extends CreditEvent {
 
 class GetOutgoingCreditDetailsEvent extends CreditEvent {
   final TransDetailsParams params;
+  final bool isForDialog;
 
-  const GetOutgoingCreditDetailsEvent({required this.params});
+  const GetOutgoingCreditDetailsEvent({required this.params, this.isForDialog = true});
 }
 
 class GetIncomingCreditDetailsEvent extends CreditEvent {

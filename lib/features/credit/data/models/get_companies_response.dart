@@ -28,10 +28,12 @@ class GetCompaniesResponse {
 class Company {
   String id;
   String name;
+  String? img;
 
-  Company({required this.id, required this.name});
+  Company({required this.id, required this.name, required this.img});
 
-  factory Company.fromJson(Map<String, dynamic> json) => Company(id: json["id"], name: json["name"]);
+  factory Company.fromJson(Map<String, dynamic> json) =>
+      Company(id: json["id"], name: json["name"], img: json["img"] ?? "");
 
-  Map<String, dynamic> toJson() => {"id": id, "name": name};
+  Map<String, dynamic> toJson() => {"id": id, "name": name, "img": img};
 }

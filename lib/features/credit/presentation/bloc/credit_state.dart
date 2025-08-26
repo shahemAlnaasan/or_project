@@ -27,12 +27,14 @@ class CreditState extends Equatable {
   final GetSenderCursResponse? getSenderCursResponse;
 
   final bool isForDialog;
+  final bool isForOutCreditDialog;
 
   final String? fromDate;
   final String? toDate;
   const CreditState({
     this.fromDate,
     this.toDate,
+    this.isForOutCreditDialog = true,
     this.outgoingCreditDetailsStatus,
     this.incomingCreditDetailsStatus,
     this.newCreditDetailsStatus,
@@ -75,6 +77,7 @@ class CreditState extends Equatable {
     Status? getSenderCursStatus,
 
     bool? isForDialog,
+    bool? isForOutCreditDialog,
     List<OutgoingCreditResponse>? outgoingCredits,
     List<IncomingCreditsResponse>? incomingCredits,
     TransDetailsResponse? creditDetailsResponse,
@@ -103,6 +106,7 @@ class CreditState extends Equatable {
       getSenderCursStatus: getSenderCursStatus ?? this.getSenderCursStatus,
 
       isForDialog: isForDialog ?? this.isForDialog,
+      isForOutCreditDialog: isForOutCreditDialog ?? this.isForOutCreditDialog,
       errorMessage: errorMessage ?? this.errorMessage,
       outgoingCredits: outgoingCredits ?? this.outgoingCredits,
       incomingCredits: incomingCredits ?? this.incomingCredits,
@@ -131,6 +135,7 @@ class CreditState extends Equatable {
     newCreditStatus,
     getCurreciesStatus,
     getSenderCursStatus,
+    isForOutCreditDialog,
     isForDialog,
     errorMessage,
     outgoingCredits,

@@ -45,9 +45,9 @@ class Acc {
 
   factory Acc.fromJson(Map<String, dynamic> json) => Acc(
     amount: json["amount"]?.toDouble(),
-    currency: json["currency"],
-    currencyName: json["currency_name"],
-    currencyImg: json["currency_img"],
+    currency: json["currency"] ?? "",
+    currencyName: json["currency_name"] ?? "",
+    currencyImg: json["currency_img"] ?? "",
     suffix: json["suffix"],
   );
 

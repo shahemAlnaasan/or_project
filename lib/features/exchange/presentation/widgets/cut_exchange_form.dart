@@ -71,34 +71,63 @@ class CutExchangeFormState extends State<CutExchangeForm> {
     return null;
   }
 
-  PriceValue? getSelectedPriceValue() {
+  PriceValue? getSelectedPriceValue({bool reverse = false}) {
     if (widget.getPricesResponse == null || selectedFromCurrency == null || selectedToCurrency == null) return null;
 
     final directMatch = widget.getPricesResponse!.prices.values.firstWhere(
       (value) => value.curfrom == selectedFromCurrency!.id && value.curto == selectedToCurrency!.id,
       orElse: () => fallBackPriceValue,
     );
-
     if (directMatch.curfrom.isNotEmpty) return directMatch;
     return fallBackPriceValue;
   }
 
-  double _calculateExchange(double input, PriceValue priceValue, {bool reverse = false}) {
+  String? getSelectedPriceValueOp({bool reverse = false}) {
+    if (widget.getPricesResponse == null || selectedFromCurrency == null || selectedToCurrency == null) return null;
+    PriceValue opPriceValue;
+
+    if (reverse) {
+      opPriceValue = widget.getPricesResponse!.prices.values.firstWhere(
+        (value) => value.curfrom == selectedToCurrency!.id && value.curto == selectedFromCurrency!.id,
+        orElse: () => fallBackPriceValue,
+      );
+    } else {
+      opPriceValue = widget.getPricesResponse!.prices.values.firstWhere(
+        (value) => value.curfrom == selectedFromCurrency!.id && value.curto == selectedToCurrency!.id,
+        orElse: () => fallBackPriceValue,
+      );
+    }
+
+    if (opPriceValue.curfrom.isNotEmpty) return opPriceValue.op;
+    return fallBackPriceValue.op;
+  }
+
+  double _calculateExchange({
+    required double input,
+    required PriceValue priceValue,
+    required String opration,
+    bool reverse = false,
+  }) {
     final double rate = double.tryParse(priceValue.price) ?? 0.0;
+    final String op = opration;
     if (rate == 0) return 0;
 
-    if ((priceValue.op == '/' && !reverse) || (priceValue.op == '*' && reverse)) {
-      return input / rate;
-    } else {
-      return input * rate;
+    switch (op) {
+      case '*':
+        return input * rate;
+      case '/':
+        return input / rate;
+      default:
+        throw input / rate;
     }
   }
 
   void calculateAmount(String p0, bool reverse) {
-    final priceValue = getSelectedPriceValue();
+    final priceValue = getSelectedPriceValue(reverse: reverse);
+    final op = getSelectedPriceValueOp(reverse: reverse) ?? "";
     if (priceValue != null && p0.isNotEmpty) {
       final double input = double.tryParse(p0) ?? 0;
-      final converted = _calculateExchange(input, priceValue, reverse: true);
+      final converted = _calculateExchange(input: input, priceValue: priceValue, opration: op, reverse: true);
       setState(() {
         if (reverse) {
           fromAmountController.text = converted.toStringAsFixed(2);
@@ -138,25 +167,24 @@ class CutExchangeFormState extends State<CutExchangeForm> {
     return false;
   }
 
+  void checkIfCursMatch({required bool isSelectSell}) {
+    if (selectedFromCurrency?.name == selectedToCurrency?.name) {
+      setState(() {
+        if (isSelectSell) {
+          selectedToCurrency = null;
+        } else {
+          selectedFromCurrency = null;
+        }
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     fromAmountController = TextEditingController(text: '0');
     toAmountController = TextEditingController(text: '0');
     cutPriceController = TextEditingController(text: '0');
-  }
-
-  @override
-  void didUpdateWidget(covariant CutExchangeForm oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.getPricesResponse != oldWidget.getPricesResponse && widget.getPricesResponse != null) {
-      final allCurrencies = widget.getPricesResponse!.curs;
-
-      setState(() {
-        filteredToCurrencies = allCurrencies;
-      });
-    }
   }
 
   void _startAutoRefresh() {
@@ -212,6 +240,7 @@ class CutExchangeFormState extends State<CutExchangeForm> {
                   allCurrencies.where((cur) => allowedSymbols.contains(cur.id.toLowerCase())).toList();
 
               setState(() {
+                filteredToCurrencies = matchingCurrencies;
                 filteredFromCurrencies = matchingCurrencies;
               });
             }
@@ -258,11 +287,11 @@ class CutExchangeFormState extends State<CutExchangeForm> {
                 setState(() {
                   selectedFromCurrency = cur;
                   setPriceField();
-
                   if (isEmptyOrZero(fromAmountController.text)) {
                     calculateAmount(fromAmountController.text, false);
                     calculateAmount(toAmountController.text, true);
                   }
+                  checkIfCursMatch(isSelectSell: true);
                 });
               },
             ),
@@ -304,6 +333,7 @@ class CutExchangeFormState extends State<CutExchangeForm> {
                   selectedToCurrency = cur;
                   setPriceField();
                 });
+                checkIfCursMatch(isSelectSell: false);
               },
             ),
             SizedBox(height: 3),
